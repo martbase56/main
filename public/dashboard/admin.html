@@ -36,7 +36,7 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (SPA Side Menu) -->
+    <!-- 🗂️ Left Sticky Sidebar (Admin SPA Menu) -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -46,25 +46,29 @@
         </div>
 
         <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
-            <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all">
+            <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10 text-sm">
                 <i class="fa-solid fa-chart-line text-lg"></i>
                 <span>ড্যাশবোর্ড ওভারভিউ</span>
             </button>
-            <button onclick="switchAdminSection('orders-sec')" id="nav-orders-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+            <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span>ইউজার লিস্ট</span>
+            </a>
+            <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
                 <i class="fa-solid fa-cart-shopping text-lg"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
-            </button>
-            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+            </a>
+            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
                 <i class="fa-solid fa-square-plus text-lg"></i>
                 <span>পণ্য যোগ করুন</span>
             </a>
-            <button onclick="switchAdminSection('settings-sec')" id="nav-settings-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+            <button onclick="switchAdminSection('settings-sec')" id="nav-settings-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
                 <i class="fa-solid fa-gears text-lg"></i>
                 <span>সিস্টেম সেটিংস</span>
             </button>
             
             <div class="pt-8 mt-auto border-t border-white/5">
-                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold">
+                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold text-sm">
                     <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
                     <span>লগআউট</span>
                 </a>
@@ -74,7 +78,7 @@
 
     <!-- 📊 Main Content SPA Panel -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
-        <!-- Top Nav Info -->
+        <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
             <div>
                 <h2 class="text-2xl font-extrabold text-dark">এডমিন প্যানেল</h2>
@@ -88,51 +92,51 @@
 
         <!-- ==================== ১. SECTION: DASHBOARD OVERVIEW ==================== -->
         <div id="dashboard-sec" class="admin-tab-content space-y-8">
-            <!-- 🚀 4 Statistics Cards -->
+            <!-- 🚀 4 Statistics Cards (Premium Design Updated) -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Total Users -->
-                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow flex items-center gap-5 hover:translate-y-[-2px] transition-all">
-                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
+                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
+                    <div class="w-12 h-12 bg-blue-100/80 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-users"></i></div>
                     <div>
-                        <span class="text-[0.8rem] text-muted font-bold block">মোট ব্যবহারকারী</span>
+                        <span class="text-[0.75rem] text-muted font-bold block uppercase tracking-wider">মোট ব্যবহারকারী</span>
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="total-users">--</h3>
                     </div>
                 </div>
                 <!-- Today's New Users -->
-                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow flex items-center gap-5 hover:translate-y-[-2px] transition-all">
-                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-user-plus"></i></div>
+                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
+                    <div class="w-12 h-12 bg-green-100/80 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-user-plus"></i></div>
                     <div>
-                        <span class="text-[0.8rem] text-muted font-bold block">আজকের নতুন ইউজার</span>
+                        <span class="text-[0.75rem] text-muted font-bold block uppercase tracking-wider">আজকের নতুন ইউজার</span>
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="today-users">--</h3>
                     </div>
                 </div>
                 <!-- Today's Orders -->
-                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow flex items-center gap-5 hover:translate-y-[-2px] transition-all">
-                    <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-cart-arrow-down"></i></div>
+                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
+                    <div class="w-12 h-12 bg-amber-100/80 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-cart-arrow-down"></i></div>
                     <div>
-                        <span class="text-[0.8rem] text-muted font-bold block">আজকের মোট অর্ডার</span>
+                        <span class="text-[0.75rem] text-muted font-bold block uppercase tracking-wider">আজকের মোট অর্ডার</span>
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="today-orders">--</h3>
                     </div>
                 </div>
                 <!-- Today's Amount -->
-                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow flex items-center gap-5 hover:translate-y-[-2px] transition-all">
-                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
+                    <div class="w-12 h-12 bg-emerald-100/80 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-money-bill-wave"></i></div>
                     <div>
-                        <span class="text-[0.8rem] text-muted font-bold block">আজকের মোট বিক্রি</span>
-                        <h3 class="text-2xl font-extrabold text-dark font-body" id="today-amount">--</h3>
+                        <span class="text-[0.75rem] text-muted font-bold block uppercase tracking-wider">আজকের মোট বিক্রি</span>
+                        <h3 class="text-2xl font-extrabold text-emerald-600 font-body" id="today-amount">--</h3>
                     </div>
                 </div>
             </div>
 
             <!-- Pending Activation Requests Table -->
-            <section id="activation-requests" class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
-                <h3 class="text-lg font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
-                    <i class="fa-solid fa-user-check text-primary"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
+            <section class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
+                <h3 class="text-base font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
+                    <i class="fa-solid fa-user-check text-primary animate-pulse"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
                 </h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse text-sm">
                         <thead>
-                            <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <tr class="border-b border-gray-150 text-gray-500 font-semibold bg-gray-50/50">
                                 <th class="py-3 px-4">ইউজার নেম</th>
                                 <th class="py-3 px-4">পেমেন্ট গেটওয়ে</th>
                                 <th class="py-3 px-4">প্রেরক নম্বর</th>
@@ -151,81 +155,31 @@
             </section>
         </div>
 
-        <!-- ==================== ২. SECTION: ORDERS MANAGEMENT ==================== -->
-        <div id="orders-sec" class="admin-tab-content space-y-6 hidden">
-            <!-- Order ID Live Search Header -->
-            <div class="bg-white rounded-2xl border border-black/[0.01] p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h3 class="font-bold text-base flex items-center gap-1.5"><i class="fa-solid fa-box-open text-primary"></i> অর্ডার ডিস্ট্রিবিউশন হাব</h3>
-                    <p class="text-xs text-muted mt-0.5">অর্ডার স্ট্যাটাস এবং লাইভ রিসেলার প্রফিট কন্ট্রোল</p>
-                </div>
-                <!-- 🔍 Live Order ID Search -->
-                <div class="relative w-full sm:w-[320px]">
-                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                    <input type="text" id="order-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-mono text-dark" placeholder="অর্ডার আইডি (যেমন: d39b) দিয়ে খুঁজুন...">
-                </div>
-            </div>
-
-            <!-- Orders Table List (With 2 Tabs: Normal vs Reseller Orders) -->
-            <div class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md">
-                <!-- Orders Sub-tab selector -->
-                <div class="flex gap-4 border-b border-gray-100 pb-4 mb-6">
-                    <button id="btn-normal-orders" class="px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-white" onclick="filterOrderTable('customer')">সাধারণ কাস্টমার অর্ডার</button>
-                    <button id="btn-reseller-orders" class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-dark" onclick="filterOrderTable('reseller')">রিসেলার কাস্টম অর্ডার</button>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
-                                <th class="py-3 px-4">অর্ডার আইডি</th>
-                                <th class="py-3 px-4">অর্ডারকারী</th>
-                                <th class="py-3 px-4">ডেলিভারি তথ্য</th>
-                                <th class="py-3 px-4">টাকা (৳)</th>
-                                <th class="py-3 px-4">স্ট্যাটাস</th>
-                                <th class="py-3 px-4 text-center">স্ট্যাটাস পরিবর্তন</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-orders-list" class="divide-y divide-gray-100">
-                            <tr>
-                                <td colspan="6" class="py-6 text-center text-gray-500">অর্ডার তালিকা লোড হচ্ছে...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- ==================== ৩. SECTION: SYSTEM SETTINGS ==================== -->
+        <!-- ==================== ২. SECTION: SYSTEM SETTINGS ==================== -->
         <div id="settings-sec" class="admin-tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md hidden">
             <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6"><i class="fa-solid fa-gears text-primary"></i> সিস্টেম গ্লোবাল কনফিগারেশন</h3>
             
             <form id="system-settings-form" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Activation Fee -->
                     <div>
                         <label class="block font-semibold text-sm mb-1.5 text-dark">অ্যাকাউন্ট অ্যাক্টিভেশন ফি (৳)</label>
-                        <input type="number" id="setting-fee" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-dark" required>
-                        <p class="text-[0.7rem] text-muted mt-1">ফ্রি করতে চাইলে এখানে ০ (শূন্য) বসিয়ে দিন।</p>
+                        <input type="number" id="setting-fee" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark" required>
+                        <p class="text-[0.7rem] text-muted mt-1.5">অ্যাক্টিভেশন ফি সম্পূর্ণ ফ্রি করতে চাইলে এখানে ০ (শূন্য) বসিয়ে দিন।</p>
                     </div>
-                    <!-- ImgBB API Key -->
                     <div>
                         <label class="block font-semibold text-sm mb-1.5 text-dark">ImgBB API Key (Image Server)</label>
-                        <input type="text" id="setting-imgbb" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-dark" required>
-                        <p class="text-[0.7rem] text-muted mt-1">প্রোডাক্ট আপলোড ইমেজ হোস্ট করার গ্লোবাল এপিআই কি।</p>
+                        <input type="text" id="setting-imgbb" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark" required>
+                        <p class="text-[0.7rem] text-muted mt-1.5">প্রোডাক্ট আপলোড ইমেজ হোস্ট করার গ্লোবাল এপিআই কি।</p>
                     </div>
                 </div>
 
-                <!-- Notice Board -->
                 <div>
                     <label class="block font-semibold text-sm mb-1.5 text-dark">রিসেলার ড্যাশবোর্ড রানিং নোটিশ (Notice Board)</label>
-                    <textarea id="setting-notice" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 text-dark h-24 resize-none" required></textarea>
-                    <p class="text-[0.7rem] text-muted mt-1">রিসেলার ড্যাশবোর্ডের ওপরে রানিং নোটিশবোর্ডে এই মেসেজটি স্লাইড করবে।</p>
+                    <textarea id="setting-notice" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark h-24 resize-none" required></textarea>
+                    <p class="text-[0.7rem] text-muted mt-1.5">রিসেলার ড্যাশবোর্ডের ওপরে রানিং নোটিশবোর্ডে এই মেসেজটি স্লাইড করবে।</p>
                 </div>
 
-                <button type="submit" id="btn-save-settings" class="py-3 px-8 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2">
+                <button type="submit" id="btn-save-settings" class="py-3.5 px-8 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2">
                     <i class="fa-solid fa-circle-check"></i> সেটিংস তথ্য আপডেট করুন
                 </button>
             </form>
@@ -255,9 +209,7 @@
 
             let supabaseClient = null;
             let currentToken = null;
-            let allOrdersList = []; // রিয়েল-টাইম ক্লায়েন্ট ফিল্টারের জন্য গ্লোবাল এরে
 
-            // --- ক. সুপাবেস এবং এডমিন অথেন্টিক ইনিশিয়ালাইজেশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -285,7 +237,6 @@
                         return;
                     }
 
-                    // এডমিন রোল চেক করা
                     const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('role')
@@ -300,10 +251,9 @@
 
                     currentToken = session.access_token;
                     
-                    // সাকসেসফুল চেক হলে ডাটা ফেচিং শুরু হবে
+                    // ইনিশিয়াল ডাটা লোড
                     loadAdminStats(currentToken);
                     loadActivationRequests(currentToken);
-                    loadAdminOrders(currentToken);
                     loadSystemSettings(currentToken);
 
                 } catch (e) {
@@ -311,13 +261,11 @@
                 }
             }
 
-            // --- খ. ডাইনামিক ট্যাব সুইচিং লজিক (SPA System) ---
+            // --- ক. ডাইনামিক ট্যাব সুইচিং লজিক (SPA System) ---
             window.switchAdminSection = function(sectionId) {
-                // সব সেকশন হাইড করা
                 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
                 document.getElementById(sectionId).classList.remove('hidden');
                 
-                // সাইডবারের বাটন একটিভ স্টাইল চেঞ্জ
                 document.querySelectorAll('.admin-nav-btn').forEach(btn => {
                     btn.classList.remove('bg-primary', 'text-white');
                     btn.classList.add('hover:bg-white/5', 'text-gray-400');
@@ -330,7 +278,7 @@
                 }
             };
 
-            // --- গ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড ---
+            // --- খ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড (সংশোধিত এরে-লেন্থ ক্যালকুলেশন) ---
             async function loadAdminStats(token) {
                 try {
                     const response = await fetch('/api/admin/stats', {
@@ -349,7 +297,7 @@
                 }
             }
 
-            // --- ঘ. এপিআই এর মাধ্যমে পেন্ডিং রিকোয়েস্ট লোড ---
+            // --- গ. এপিআই এর মাধ্যমে পেন্ডিং রিকোয়েস্ট লোড (সংশোধিত ফরেন-কি রিলেশন) [1.1.1, 1.2.5] ---
             async function loadActivationRequests(token) {
                 const listContainer = document.getElementById('activation-requests-list');
                 try {
@@ -371,8 +319,8 @@
                                         <td class="py-4 px-4 font-mono font-bold">${req.trx_id}</td>
                                         <td class="py-4 px-4 font-body font-bold">৳${req.amount}</td>
                                         <td class="py-4 px-4 flex justify-center gap-2">
-                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-check"></i> Approve</button>
-                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-xmark"></i> Reject</button>
+                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-check"></i> Approve</button>
+                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                 `;
@@ -386,70 +334,7 @@
                 }
             }
 
-            // --- ঙ. এপিআই এর মাধ্যমে অর্ডারের তালিকা লোড ---
-            async function loadAdminOrders(token) {
-                try {
-                    const response = await fetch('/api/admin/orders', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-
-                    if (response.ok) {
-                        allOrdersList = await response.json();
-                        // ডিফল্টভাবে সাধারণ কাস্টমারদের অর্ডার রেন্ডার করা হবে
-                        filterOrderTable('customer');
-                    }
-                } catch(e) {
-                    console.error("Orders load failed", e);
-                }
-            }
-
-            // সাধারণ ক্রেতা বনাম রিসেলার অর্ডার ফিল্টারিং রেন্ডার
-            window.filterOrderTable = function(role) {
-                const ordersList = document.getElementById('admin-orders-list');
-                const btnNormal = document.getElementById('btn-normal-orders');
-                const btnReseller = document.getElementById('btn-reseller-orders');
-
-                // সাব-ট্যাবগুলোর বাটন অ্যাক্টিভ স্টাইল চেঞ্জ
-                if (role === 'customer') {
-                    btnNormal.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-white";
-                    btnReseller.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-dark";
-                } else {
-                    btnNormal.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-dark";
-                    btnReseller.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-white";
-                }
-
-                const filtered = allOrdersList.filter(order => order.user_role === role);
-
-                if (filtered && filtered.length > 0) {
-                    ordersList.innerHTML = '';
-                    filtered.forEach(order => {
-                        const userName = order.profiles ? order.profiles.full_name : 'N/A';
-                        
-                        ordersList.innerHTML += `
-                            <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${order.id}</td>
-                                <td class="py-4 px-4 font-semibold text-dark">${userName}</td>
-                                <td class="py-4 px-4 text-xs text-muted max-w-[200px] truncate" title="${order.delivery_address}">${order.delivery_address}</td>
-                                <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
-                                <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold bg-primary/10 text-primary">${order.status}</span></td>
-                                <td class="py-4 px-4 text-center">
-                                    <select onchange="updateOrderStatus('${order.id}', this.value)" class="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary text-dark font-bold cursor-pointer bg-white">
-                                        <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
-                                        <option value="accepted" ${order.status === 'accepted' ? 'selected' : ''}>Accepted</option>
-                                        <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
-                                        <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
-                                        <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-                                    </select>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                } else {
-                    ordersList.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-gray-500">কোনো অর্ডারের রেকর্ড পাওয়া যায়নি।</td></tr>';
-                }
-            }
-
-            // --- চ. ডাইনামিক সিস্টেম সেটিংস লোড করা ---
+            // --- ঘ. ডাইনামিক সেটিংস লোড ---
             async function loadSystemSettings(token) {
                 try {
                     const response = await fetch('/api/admin/get-settings', {
@@ -466,7 +351,7 @@
                 }
             }
 
-            // --- ছ. সেটিংস সাবমিট হ্যান্ডলার (FastAPI /update-settings) ---
+            // --- ঙ. সেটিংস সাবমিট হ্যান্ডলার ---
             document.getElementById('system-settings-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!currentToken) return;
@@ -495,38 +380,17 @@
                     if (response.ok) {
                         alert(result.message);
                     } else {
-                        alert("সেটিংস সেভ করতে ত্রুটি হয়েছে: " + result.detail);
+                        alert("ত্রুটি: " + result.detail);
                     }
                 } catch(err) {
-                    alert("সার্ভার বা নেটওয়ার্ক এরর।");
+                    alert("সার্ভার এরর।");
                 } finally {
                     saveBtn.disabled = false;
                     saveBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> সেটিংস তথ্য আপডেট করুন`;
                 }
             });
 
-            // --- 🔍 অর্ডার আইডি লাইভ সার্চ লজিক ---
-            const orderSearchInput = document.getElementById('order-search-input');
-            if (orderSearchInput) {
-                orderSearchInput.addEventListener('input', (e) => {
-                    const keyword = e.target.value.toLowerCase().trim();
-                    const rows = document.querySelectorAll('#admin-orders-list tr');
-
-                    rows.forEach(row => {
-                        const orderIdCell = row.querySelector('td:first-child');
-                        if (orderIdCell) {
-                            const orderId = orderIdCell.innerText.toLowerCase();
-                            if (orderId.includes(keyword) || keyword === '') {
-                                row.style.display = '';
-                            } else {
-                                row.style.display = 'none';
-                            }
-                        }
-                    });
-                });
-            }
-
-            // --- অনুমোদনের একশন লজিকস ---
+            // --- চ. অ্যাডমিন অ্যাক্টিভেশন একশনস লজিকস ---
             window.approveRequest = async function(requestId) {
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
                 try {
@@ -552,7 +416,7 @@
                 try {
                     const response = await fetch(`/api/admin/reject-activation/${requestId}`, {
                         method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
                     });
                     const result = await response.json();
                     if (response.ok) {
@@ -563,26 +427,6 @@
                     }
                 } catch (err) {
                     alert("সার্ভার কানেকশনে সমস্যা হয়েছে।");
-                }
-            };
-
-            window.updateOrderStatus = async function(orderId, newStatus) {
-                if(!confirm(`আপনি কি অর্ডারটির স্ট্যাটাস পরিবর্তন করে '${newStatus}' করতে চান?`)) return;
-                try {
-                    const response = await fetch(`/api/orders/admin/update-status/${orderId}?new_status=${newStatus}`, {
-                        method: 'POST',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    const result = await response.json();
-                    if (response.ok) {
-                        alert(result.message);
-                        loadAdminStats(token);
-                        loadAdminOrders(token);
-                    } else {
-                        alert("ত্রুটি: " + result.detail);
-                    }
-                } catch (err) {
-                    alert("সার্ভার কানেকশনে ত্রুটি ঘটেছে।");
                 }
             };
 
