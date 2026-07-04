@@ -3,3 +3,5 @@ supabase
 pydantic
 uvicorn
 python-dotenv
+httpx
+python-multipart
