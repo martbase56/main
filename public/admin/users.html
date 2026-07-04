@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Admin Users Control</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
+
+    <!-- 🗂️ Left Sticky Sidebar (Admin Dashboard Navs) -->
+    <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
+            <button class="lg:hidden text-2xl text-white focus:outline-none" id="sidebar-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
+            <!-- ড্যাশবোর্ড লিঙ্কে রিডাইরেক্ট করবে -->
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span>ড্যাশবোর্ড ওভারভিউ</span>
+            </a>
+            <!-- ইউজার লিস্ট একটিভ পেজ -->
+            <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span>ইউজার লিস্ট</span>
+            </a>
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span>অর্ডার ম্যানেজমেন্ট</span>
+            </a>
+            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-square-plus text-lg"></i>
+                <span>পণ্য যোগ করুন</span>
+            </a>
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-gears text-lg"></i>
+                <span>সিস্টেম সেটিংস</span>
+            </a>
+            
+            <div class="pt-8 mt-auto border-t border-white/5">
+                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                    <span>লগআউট</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 📊 Main Content Area -->
+    <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
+            <div>
+                <h2 class="text-2xl font-extrabold text-dark">ইউজার ম্যানেজমেন্ট হাব</h2>
+                <p class="text-sm text-muted">রিসেলার ও ক্রেতাদের ডাইনামিক লাইভ প্রোফাইল ট্র্যাকার</p>
+            </div>
+            <div class="flex items-center gap-3 bg-white p-2 rounded-full border border-gray-100 shadow-sm pr-4">
+                <div class="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">U</div>
+                <span class="text-sm font-semibold text-dark">ব্যবহারকারী নিয়ন্ত্রণ</span>
+            </div>
+        </header>
+
+        <!-- 🔍 Search & Filter controls -->
+        <div class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+            <!-- Live Search -->
+            <div class="relative w-full md:w-[350px]">
+                <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                <input type="text" id="user-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-semibold text-dark" placeholder="নাম, ইমেইল, আইডি (UID) বা মোবাইল দিয়ে খুঁজুন...">
+            </div>
+
+            <!-- Filters Dropdowns -->
+            <div class="flex gap-3 w-full md:w-auto">
+                <select id="filter-user-role" onchange="applyUserFilters()" class="px-3 py-2.5 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-primary bg-white text-dark cursor-pointer">
+                    <option value="all">সকল ইউজার</option>
+                    <option value="customer">কাস্টমার</option>
+                    <option value="reseller">রিসেলার</option>
+                </select>
+                <select id="filter-user-status" onchange="applyUserFilters()" class="px-3 py-2.5 border border-gray-200 rounded-xl text-xs font-semibold outline-none focus:border-primary bg-white text-dark cursor-pointer">
+                    <option value="all">সকল স্ট্যাটাস</option>
+                    <option value="active">Active (সচল)</option>
+                    <option value="banned">Banned (ব্যান)</option>
+                    <option value="pending">Pending (অ্যাক্টিভেশন পেন্ডিং)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Users Data Table Card -->
+        <div class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg shadow-primary/2">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">UID (ID)</th>
+                            <th class="py-3 px-4">নাম</th>
+                            <th class="py-3 px-4">ইমেইল ঠিকানা</th>
+                            <th class="py-3 px-4">মোবাইল নম্বর</th>
+                            <th class="py-3 px-4">রোল</th>
+                            <th class="py-3 px-4">অবস্থা</th>
+                            <th class="py-3 px-4 text-center">অ্যাকশন বাটন সমূহ</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-users-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="7" class="py-8 text-center text-gray-500">ইউজার তালিকা লোড করা হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // মোবাইল সাইডবার মেনু টগল লজিক
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            if (sidebarToggle && sidebarMenu) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebarMenu.classList.toggle('hidden');
+                    sidebarMenu.classList.toggle('flex');
+                });
+            }
+
+            let supabaseClient = null;
+            let currentToken = null;
+            let allUsersList = []; // রিয়েল-টাইম ক্লায়েন্ট ফিল্টারের জন্য গ্লোবাল এরে
+
+            // --- ক. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        verifyAdminAndLoad();
+                    }
+                } catch (err) {
+                    console.error("Supabase fail", err);
+                }
+            }
+
+            initializeSupabase();
+
+            // --- খ. এডমিন সিকিউর সেশন ভেরিফিকেশন ---
+            async function verifyAdminAndLoad() {
+                if (!supabaseClient) return;
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert("অনুগ্রহ করে প্রথমে লগইন করুন!");
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    // এডমিন রোল চেক করা
+                    const { data: profile } = await supabaseClient
+                        .from('profiles')
+                        .select('role')
+                        .eq('id', session.user.id)
+                        .single();
+
+                    if (!profile || profile.role !== 'admin') {
+                        alert("আপনার এই প্যানেলে প্রবেশের অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    currentToken = session.access_token;
+                    
+                    // সাকসেসফুল চেক হলে এপিআই থেকে সরাসরি রিয়েল ইউজার ডাটা ফেচ হবে
+                    loadAdminUsersList(currentToken);
+
+                } catch (e) {
+                    console.error("Admin validation error", e);
+                }
+            }
+
+            // --- গ. এপিআই এর মাধ্যমে ব্যবহারকারীদের রিয়েল ডাটা লোড ---
+            async function loadAdminUsersList(token) {
+                const usersContainer = document.getElementById('admin-users-list');
+                try {
+                    const response = await fetch('/api/admin/users', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        allUsersList = await response.json();
+                        renderUsersTable(allUsersList);
+                    } else {
+                        usersContainer.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-rose-500">ইউজার ডাটা রেন্ডার করতে ব্যর্থ হয়েছে।</td></tr>';
+                    }
+                } catch (e) {
+                    console.error("Users list load failed", e);
+                }
+            }
+
+            function renderUsersTable(users) {
+                const usersContainer = document.getElementById('admin-users-list');
+                if (users && users.length > 0) {
+                    usersContainer.innerHTML = '';
+                    users.forEach(user => {
+                        const activeStyle = user.is_active ? 'text-green-600 bg-green-50 border-green-200' : 'text-red-500 bg-red-50 border-red-200';
+                        const activeLabel = user.is_active ? 'Active' : 'Banned';
+
+                        usersContainer.innerHTML += `
+                            <tr class="hover:bg-gray-50/50 transition-colors" id="user-row-${user.id}">
+                                <td class="py-4 px-4 font-mono text-xs text-gray-400 font-bold" title="${user.id}">${user.id.substring(0,8)}...</td>
+                                <td class="py-4 px-4 font-bold text-dark">${user.full_name || 'N/A'}</td>
+                                <td class="py-4 px-4 font-body text-xs text-muted">${user.email}</td>
+                                <td class="py-4 px-4 font-body">${user.phone_number || 'N/A'}</td>
+                                <td class="py-4 px-4"><span class="px-2 py-0.5 rounded text-[0.65rem] font-bold bg-primary/10 text-primary uppercase">${user.role}</span></td>
+                                <td class="py-4 px-4"><span class="px-2 py-0.5 rounded text-[0.65rem] font-bold border ${activeStyle}">${activeLabel}</span></td>
+                                <td class="py-4 px-4 flex justify-center gap-2">
+                                    ${user.is_active ? 
+                                        `<button onclick="banUser('${user.id}')" class="bg-amber-500 hover:bg-amber-600 text-white text-xs font-bold py-1 px-2.5 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-ban"></i> Ban</button>` :
+                                        `<button onclick="unbanUser('${user.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1 px-2.5 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-user-check"></i> Unban</button>`
+                                    }
+                                    <button onclick="deleteUserAccount('${user.id}')" class="bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-1 px-2.5 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-trash-can"></i> Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    usersContainer.innerHTML = '<tr><td colspan="7" class="py-8 text-center text-gray-500">কোনো ব্যবহারকারীর রেকর্ড পাওয়া যায়নি।</td></tr>';
+                }
+            }
+
+            // --- ঘ. ডাইনামিক লাইভ ইউজার সার্চ ও ফিল্টারিং লজিক ---
+            window.applyUserFilters = function() {
+                const keyword = document.getElementById('user-search-input').value.toLowerCase().trim();
+                const roleFilter = document.getElementById('filter-user-role').value;
+                const statusFilter = document.getElementById('filter-user-status').value;
+
+                let filtered = allUsersList;
+
+                // ১. রোল ফিল্টার (customer / reseller)
+                if (roleFilter !== 'all') {
+                    filtered = filtered.filter(u => u.role === roleFilter);
+                }
+
+                // ২. অ্যাক্টিভেশন স্ট্যাটাস ফিল্টার
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'active') {
+                        filtered = filtered.filter(u => u.is_active === true);
+                    } else if (statusFilter === 'banned') {
+                        filtered = filtered.filter(u => u.is_active === false && u.activation_status === 'banned');
+                    } else if (statusFilter === 'pending') {
+                        filtered = filtered.filter(u => u.activation_status === 'pending');
+                    }
+                }
+
+                // ৩. সার্চ ইনপুট ফিল্টার (নাম, ইমেইল, আইডি এবং মোবাইল নম্বর) [1.1.1]
+                if (keyword !== '') {
+                    filtered = filtered.filter(u => 
+                        (u.full_name && u.full_name.toLowerCase().includes(keyword)) ||
+                        u.email.toLowerCase().includes(keyword) ||
+                        u.id.toLowerCase().includes(keyword) ||
+                        (u.phone_number && u.phone_number.includes(keyword))
+                    );
+                }
+
+                renderUsersTable(filtered);
+            };
+
+            // সার্চ বক্সে টাইপ করার সাথে সাথে ফিল্টারিং কল হবে [1.1.1]
+            document.getElementById('user-search-input').addEventListener('input', applyUserFilters);
+
+            // --- ঙ. ব্যান, আনব্যান এবং অ্যাকাউন্ট ডিলিট এডমিন একশনস ---
+            window.banUser = async function(userId) {
+                if (!confirm("আপনি কি নিশ্চিতভাবে এই ব্যবহারকারীকে সাময়িক নিষিদ্ধ বা ব্যান করতে চান?")) return;
+                try {
+                    const response = await fetch(`/api/admin/users/${userId}/ban`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        loadAdminUsersList(currentToken); 
+                    }
+                } catch(e) { alert("সার্ভার কানেকশন ফেইলড।"); }
+            };
+
+            window.unbanUser = async function(userId) {
+                if (!confirm("আপনি কি নিশ্চিতভাবে এই ব্যবহারকারীকে সচল বা আনব্যান করতে চান?")) return;
+                try {
+                    const response = await fetch(`/api/admin/users/${userId}/unban`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        loadAdminUsersList(currentToken);
+                    }
+                } catch(e) { alert("সার্ভার কানেকশন ফেইলড।"); }
+            };
+
+            window.deleteUserAccount = async function(userId) {
+                if (!confirm("⚠️ সতর্কীকরণ! অ্যাকাউন্ট ডিলিট করলে ব্যবহারকারীর সুপাবেস ক্রেডেনশিয়াল এবং ডাটা চিরতরে ডিলিট হয়ে যাবে। আপনি কি নিশ্চিতভাবে এটি ডিলিট করতে চান?")) return;
+                try {
+                    const response = await fetch(`/api/admin/users/${userId}`, {
+                        method: 'DELETE',
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById(`user-row-${userId}`).remove();
+                    } else {
+                        alert("ডিলিট ব্যর্থ হয়েছে: " + result.detail);
+                    }
+                } catch(e) { alert("সার্ভার কানেকশন ফেইলড।"); }
+            };
+
+            window.handleLogout = async function() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                    window.location.href = "/login";
+                }
+            };
+        });
+    </script>
+</body>
+</html>
