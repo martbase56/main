@@ -1,7 +1,9 @@
 # api/routers/auth.py
 import os
+from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Header, Depends
 from pydantic import BaseModel
+from typing import List, Dict, Any, Optional
 from api.database import supabase
 from api.config import settings
 
@@ -12,8 +14,8 @@ router = APIRouter()
 class ActivationRequestSchema(BaseModel):
     user_id: str
     payment_method: str = None  # 'bKash' অথবা 'Nagad'
-    sender_number: str = None   # যে নম্বর থেকে টাকা পাঠানো হয়েছে
-    trx_id: str = None          # ট্রানজেকশন আইডি
+    sender_number: str = None   
+    trx_id: str = None          
 
 class ProfileUpdateSchema(BaseModel):
     full_name: str
@@ -41,11 +43,9 @@ async def get_current_user(authorization: str = Header(None)):
 
 
 # --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট ---
-# এটি Vercel থেকে পাবলিক ক্রেডেনশিয়াল রিড করে ফ্রন্টএন্ডে সেফলি সাপ্লাই করবে
 
 @router.get("/config")
 def get_supabase_config():
-    # Vercel Environment Variables থেকে মান নিয়ে ফ্রন্টএন্ডে পাঠানো
     return {
         "supabase_url": settings.SUPABASE_URL,
         "supabase_anon_key": settings.SUPABASE_ANON_KEY
@@ -88,11 +88,9 @@ def update_user_profile(user_id: str, data: ProfileUpdateSchema, current_user: d
 @router.post("/request-activation")
 def request_activation(data: ActivationRequestSchema):
     try:
-        # ডাইনামিক অ্যাক্টিভেশন ফি চেক করা
         fee_query = supabase.table("system_settings").select("value").eq("key", "activation_fee").single().execute()
         activation_fee = float(fee_query.data['value']) if fee_query.data else 0.0
 
-        # ফি যদি ০ (ফ্রি) হয়, তবে সরাসরি অ্যাক্টিভ করে দেওয়া হবে
         if activation_fee == 0:
             supabase.table("profiles").update({
                 "is_active": True,
@@ -101,11 +99,9 @@ def request_activation(data: ActivationRequestSchema):
             
             return {"status": "success", "message": "আপনার অ্যাকাউন্টটি সফলভাবে সক্রিয় করা হয়েছে (ফ্রি অ্যাক্টিভেশন)।"}
 
-        # ফি যদি ০-এর বেশি হয়, তবে পেমেন্ট ডিটেইলস ভ্যালিডেশন
         if not data.payment_method or not data.sender_number or not data.trx_id:
             raise HTTPException(status_code=400, detail="পেমেন্ট গেটওয়ে, sender নম্বর এবং Trx ID প্রদান করা বাধ্যতামূলক।")
 
-        # অ্যাক্টিভেশন রিকোয়েস্ট ডাটাবেজে রেকর্ড করা
         request_payload = {
             "user_id": data.user_id,
             "payment_method": data.payment_method,
@@ -116,8 +112,6 @@ def request_activation(data: ActivationRequestSchema):
         }
 
         supabase.table("activation_requests").insert(request_payload).execute()
-        
-        # ইউজারের প্রোফাইল অ্যাক্টিভেশন স্ট্যাটাস 'pending' করা
         supabase.table("profiles").update({"activation_status": "pending"}).eq("id", data.user_id).execute()
         
         return {"status": "success", "message": "আপনার পেমেন্ট ভেরিফিকেশন রিকোয়েস্টটি সফলভাবে জমা হয়েছে।"}
@@ -126,16 +120,74 @@ def request_activation(data: ActivationRequestSchema):
         raise HTTPException(status_code=400, detail="এই Trx ID টি ইতিপূর্বে ব্যবহৃত হয়েছে অথবা ভুল ডেটা দেওয়া হয়েছে।")
 
 
-# --- ৭. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট অ্যাপ্রুভ (অনুমোদন) করা ---
+# --- ৭. এন্ডপয়েন্ট: রিসেলার ড্যাশবোর্ড ভিজিটের সময় অ্যাক্টিভেশন টাইমস্ট্যাম্প আপডেট করা ---
+
+@router.post("/update-activity/{user_id}")
+def update_activity(user_id: str):
+    try:
+        now_iso = datetime.now(timezone.utc).isoformat()
+        supabase.table("profiles").update({"last_active_at": now_iso}).eq("id", user_id).execute()
+        return {"status": "success"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ৮. এন্ডপয়েন্ট: রিসেলার রেফারেল স্ট্যাটাস মূল্যায়ন ও রেফারেল তালিকা ভিউ ---
+
+@router.get("/referrals/{user_id}")
+def get_and_evaluate_referrals(user_id: str):
+    try:
+        # ক. প্রসেসিং অবস্থায় থাকা রেফারেলগুলো ভেরিফাই করা
+        pending_query = supabase.table("referrals").select("*").eq("referrer_id", user_id).eq("status", "processing").execute()
+        pending_referrals = pending_query.data
+        
+        for ref in pending_referrals:
+            referred_id = ref['referred_id']
+            created_at = datetime.fromisoformat(ref['created_at'].replace('Z', '+00:00'))
+            expires_at = datetime.fromisoformat(ref['expires_at'].replace('Z', '+00:00'))
+            now = datetime.now(timezone.utc)
+            
+            # ১. কাস্টমার কোনো সফল অর্ডার করেছে কিনা চেক
+            order_check = supabase.table("orders").select("id", count="exact").eq("placed_by", referred_id).execute()
+            has_order = order_check.count > 0 if order_check.count is not None else False
+            
+            # ২. ড্যাশবোর্ডে সচল ছিল কিনা চেক (লাস্ট একটিভ টাইম রেজিস্ট্রেশন টাইমের ৫ মিনিট পর কিনা)
+            profile_check = supabase.table("profiles").select("last_active_at").eq("id", referred_id).single().execute()
+            last_active = datetime.fromisoformat(profile_check.data['last_active_at'].replace('Z', '+00:00'))
+            is_active_session = (last_active - created_at).total_seconds() > 300 # ৫ মিনিটের বেশি ড্যাশবোর্ডে ছিল
+            
+            # কন্ডিশন ম্যাচ করলে রেফারার ১০ টাকা পাবে এবং রেফারেল সাকসেস হবে [1.1.2]
+            if has_order or is_active_session:
+                supabase.table("referrals").update({"status": "success"}).eq("id", ref['id']).execute()
+                
+                # রেফারারের ওয়ালেটে ১০ টাকা যোগ করা [1.1.2]
+                ref_profile = supabase.table("profiles").select("wallet_balance").eq("id", user_id).single().execute()
+                current_bal = float(ref_profile.data.get('wallet_balance', 0) or 0)
+                supabase.table("profiles").update({"wallet_balance": current_bal + 10.0}).eq("id", user_id).execute()
+                
+            elif now > expires_at:
+                # ৩৬ ঘণ্টা পার হয়ে গেলে এবং কোনো কাজ না করলে ফেইল্ড
+                supabase.table("referrals").update({"status": "failed"}).eq("id", ref['id']).execute()
+        
+        # খ. রেফারারের রেফারেল তালিকার লাইভ আপডেট নিয়ে আসা
+        all_referrals_query = supabase.table("referrals")\
+            .select("*, profiles!referred_id(full_name, refer_code, is_active)")\
+            .eq("referrer_id", user_id)\
+            .execute()
+            
+        return all_referrals_query.data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ৯. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট অ্যাপ্রুভ করা ---
 
 @router.post("/admin/approve-activation/{request_id}")
 def approve_activation(request_id: str, admin_user: dict = Depends(get_current_user)):
-    # সিকিউরিটি চেক: অ্যাডমিন ভ্যালিডেশন
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
     if not admin_check.data or admin_check.data['role'] != 'admin':
         raise HTTPException(status_code=403, detail="দুঃখিত, শুধুমাত্র অ্যাডমিনরাই এই অপারেশন করতে পারবেন।")
 
-    # রিকোয়েস্টটি খুঁজে বের করা
     req_query = supabase.table("activation_requests").select("*").eq("id", request_id).single().execute()
     req_data = req_query.data
     if not req_data:
@@ -144,32 +196,31 @@ def approve_activation(request_id: str, admin_user: dict = Depends(get_current_u
     if req_data['status'] == 'approved':
         return {"status": "info", "message": "এটি ইতিমধ্যেই অনুমোদিত হয়েছে।"}
 
-    # রিকোয়েস্ট স্ট্যাটাস এবং ইউজারের প্রোফাইল আপডেট
-    supabase.table("activation_requests").update({"status": "approved"}).eq("id", request_id).execute()
-    supabase.table("profiles").update({
-        "is_active": True,
-        "activation_status": "active"
-    }).eq("id", req_data['user_id']).execute()
+    try:
+        supabase.table("activation_requests").update({"status": "approved"}).eq("id", request_id).execute()
+        supabase.table("profiles").update({
+            "is_active": True,
+            "activation_status": "active"
+        }).eq("id", req_data['user_id']).execute()
 
-    return {"status": "success", "message": "ইউজার অ্যাকাউন্টটি সফলভাবে সক্রিয় করা হয়েছে।"}
+        return {"status": "success", "message": "ইউজার অ্যাকাউন্টটি সফলভাবে সক্রিয় করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 
-# --- ৮. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট রিজেক্ট (বাতিল) করা ---
+# --- ১০. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট রিজেক্ট করা ---
 
 @router.post("/admin/reject-activation/{request_id}")
 def reject_activation(request_id: str, admin_user: dict = Depends(get_current_user)):
-    # সিকিউরিটি চেক: অ্যাডমিন ভ্যালিডেশন
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
     if not admin_check.data or admin_check.data['role'] != 'admin':
         raise HTTPException(status_code=403, detail="দুঃখিত, শুধুমাত্র অ্যাডমিনরাই এই অপারেশন করতে পারবেন।")
 
-    # রিকোয়েস্টটি খুঁজে বের করা
     req_query = supabase.table("activation_requests").select("*").eq("id", request_id).single().execute()
     req_data = req_query.data
     if not req_data:
         raise HTTPException(status_code=404, detail="রিকোয়েস্টটি পাওয়া যায়নি।")
 
-    # স্ট্যাটাস রিজেক্টেড করা
     supabase.table("activation_requests").update({"status": "rejected"}).eq("id", request_id).execute()
     supabase.table("profiles").update({"activation_status": "rejected"}).eq("id", req_data['user_id']).execute()
 
