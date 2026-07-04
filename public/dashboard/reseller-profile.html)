@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Reseller Profile & Target</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Profile</span>
+        <a href="/dashboard/reseller" class="text-xs font-bold text-primary"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main class="max-w-[700px] mx-auto px-4 pt-5 space-y-6">
+
+        <!-- 👤 ১. রিসেলার প্রোফাইল কুইক কার্ড -->
+        <div class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm flex items-center gap-4">
+            <div class="w-14 h-14 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-bold border border-primary/20">
+                <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <div>
+                <h3 class="font-bold text-base leading-tight" id="reseller-name">লোডিং...</h3>
+                <p class="text-xs text-primary font-bold bg-primary/10 px-2 py-0.5 rounded-full mt-1.5 inline-block" id="reseller-id">আইডি: ----</p>
+            </div>
+        </div>
+
+        <!-- 💰 ২. প্রফিট ওয়ালেট প্যানেল (মেইন বনাম হোল্ড ব্যালেন্স) -->
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow text-center">
+                <span class="text-xs text-muted font-bold block mb-1">মেইন ব্যালেন্স (উইথড্র যোগ্য)</span>
+                <h3 class="text-xl font-extrabold text-green-600 font-body" id="main-balance-val">৳--</h3>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow text-center relative overflow-hidden">
+                <span class="text-xs text-muted font-bold block mb-1">হোল্ড ব্যালেন্স</span>
+                <h3 class="text-xl font-extrabold text-primary font-body" id="hold-balance-val">৳--</h3>
+            </div>
+        </div>
+
+        <!-- 🎯 ৩. লাইভ টার্গেট ট্র্যাকার (৫০০৳ আনলক রিকোয়ারমেন্ট) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
+            <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2 flex items-center gap-2"><i class="fa-solid fa-bullseye text-primary"></i> ব্যালেন্স আনলক লক্ষ্যমাত্রা (Target)</h4>
+            
+            <p class="text-[0.7rem] text-muted leading-relaxed">হোল্ড ব্যালেন্স মেইন ওয়ালেটে স্থানান্তর করতে নিচের ৩টি লক্ষ্যমাত্রা পূরণ করুন:</p>
+
+            <div class="space-y-4">
+                <!-- Target 1: Delivered Orders -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>১. সফল ডেলিভারি সম্পন্ন অর্ডার</span>
+                        <span id="target-orders-label" class="font-body">0 / ১০</span>
+                    </div>
+                    <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                        <div id="target-orders-bar" class="bg-primary h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Target 2: Gmail Sells -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>২. জিমেইল সেল সম্পন্ন (Gmail Sells)</span>
+                        <span id="target-gmail-label" class="font-body">0 / ১০</span>
+                    </div>
+                    <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                        <div id="target-gmail-bar" class="bg-primary h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Target 3: Referrals -->
+                <div>
+                    <div class="flex justify-between text-xs font-bold mb-1">
+                        <span>৩. সফল রেফারেল মেম্বার</span>
+                        <span id="target-refer-label" class="font-body">0 / ৪</span>
+                    </div>
+                    <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+                        <div id="target-refer-bar" class="bg-primary h-full transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transfer Button (Will be dynamic) -->
+            <button onclick="transferHoldBalance()" id="btn-transfer" class="w-full mt-4 py-3 bg-gray-200 text-gray-400 rounded-xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2" disabled>
+                <i class="fa-solid fa-money-bill-transfer"></i> মেইন ওয়ালেটে ব্যালেন্স ট্রান্সফার করুন
+            </button>
+        </section>
+
+    </main>
+
+    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="#withdraw-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let resellerId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            const supabaseUrl = 'YOUR_SUPABASE_URL';
+            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config error");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        loadResellerDashboard();
+                    }
+                } catch (err) {
+                    console.error("Supabase failed", err);
+                }
+            }
+
+            // --- খ. রিসেলার প্রোফাইল ও টার্গেট ডাটা লোড ---
+            async function loadResellerDashboard() {
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    resellerId = session.user.id;
+
+                    // ১. প্রোফাইল লোড
+                    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', resellerId).single();
+                    if (profile) {
+                        document.getElementById('reseller-name').innerText = profile.full_name;
+                        document.getElementById('reseller-id').innerText = `রিসেলার আইডি: ${profile.refer_code}`;
+                        
+                        document.getElementById('main-balance-val').innerText = `৳ ${profile.wallet_balance || 0}`;
+                        document.getElementById('hold-balance-val').innerText = `৳ ${profile.hold_balance || 0}`;
+
+                        // ২. প্রোগ্রেস ট্র্যাকিং ডাটা লোড
+                        loadTargetProgress(profile);
+                    }
+                } catch(e) {
+                    console.error("Profile load error", e);
+                }
+            }
+
+            // --- গ. ডাইনামিক প্রোগ্রেস ট্র্যাকিং হিসাব ---
+            async function loadTargetProgress(profile) {
+                try {
+                    // ১. সফল ডেলিভারি করা অর্ডারের সংখ্যা ফেচ
+                    const { count: deliveredCount } = await supabaseClient
+                        .from('orders')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('placed_by', resellerId)
+                        .eq('status', 'delivered');
+
+                    // ২. সফল রেফারেল সংখ্যা ফেচ
+                    const { count: referralCount } = await supabaseClient
+                        .from('referrals')
+                        .select('id', { count: 'exact', head: true })
+                        .eq('referrer_id', resellerId)
+                        .eq('status', 'success');
+
+                    const gmailSells = profile.gmail_sells || 0;
+
+                    // টার্গেটের সীমা নির্ধারণ
+                    const ordersTarget = 10;
+                    const gmailTarget = 10;
+                    const referTarget = 4;
+
+                    // শতাংশ (Percentage) হিসাব করা (প্রোগ্রেস বারের জন্য)
+                    const ordersPct = Math.min((deliveredCount / ordersTarget) * 100, 100);
+                    const gmailPct = Math.min((gmailSells / gmailTarget) * 100, 100);
+                    const referPct = Math.min((referralCount / referTarget) * 100, 100);
+
+                    // ইউআই বার এবং লেবেল আপডেট
+                    document.getElementById('target-orders-label').innerText = `${deliveredCount} / ${ordersTarget}`;
+                    document.getElementById('target-orders-bar').style.width = `${ordersPct}%`;
+
+                    document.getElementById('target-gmail-label').innerText = `${gmailSells} / ${gmailTarget}`;
+                    document.getElementById('target-gmail-bar').style.width = `${gmailPct}%`;
+
+                    document.getElementById('target-refer-label').innerText = `${referralCount} / ${referTarget}`;
+                    document.getElementById('target-refer-bar').style.width = `${referPct}%`;
+
+                    // লক্ষ্যমাত্রা সম্পূর্ণ পূরণ হয়েছে কিনা চেক করা
+                    const targetMet = (deliveredCount >= ordersTarget) && (gmailSells >= gmailTarget) && (referralCount >= referTarget);
+                    const holdBalance = parseFloat(profile.hold_balance || 0);
+
+                    const transferBtn = document.getElementById('btn-transfer');
+                    if (targetMet && holdBalance > 0) {
+                        // টার্গেট পূরণ হলে এবং হোল্ড ব্যালেন্স থাকলে বাটন সচল করা
+                        transferBtn.disabled = false;
+                        transferBtn.className = "w-full mt-4 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-secondary hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer";
+                    }
+                } catch(e) {
+                    console.error("Progress calc error", e);
+                }
+            }
+
+            // --- ঘ. ম্যানুয়ালি হোল্ড ব্যালেন্স ওয়ালেটে ট্রান্সফার ---
+            window.transferHoldBalance = async function() {
+                if (!supabaseClient || !resellerId) return;
+
+                if (!confirm("অভিনন্দন! আপনার লক্ষ্যমাত্রা সফলভাবে পূরণ হয়েছে। আপনি কি আপনার জমানো হোল্ড ব্যালেন্স মেইন ওয়ালেটে স্থানান্তর করতে চান?")) return;
+
+                const transferBtn = document.getElementById('btn-transfer');
+                transferBtn.disabled = true;
+                transferBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেসিং হচ্ছে...`;
+
+                try {
+                    // ব্যাকএন্ডের সিকিউর ট্রান্সফার এপিআই কল করা হচ্ছে
+                    const response = await fetch(`/api/orders/transfer-hold/${resellerId}`, {
+                        method: 'POST'
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        loadResellerDashboard(); // ড্যাশবোর্ড ডাটা রিফ্রেশ
+                    } else {
+                        alert("ব্যর্থ হয়েছে: " + result.detail);
+                    }
+                } catch(err) {
+                    alert("সার্ভার বা নেটওয়ার্ক কানেকশন ফেইলড।");
+                } finally {
+                    transferBtn.disabled = false;
+                    transferBtn.innerHTML = `<i class="fa-solid fa-money-bill-transfer"></i> মেইন ওয়ালেটে ব্যালেন্স ট্রান্সফার করুন`;
+                }
+            }
+
+            initializeSupabase();
+        });
+    </script>
+</body>
+</html>
