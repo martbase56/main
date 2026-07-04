@@ -1,4 +1,4 @@
-# api/routers/admin.py (কাউন্টার ও সর্টিং এরর ফিক্সড সম্পূর্ণ কোড)
+# api/routers/admin.py (কাউন্টার ও রিলেশনাল জয়েনিং এরর ফিক্সড সম্পূর্ণ কোড)
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
@@ -26,11 +26,11 @@ def verify_admin(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="এডমিন ভেরিফিকেশন ব্যর্থ হয়েছে।")
 
 
-# --- ২. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস (কাউন্টার ফিক্সড) ---
+# --- ২. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস ---
 @router.get("/stats")
 def get_dashboard_stats(admin: dict = Depends(verify_admin)):
     try:
-        # ক. মোট ইউজার সংখ্যা (ডাইনামিক এরে লেন্থ ভিত্তিক)
+        # ক. মোট ইউজার সংখ্যা
         total_users_query = supabase.table("profiles").select("id").execute()
         total_users_count = len(total_users_query.data) if total_users_query.data else 0
 
@@ -59,12 +59,13 @@ def get_dashboard_stats(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৩. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা ---
+# --- ৩. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/activation-requests")
 def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
     try:
+        # (গুরুত্বপূর্ণ ফিক্স) user_id ফরেন-কি স্পষ্ট করে দেওয়া হয়েছে [1.1.1, 1.2.5]
         query = supabase.table("activation_requests")\
-            .select("*, profiles(full_name)")\
+            .select("*, profiles!user_id(full_name)")\
             .eq("status", "pending")\
             .order("created_at", desc=False)\
             .execute()
@@ -73,13 +74,13 @@ def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (সর্টিং এরর ফিক্সড) ---
+# --- ৪. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/orders")
 def get_all_orders(admin: dict = Depends(verify_admin)):
     try:
-        # (সংশোধিত) desc=True ব্যবহার করে পাইথন সর্টিং সম্পন্ন করা হয়েছে [2]
+        # (গুরুত্বপূর্ণ ফিক্স) placed_by ফরেন-কি স্পষ্ট করে দেওয়া হয়েছে [1.1.1, 1.2.5]
         query = supabase.table("orders")\
-            .select("*, profiles(full_name)")\
+            .select("*, profiles!placed_by(full_name)")\
             .order("created_at", desc=True)\
             .execute()
         return query.data
@@ -109,6 +110,8 @@ def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_adm
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+# ==================== ব্যবহারকারী নিয়ন্ত্রণ এন্ডপয়েন্টসমূহ ====================
 
 # --- ৭. এন্ডপয়েন্ট: সকল ব্যবহারকারীর তালিকা ফেচ করা ---
 @router.get("/users")
