@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MartBaseBD - Shop & Earn Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* CSS variables based on Theme Details */
+        :root {
+            --primary-color: #FF6B00;       /* ভাইব্রেন্ট অরেঞ্জ */
+            --secondary-color: #FF8C33;     /* লাইট অরেঞ্জ */
+            --bg-canvas: #F4F6F9;           /* লাইট গ্রে */
+            --card-bg: #FFFFFF;             /* হোয়াইট */
+            --text-dark: #2D3748;
+            --text-muted: #718096;
+            
+            --font-headings: 'Bricolage Grotesque', sans-serif;
+            --font-body: 'Rubik', sans-serif;
+            --font-bangla: 'Anek Bangla', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            font-family: var(--font-bangla);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Utility Classes */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin: 40px 0 20px 0;
+            position: relative;
+            font-family: var(--font-bangla);
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 8px auto 0 auto;
+            border-radius: 2px;
+        }
+
+        /* Header Navigation */
+        header {
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-headings);
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            letter-spacing: -1px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-login {
+            color: var(--text-dark);
+            border: 1px solid #E2E8F0;
+        }
+
+        .btn-join-reseller {
+            background-color: var(--primary-color);
+            color: #FFF;
+        }
+
+        .btn-join-reseller:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* 1. Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #FFF 0%, #FFEFE6 100%);
+            padding: 80px 0;
+            text-align: center;
+            border-bottom: 1px solid #FFE0D1;
+        }
+
+        .hero-title {
+            font-family: var(--font-headings);
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--text-dark);
+            line-height: 1.2;
+            margin-bottom: 15px;
+        }
+
+        .hero-title span {
+            color: var(--primary-color);
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 700px;
+            margin: 0 auto 35px auto;
+        }
+
+        .hero-ctas {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-cta {
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .btn-cta-buy {
+            background-color: var(--text-dark);
+            color: #FFF;
+        }
+
+        .btn-cta-earn {
+            background-color: var(--primary-color);
+            color: #FFF;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.2);
+        }
+
+        /* 2. Promotional Banner Slider */
+        .slider-section {
+            margin: 30px 0;
+        }
+
+        .slider-container {
+            width: 100%;
+            height: 250px;
+            background-color: var(--primary-color);
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .slide {
+            width: 100%;
+            height: 100%;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            color: #FFF;
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .slide-subtitle {
+            font-size: 1.1rem;
+            margin-top: 10px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* 3. 20 Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(10, 1fr);
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            border: 1px solid rgba(0,0,0,0.03);
+            transition: all 0.2s;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.08);
+        }
+
+        .category-card i {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 0.8rem;
+            font-weight: 600;
+            line-height: 1.2;
+            word-wrap: break-word;
+        }
+
+        /* 4. 30 Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border-radius: 14px;
+            border: 1px solid rgba(0,0,0,0.03);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 180px;
+            background-color: #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 2.5rem;
+        }
+
+        .product-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            height: 40px;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .product-price-box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 12px;
+        }
+
+        .price-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .price-value {
+            font-family: var(--font-body);
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .btn-buy-product {
+            width: 100%;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: #FFF;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: background-color 0.2s;
+        }
+
+        .btn-buy-product:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* 5. Features Section */
+        .features {
+            background-color: var(--card-bg);
+            padding: 50px 0;
+            border-top: 1px solid #E2E8F0;
+            border-bottom: 1px solid #E2E8F0;
+            margin-bottom: 40px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            text-align: center;
+        }
+
+        .feature-item i {
+            font-size: 2.2rem;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .feature-item h4 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--text-dark);
+            color: #FFF;
+            padding: 30px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .categories-grid { grid-template-columns: repeat(5, 1fr); }
+            .products-grid { grid-template-columns: repeat(3, 1fr); }
+            .features-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 600px) {
+            .categories-grid { grid-template-columns: repeat(4, 1fr); }
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
+            .features-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-ctas { flex-direction: column; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation Header -->
+    <header>
+        <div class="container nav-container">
+            <a href="/" class="logo">MartBaseBD</a>
+            <div class="nav-buttons">
+                <a href="/login" class="btn-nav btn-login"><i class="fa-solid fa-right-to-bracket"></i> লগইন</a>
+                <a href="/signup/reseller" class="btn-nav btn-join-reseller"><i class="fa-solid fa-briefcase"></i> রিসেলার জয়েন</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1 class="hero-title">সহজে কেনাকাটা করুন,<br>নিজের ঘরে বসে <span>উপার্জন</span> করুন!</h1>
+            <p class="hero-subtitle">MartBaseBD বাংলাদেশের প্রিমিয়াম ওয়ার্ক অ্যান্ড আর্ন প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কিনুন অথবা রিসেলার হিসেবে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।</p>
+            <div class="hero-ctas">
+                <a href="#products-section" class="btn-cta btn-cta-buy"><i class="fa-solid fa-cart-shopping"></i> কেনাকাটা করুন</a>
+                <a href="/signup/reseller" class="btn-cta btn-cta-earn"><i class="fa-solid fa-money-bill-trend-up"></i> রিসেলার হয়ে আয় করুন</a>
+            </div>
+        </div>
+    </section>
+
+    <main class="container">
+
+        <!-- Banner Slider Section -->
+        <section class="slider-section">
+            <div class="slider-container">
+                <div class="slide active" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1472851294608-062f824d296e?q=80&w=1200&auto=format&fit=crop'); background-size: cover; background-position: center;">
+                    <h2>ঈদ ধামাকা অফার!</h2>
+                    <p class="slide-subtitle">রিসেলারদের জন্য বিশেষ প্রোডাক্টে ৫০% পর্যন্ত আকর্ষণীয় ছাড়।</p>
+                </div>
+                <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop'); background-size: cover; background-position: center;">
+                    <h2>বিনা পুঁজিতে শুরু করুন ব্যবসা</h2>
+                    <p class="slide-subtitle">প্রোডাক্ট কাস্টমারের কাছে পৌঁছে দেওয়ার সব দায়িত্ব আমাদের।</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 20 Categories Grid Section -->
+        <section>
+            <h3 class="section-title">ক্যাটাগরি সমূহ</h3>
+            <div class="categories-grid" id="categories-container">
+                <!-- JavaScript এর মাধ্যমে ২০টি ক্যাটাগরি লোড হবে, নিচে ফলব্যাক কোড দেওয়া আছে -->
+                <a href="#" class="category-card"><i class="fa-solid fa-shirt"></i><p class="category-name">ম্যান্স ফ্যাশন</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-person-dress"></i><p class="category-name">ওম্যান্স ফ্যাশন</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-mobile-screen-button"></i><p class="category-name">স্মার্টফোন</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-headphones"></i><p class="category-name">গেজেটস</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-blender"></i><p class="category-name">হোম অ্যাপ্লায়েন্স</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-spa"></i><p class="category-name">বিউটি কেয়ার</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-baby-carriage"></i><p class="category-name">কিডস</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-clock"></i><p class="category-name">ঘড়ি ও চশমা</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-suitcase-rolling"></i><p class="category-name">ব্যাগ ও ট্রাভেল</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-shoe-prints"></i><p class="category-name">জুতো কালেকশন</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-keyboard"></i><p class="category-name">কম্পিউটার</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-basket-shopping"></i><p class="category-name">গ্রোসারি</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-dumbbell"></i><p class="category-name">ফিটনেস</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-book-open"></i><p class="category-name">বই ও খাতা</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-screwdriver-wrench"></i><p class="category-name">টুলস আইটেম</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-car-side"></i><p class="category-name">অটোমোবাইল</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-kitchen-set"></i><p class="category-name">রান্নাঘর</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-baseball-bat-ball"></i><p class="category-name">খেলাধুলা</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-gift"></i><p class="category-name">খেলনা ও গিফট</p></a>
+                <a href="#" class="category-card"><i class="fa-solid fa-paperclip"></i><p class="category-name">অফিস সাপ্লাই</p></a>
+            </div>
+        </section>
+
+        <!-- 30 Products Showcase Section -->
+        <section id="products-section">
+            <h3 class="section-title">আজকের আকর্ষণীয় প্রোডাক্টস</h3>
+            <div class="products-grid" id="products-container">
+                <!-- নিচে ডাইনামিকালি ৩০টি প্রোডাক্ট রেন্ডার হবে (নিচে ডামি স্ক্রিপ্ট যুক্ত করা আছে) -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 5. Features Section (Benefits) -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-item">
+                    <i class="fa-solid fa-truck-fast"></i>
+                    <h4>সুপার ফাস্ট ডেলিভারি</h4>
+                    <p>সারা বাংলাদেশে কাস্টমারের ঠিকানায় দ্রুততম সময়ে ক্যাশ অন ডেলিভারি নিশ্চিত করি।</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-wallet"></i>
+                    <h4>নিশ্চিত উইথড্রাল</h4>
+                    <p>সহজেই আপনার উপার্জিত টাকা বিকাশ অথবা রকেটের মাধ্যমে সরাসরি উইথড্র করুন।</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                    <h4>শূন্য ইনভেস্টমেন্ট</h4>
+                    <p>রিসেলার হিসেবে কোনো রকম মূলধন ছাড়া আজই আপনার ব্যবসা শুরু করে দিন।</p>
+                </div>
+                <div class="feature-item">
+                    <i class="fa-solid fa-headset"></i>
+                    <h4>২৪/৭ ডেডিকেটেড সাপোর্ট</h4>
+                    <p>আপনার যেকোনো প্রশ্ন অথবা পেমেন্ট সংক্রান্ত সমস্যার সমাধানে আমরা সর্বদা প্রস্তুত।</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. Designed by Ali Hosen. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript code for Slider and Generating 30 Products -->
+    <script>
+        // ১. অটোমেটিক ব্যানার স্লাইডার স্ক্রিপ্ট
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }, 4000); // প্রতি ৪ সেকেন্ডে স্লাইড পরিবর্তন হবে
+
+        // ২. ৩০টি ডামি প্রোডাক্ট জেনারেট করার স্ক্রিপ্ট (ব্যাকএন্ড কানেক্ট করার আগ পর্যন্ত ডেমো হিসেবে কাজ করবে)
+        const productsContainer = document.getElementById('products-container');
+        
+        const dummyProductTitles = [
+            "প্রিমিয়াম ম্যান্স পোলো শার্ট", "স্মার্ট স্পোর্টস রানিং শু", "স্মার্ট ওয়াচ আল্ট্রা ২", "নয়েজ ক্যানসেলিং হেডফোন",
+            "হ্যান্ডহেল্ড কিচেন ব্লেন্ডার", "গ্লোয়িং স্কিন ফেস সিরাম", "কিডস কিউট কার ডল", "ক্লাসিক ওয়াটারপ্রুফ রিস্ট ওয়াচ",
+            "লেদার লেপটপ ট্রাভেল ব্যাগ", "ফ্যাশনেবল ক্যাজুয়াল স্নিকার্স", "আরজিবি গেমিং কিবোর্ড", "অর্গানিক বাসমতি রাইস",
+            "প্রফেশনাল ব্লুটুথ ট্রাইপড", "স্টাইলিশ সানগ্লাস ফর ওমেন", "সিলিকন স্ট্র ওয়াটার বোতল", "মাল্টিপারপাস ট্রাভেল কিট",
+            "কম্প্যাক্ট কিচেন অর্গানাইজার", "হ্যান্ড ট্রাভেল কেস", "স্পোর্টস রানিং জার্সি", "কিডস লার্নিং ট্যাবলেট",
+            "লেদার মানিব্যাগ ক্ল্যাসিক", "স্মার্ট এলইডি নাইট লাইট", "ইলেকট্রিক হেয়ার ট্রিমার", "ইউএসবি ফার্স্ট চার্জার অ্যাডাপ্টার",
+            "অর্গানিক ড্রাই ফ্রুটস মিক্স", "প্রফেশনাল মেকআপ ব্রাশ সেট", "লেদার বেল্ট ফর মেন", "নন-স্টিক ফ্রাই প্যান",
+            "স্মার্ট ফ্লেক্সিবল ফোন হোল্ডার", "সিলিকন কুকিং ইউটেনসিল সেট"
+        ];
+
+        // ৩০টি প্রোডাক্ট লুপের মাধ্যমে রেন্ডার করা
+        for (let i = 1; i <= 30; i++) {
+            const productTitle = dummyProductTitles[i - 1] || `আকর্ষণীয় প্রোডাক্ট #${i}`;
+            const regularPrice = 450 + (i * 25); // ডামি দাম
+            
+            const cardHTML = `
+                <div class="product-card">
+                    <div class="product-img">
+                        <i class="fa-solid fa-image"></i>
+                    </div>
+                    <div class="product-info">
+                        <h4 class="product-title">${productTitle}</h4>
+                        <div class="product-price-box">
+                            <div>
+                                <span class="price-label">মূল্য</span>
+                                <p class="price-value">৳${regularPrice}</p>
+                            </div>
+                        </div>
+                        <a href="/login" class="btn-buy-product"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
+                    </div>
+                </div>
+            `;
+            productsContainer.innerHTML += cardHTML;
+        }
+    </script>
+</body>
+</html>
