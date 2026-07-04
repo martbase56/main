@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartBaseBD - Product Details</title>
+    <title>MerketBaseBD - Product Details</title>
     
     <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,17 +36,8 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed">
 
-    <!-- 🌐 Sticky Navigation Header -->
-    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm mb-10">
-        <div class="nav-container max-w-[1200px] mx-auto px-5 py-4 flex justify-between items-center">
-            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MartBaseBD</a>
-            <ul class="flex items-center gap-6 list-none" id="nav-menu">
-                <li><a href="/" class="font-semibold text-sm hover:text-primary"><i class="fa-solid fa-house"></i> হোম</a></li>
-                <li><a href="/checkout" class="font-semibold text-sm hover:text-primary"><i class="fa-solid fa-cart-shopping text-primary"></i> কার্ট (<span id="cart-count">0</span>)</a></li>
-                <li id="dynamic-nav"><a href="/login" class="font-semibold text-sm bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all">লগইন</a></li>
-            </ul>
-        </div>
-    </header>
+    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
+    <div id="header-placeholder"></div>
 
     <main class="max-w-[1200px] mx-auto px-5">
 
@@ -68,8 +59,8 @@
             <!-- Right Side: Product Info -->
             <div class="md:col-span-6 space-y-6 flex flex-col justify-between">
                 <div>
-                    <!-- Breadcrumbs Category -->
-                    <p class="text-xs text-primary font-bold uppercase tracking-wider mb-2" id="prod-category-tag">লোডিং...</p>
+                    <!-- (সংশোধিত) Breadcrumbs Category (লোডিং... ফিক্স করা হয়েছে) -->
+                    <p class="text-xs text-primary font-bold uppercase tracking-wider mb-2" id="prod-category-tag">ক্যাটাগরি খোঁজা হচ্ছে...</p>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-dark leading-snug mb-3" id="prod-title">প্রোডাক্টের নাম লোড হচ্ছে...</h1>
                     <p class="text-xs font-mono text-muted mb-4">প্রোডাক্ট কোড: <span id="prod-code">--</span></p>
 
@@ -87,7 +78,7 @@
                             <span class="text-sm text-gray-400 line-through font-body hidden" id="prod-old-price">৳0</span>
                         </div>
                         
-                        <!-- 💼 Reseller Price Panel (স্বয়ংক্রিয়ভাবে শুধুমাত্র রিসেলারদের জন্য শো হবে) -->
+                        <!-- 💼 Reseller Price Panel -->
                         <div id="reseller-price-box" class="hidden bg-primary/5 border border-primary/15 rounded-xl p-3 flex justify-between items-center">
                             <div>
                                 <span class="text-[0.7rem] text-primary font-bold block">রিসেলার বাই প্রাইস (Wholesale)</span>
@@ -149,45 +140,12 @@
 
     </main>
 
-    <!-- 🌐 Premium Footer Section -->
-    <footer class="bg-[#0B0F19] text-gray-400 py-16 border-t border-white/5 font-bangla mt-16">
-        <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
-            <div class="footer-col">
-                <a href="/" class="font-headings font-extrabold text-3xl text-primary mb-5 inline-block">MartBaseBD</a>
-                <p class="text-[0.92rem] leading-relaxed mb-6">বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ড্রপশিপিং প্ল্যাটফর্ম।</p>
-            </div>
-            <div class="footer-col">
-                <h4>মেনু লিঙ্কসমূহ</h4>
-                <ul class="footer-links list-none text-sm space-y-3">
-                    <li><a href="/">হোম পেজ</a></li>
-                    <li><a href="#products-section">আজকের ডিলস</a></li>
-                    <li><a href="/earning">আর্ন জোন</a></li>
-                    <li><a href="/digital-services">ডিজিটাল সার্ভিস</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>পলিসি ও গাইডলাইন</h4>
-                <ul class="footer-links list-none text-sm space-y-3">
-                    <li><a href="/privacy">গোপনীয়তা নীতি</a></li>
-                    <li><a href="/refund-policy">রিফান্ড পলিসি</a></li>
-                    <li><a href="/reseller-policy">রিসেলার পলিসি</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>পেমেন্ট মেথডস</h4>
-                <div class="flex flex-wrap gap-2 mt-2">
-                    <span class="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">bKash</span>
-                    <span class="bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Nagad</span>
-                </div>
-            </div>
-        </div>
-        <div class="copyright-bar border-t border-white/5 pt-6 text-center text-sm text-gray-500">
-            <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. All rights reserved. | Developed by Ali Hosen</p>
-        </div>
-    </footer>
+    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে ফুটার ইনজেক্ট করবে) -->
+    <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK -->
+    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <script>
         let supabaseClient = null;
@@ -196,7 +154,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ১. কার্ট কাউন্টার ও সেশন ইনিশিয়ালাইজেশন ---
+            // --- ১. কার্ট কাউন্টার ইনিশিয়ালাইজেশন ---
             function updateCartBadge() {
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const cartCount = document.getElementById('cart-count');
@@ -233,11 +191,9 @@
                 if (session && dynamicNav) {
                     const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
                     if (profile) {
-                        // রিসেলার হলে স্পেশাল প্রাইস বক্স সচল করার লজিক রান হবে
                         if (profile.role === 'reseller') {
                             document.getElementById('reseller-price-box').classList.remove('hidden');
                         }
-
                         dynamicNav.outerHTML = `
                             <li><a href="/profile" class="font-semibold text-sm hover:text-primary"><i class="fa-solid fa-user-circle"></i> ড্যাশবোর্ড</a></li>
                         `;
@@ -257,7 +213,6 @@
                 }
 
                 try {
-                    // প্রোডাক্ট নিয়ে আসা
                     const { data: product } = await supabaseClient.from('products').select('*').eq('id', productId).single();
                     if (!product) {
                         alert("পণ্যটি সার্ভারে খুঁজে পাওয়া যায়নি।");
@@ -285,7 +240,7 @@
                         mainImageWrapper.innerHTML = `<i class="fa-solid fa-image text-5xl text-gray-300"></i>`;
                     }
 
-                    // খ. টাইটেল ও প্রাইসিং
+                    // খ. টাইটেল ও বিবরণী
                     document.getElementById('prod-title').innerText = product.title;
                     document.getElementById('prod-code').innerText = product.product_code || "N/A";
                     document.getElementById('prod-description').innerText = product.description || "কোনো বিবরণ নেই।";
@@ -300,11 +255,23 @@
                         document.getElementById('prod-regular-price').innerText = `৳${product.regular_price}`;
                     }
 
-                    // গ. রিসেলার প্রাইস ভ্যালু সেট
+                    // (সংশোধিত) গ. ক্যাটাগরি ট্যাগ লাইভ লোড
+                    if (product.category_id) {
+                        const { data: cat } = await supabaseClient.from('categories').select('name').eq('id', product.category_id).single();
+                        if (cat) {
+                            document.getElementById('prod-category-tag').innerText = cat.name;
+                        } else {
+                            document.getElementById('prod-category-tag').innerText = "অন্যান্য";
+                        }
+                    } else {
+                        document.getElementById('prod-category-tag').innerText = "অন্যান্য";
+                    }
+
+                    // ঘ. রিসেলার প্রাইস ভ্যালু সেট
                     document.getElementById('reseller-price-val').innerText = `৳${product.reseller_price}`;
                     document.getElementById('reseller-bonus-val').innerText = `৳${product.reseller_hold_bonus || 0}`;
 
-                    // ঘ. স্টক ও ওয়ারেন্টি পলিসি
+                    // ঙ. স্টক ও ওয়ারেন্টি পলিসি
                     if (product.stock && product.stock > 0) {
                         document.getElementById('stock-badge').innerText = `In Stock (${product.stock})`;
                     } else {
@@ -317,7 +284,7 @@
                         document.getElementById('warranty-badge').innerText = `${product.warranty_days} দিনের ওয়ারেন্টি`;
                     }
 
-                    // ঙ. ডাইনামিক সাইজ ও কালার বাটন রেন্ডার
+                    // চ. ডাইনামিক সাইজ ও কালার বাটন রেন্ডার
                     if (product.sizes) {
                         document.getElementById('sizes-row').classList.remove('hidden');
                         const sizesContainer = document.getElementById('sizes-container');
@@ -334,7 +301,7 @@
                         });
                     }
 
-                    // চ. সাজেস্টেড প্রোডাক্টস (Related Products) লোড করা
+                    // ছ. সাজেস্টেড প্রোডাক্টস (Related Products) লোড করা
                     loadRelatedProducts(product.category_id, product.id);
 
                 } catch (e) {
@@ -342,7 +309,7 @@
                 }
             }
 
-            // --- ৪. একই ক্যাটাগরির সাজেস্টেড প্রোডাক্ট লোড ---
+            // --- ৪. একই ক্যাটাগ্রির সাজেস্টেড প্রোডাক্ট লোড ---
             async function loadRelatedProducts(categoryId, currentProductId) {
                 const container = document.getElementById('related-container');
                 if (!categoryId) {
@@ -361,10 +328,11 @@
                     if (related && related.length > 0) {
                         container.innerHTML = '';
                         related.forEach(prod => {
+                            const img = prod.images && prod.images.length > 0 ? prod.images[0] : prod.image_url;
                             container.innerHTML += `
-                                <div class="product-card bg-white rounded-2xl border border-black/[0.02] overflow-hidden flex flex-col hover:translate-y-[-4px] hover:border-primary/15 hover:shadow-lg transition-all duration-300">
-                                    <a href="/product?id=${prod.id}" class="w-full h-40 bg-gray-100 flex items-center justify-center overflow-hidden">
-                                        ${prod.images && prod.images.length > 0 ? `<img src="${prod.images[0]}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-2xl text-gray-400"></i>`}
+                                <div class="product-card bg-white rounded-2xl border border-gray-150 overflow-hidden flex flex-col hover:translate-y-[-4px] hover:border-primary/15 hover:shadow-lg transition-all duration-300">
+                                    <a href="/product?id=${prod.id}" class="w-full h-40 bg-gray-100 flex items-center justify-center overflow-hidden rounded-lg">
+                                        ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-2xl text-gray-400"></i>`}
                                     </a>
                                     <div class="p-3 flex flex-col flex-grow">
                                         <h4 class="font-bold text-xs text-dark line-clamp-2 h-8 mb-2">${prod.title}</h4>
@@ -375,7 +343,7 @@
                             `;
                         });
                     } else {
-                        container.innerHTML = '<p class="col-span-full text-center">কোনো সাজেস্টেড প্রোডাক্ট পাওয়া যায়নি।</p>';
+                        container.innerHTML = '<p class="col-span-full text-center">কোনo সাজেস্টেড প্রোডাক্ট পাওয়া যায়নি।</p>';
                     }
                 } catch(e) {
                     console.error("Related fetch error", e);
@@ -394,7 +362,6 @@
                 document.getElementById('qty-val').innerText = productQty;
             };
 
-            // সাইজ ও কালার অ্যাক্টিভ ক্লাস সিলেকশন লজিক
             window.selectSize = function(button) {
                 document.querySelectorAll('.size-btn').forEach(btn => btn.classList.remove('border-primary', 'text-primary', 'bg-primary/5'));
                 button.classList.add('border-primary', 'text-primary', 'bg-primary/5');
@@ -453,4 +420,4 @@
         });
     </script>
 </body>
-          </html>
+</html>
