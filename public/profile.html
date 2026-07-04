@@ -41,21 +41,20 @@
 
     <main class="max-w-[1200px] mx-auto px-5 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- 👤 Left Column: User Profile Info (Updated with Email and Refer ID at top) -->
+        <!-- 👤 Left Column: User Profile Info (Referral ID Completely Removed) -->
         <div class="lg:col-span-4 bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md h-fit">
             <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-user-gear"></i> প্রোফাইল তথ্য</h3>
             <div class="space-y-4">
                 <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-user"></i></div>
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-bold border border-primary/20"><i class="fa-solid fa-user"></i></div>
                     <div>
-                        <h4 class="font-bold text-dark" id="user-fullname">로드 হচ্ছে...</h4>
-                        <p class="text-xs text-primary font-bold bg-primary/10 px-2.5 py-0.5 rounded-full mt-1.5 inline-block" id="user-id">আইডি: ----</p>
+                        <h4 class="font-bold text-dark" id="user-fullname">লোড হচ্ছে...</h4>
+                        <p class="text-xs text-primary font-bold bg-primary/10 px-3 py-1 rounded-full mt-1.5">👤 সাধারণ ক্রেতা</p>
                     </div>
                 </div>
-                <!-- Email and UID at top -->
+                <!-- Profile Data List -->
                 <div class="space-y-3 text-sm pt-4 border-t border-gray-50">
                     <p class="text-dark font-semibold"><i class="fa-solid fa-envelope text-primary w-5"></i> ইমেইল: <span id="user-email" class="font-body font-normal text-muted">...</span></p>
-                    <p class="text-dark font-semibold"><i class="fa-solid fa-id-card text-primary w-5"></i> রেফার আইডি: <span id="user-id-code" class="font-body font-bold text-primary">...</span></p>
                     <p class="text-dark font-semibold"><i class="fa-solid fa-phone text-primary w-5"></i> মোবাইল: <span id="user-phone" class="font-body font-normal text-muted">...</span></p>
                 </div>
             </div>
@@ -64,9 +63,9 @@
         <!-- 📦 Right Column: Orders History & Live Tracking -->
         <div class="lg:col-span-8 space-y-6">
             
-            <!-- Live Tracking Panel (5 Statuses) -->
-            <div id="tracking-panel" class="bg-white rounded-2xl border border-primary/15 p-6 shadow-md hidden bg-gradient-to-br from-white to-primary/[0.01]">
-                <div class="flex justify-between items-start">
+            <!-- 🗺️ Live Tracking Panel (Beautiful Stepper + Details Card) -->
+            <div id="tracking-panel" class="bg-white rounded-3xl border border-primary/15 p-6 md:p-8 shadow-xl hidden bg-gradient-to-br from-white to-primary/[0.01] space-y-6">
+                <div class="flex justify-between items-start border-b border-gray-100 pb-4">
                     <div>
                         <h4 class="font-extrabold text-base text-dark flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-primary animate-pulse"></i> রিয়েল-টাইম লাইভ ট্র্যাকিং</h4>
                         <p class="text-xs text-muted mt-1">অর্ডার আইডি: <span class="font-mono font-bold text-primary" id="track-order-id">#--</span></p>
@@ -74,31 +73,52 @@
                     <button onclick="document.getElementById('tracking-panel').classList.add('hidden')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
                 </div>
                 
-                <!-- Stepper Timeline -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative pt-4">
-                    <div class="hidden sm:block absolute top-[26px] left-[40px] right-[40px] h-[3px] bg-gray-200 -z-10"></div>
+                <!-- Stepper Timeline (Visualizer) -->
+                <div class="grid grid-cols-4 gap-2 relative py-4 text-center">
+                    <!-- Progress Line -->
+                    <div class="absolute top-[26px] left-[12%] right-[12%] h-[3px] bg-gray-200 -z-10"></div>
                     
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-pending">
+                    <!-- Step 1: Pending -->
+                    <div class="flex flex-col items-center gap-2" id="step-pending">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-receipt"></i></div>
-                        <span class="text-xs font-bold">অর্ডার পেন্ডিং</span>
+                        <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">পেন্ডিং</span>
                     </div>
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-accepted">
+                    <!-- Step 2: Accepted -->
+                    <div class="flex flex-col items-center gap-2" id="step-accepted">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-check"></i></div>
-                        <span class="text-xs font-bold">অর্ডার গৃহীত</span>
+                        <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">গৃহীত</span>
                     </div>
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-shipped">
+                    <!-- Step 3: Shipped -->
+                    <div class="flex flex-col items-center gap-2" id="step-shipped">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-truck-fast"></i></div>
-                        <span class="text-xs font-bold">শিপড করা হয়েছে</span>
+                        <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">শিপড</span>
                     </div>
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-delivered">
+                    <!-- Step 4: Delivered -->
+                    <div class="flex flex-col items-center gap-2" id="step-delivered">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-circle-check"></i></div>
-                        <span class="text-xs font-bold">ডেলিভারি সফল</span>
+                        <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">ডেলিভারড</span>
                     </div>
                 </div>
-                <!-- Cancelled Info Card -->
+
+                <!-- Live Status Description message -->
+                <p id="track-status-desc" class="text-xs sm:text-sm font-semibold text-center text-muted bg-gray-50 py-3 px-4 rounded-xl border border-gray-100"></p>
+
+                <!-- Cancelled Order Info Alert -->
                 <div id="cancelled-alert" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 text-xs font-semibold flex items-center gap-2">
                     <i class="fa-solid fa-circle-exclamation text-base"></i> 
-                    <span>দুঃখিত, এই অর্ডারটি বাতিল করা হয়েছে। যেকোনো প্রয়োজনে সাপোর্টে যোগাযোগ করুন।</span>
+                    <span>দুঃখিত, এই অর্ডারটি বাতিল (Cancelled) করা হয়েছে। যেকোনো প্রয়োজনে সাপোর্টে যোগাযোগ করুন।</span>
+                </div>
+
+                <!-- 📝 Delivery Details Card (Dynamic Address details display) -->
+                <div class="bg-gray-50 border border-gray-150 p-5 rounded-2xl space-y-3">
+                    <h5 class="text-sm font-bold text-dark border-b border-gray-200 pb-2"><i class="fa-solid fa-map-location text-primary"></i> ডেলিভারি তথ্য (Delivery Details)</h5>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs leading-relaxed">
+                        <p class="font-semibold text-muted">গ্রাহকের নাম: <span id="track-cust-name" class="font-bold text-dark">--</span></p>
+                        <p class="font-semibold text-muted">মোবাইল নম্বর: <span id="track-cust-phone" class="font-bold text-dark font-body">--</span></p>
+                        <p class="font-semibold text-muted sm:col-span-2">ডেলিভারি ঠিকানা: <span id="track-cust-address" class="font-bold text-dark">--</span></p>
+                        <p class="font-semibold text-muted">পেমেন্ট মেথড: <span id="track-cust-pay" class="font-bold text-primary">--</span></p>
+                        <p class="font-semibold text-muted">অর্ডার নোট: <span id="track-cust-note" class="font-bold text-dark">--</span></p>
+                    </div>
                 </div>
             </div>
 
@@ -171,10 +191,7 @@
                     const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
                     if (profile) {
                         document.getElementById('user-fullname').innerText = profile.full_name || "MartBase User";
-                        document.getElementById('user-id').innerText = `আইডি নম্বর: ${profile.refer_code}`;
-                        
                         document.getElementById('user-email').innerText = profile.email;
-                        document.getElementById('user-id-code').innerText = profile.refer_code;
                         document.getElementById('user-phone').innerText = profile.phone_number || "N/A";
                     }
 
@@ -191,8 +208,9 @@
                         orders.forEach(order => {
                             const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50' : (order.status === 'cancelled' ? 'text-red-500 bg-red-50' : 'text-primary bg-primary/5');
                             
-                            // ৪ ডিজিট কোড এবং ডাইনামিক সেশন বাইন্ডিং ফিক্স
+                            // ৪ ডিজিট কোড এবং ডাইনামিক সেশন বাইন্ডিং ফিক্স [2]
                             const displayOrderId = order.order_id_code || ("#0" + order.order_id_num) || order.id.substring(0,8);
+                            const orderNote = order.order_note || "নেই";
 
                             listContainer.innerHTML += `
                                 <tr class="hover:bg-gray-50/50 transition-colors">
@@ -201,7 +219,8 @@
                                     <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
                                     <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold ${statusColor}">${order.status}</span></td>
                                     <td class="py-4 px-4 text-center">
-                                        <button onclick="trackOrder('${order.id}', '${order.status}', '${displayOrderId}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
+                                        <!-- (ডাইনামিক ফিক্স) ট্র্যাকিং এ ক্লিক করলে কাস্টমার এড্রেস ও নোট ডেটা পাঠানো হচ্ছে -->
+                                        <button onclick="trackOrder('${order.id}', '${order.status}', '${displayOrderId}', '${order.customer_name}', '${order.customer_phone}', '${order.delivery_address}', '${orderNote}', '${order.payment_method}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
                                     </td>
                                 </tr>
                             `;
@@ -215,14 +234,22 @@
                 }
             }
 
-            // --- ৩. ৫টি স্ট্যাটাস ভিত্তিক লাইভ ট্র্যাকিং লজিক ---
-            window.trackOrder = function(orderId, status, displayOrderId) {
+            // --- ৩. ৫টি স্ট্যাটাস ভিত্তিক ডাইনামিক লাইভ ট্র্যাকিং লজিক (অ্যাড্রেস কার্ড ইন্টিগ্রেশন সহ) ---
+            window.trackOrder = function(orderId, status, displayOrderId, custName, custPhone, custAddress, orderNote, payMethod) {
                 const trackingPanel = document.getElementById('tracking-panel');
                 const trackOrderIdSpan = document.getElementById('track-order-id');
                 const cancelledAlert = document.getElementById('cancelled-alert');
+                const statusDesc = document.getElementById('track-status-desc');
                 
                 trackOrderIdSpan.innerText = displayOrderId;
                 trackingPanel.classList.remove('hidden');
+
+                // ডেলিভারি এড্রেস কার্ডের ইনফো আপডেট
+                document.getElementById('track-cust-name').innerText = custName;
+                document.getElementById('track-cust-phone').innerText = custPhone;
+                document.getElementById('track-cust-address').innerText = custAddress;
+                document.getElementById('track-cust-pay').innerText = payMethod === "COD" ? "Cash on Delivery" : "Mobile Banking (Bkash/Nagad)";
+                document.getElementById('track-cust-note').innerText = orderNote;
 
                 const stepPending = document.getElementById('step-pending').querySelector('div');
                 const stepAccepted = document.getElementById('step-accepted').querySelector('div');
@@ -235,25 +262,31 @@
 
                 if (status === 'cancelled') {
                     cancelledAlert.classList.remove('hidden');
+                    statusDesc.classList.add('hidden');
                     [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => step.parentElement.classList.add('opacity-40'));
                 } else {
                     cancelledAlert.classList.add('hidden');
+                    statusDesc.classList.remove('hidden');
                     [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => step.parentElement.classList.remove('opacity-40'));
                     
                     if (status === 'pending') {
                         stepPending.className = "w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-amber-400 animate-pulse shadow-lg shadow-amber-500/30";
+                        statusDesc.innerText = "🕒 আপনার অর্ডারটি সফলভাবে জমা হয়েছে। আমাদের অ্যাডমিন প্যানেল তথ্য যাচাই করছে।";
                     } else if (status === 'accepted') {
                         stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepAccepted.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                        statusDesc.innerText = "✅ অর্ডারটি সফলভাবে গৃহিত হয়েছে এবং পণ্য প্যাকেজিংয়ের কাজ চলছে।";
                     } else if (status === 'shipped') {
                         stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepShipped.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                        statusDesc.innerText = "🚚 পণ্যটি সফলভাবে কুরিয়ারে বুকিং করা হয়েছে এবং আপনার ঠিকানার পথে রওয়ানা হয়েছে।";
                     } else if (status === 'delivered') {
                         stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepShipped.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
                         stepDelivered.className = "w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-emerald-500 shadow-lg shadow-emerald-600/30";
+                        statusDesc.innerText = "🎉 অভিনন্দন! প্রোডাক্টটি সফলভাবে আপনার ঠিকানায় ডেলিভারি সম্পন্ন হয়েছে।";
                     }
                 }
 
