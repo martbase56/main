@@ -102,22 +102,24 @@
     </div>
 
     <!-- Supabase SDK -->
+ <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let supabase = null;
+            // গ্লোবাল কনফ্লিক্ট এড়াতে ভেরিয়েবলের নাম supabaseClient রাখা হয়েছে
+            let supabaseClient = null;
 
-            // --- ক. ডাইনামিক এনভায়রনমেন্ট কনফিগ লোড করার ফাংশন ---
+            // --- ক. ব্যাকএন্ড থেকে ডাইনামিক সুপাবেস কনফিগ নিয়ে আসা ---
             async function initializeSupabase() {
                 try {
-                    // FastAPI এন্ডপয়েন্ট থেকে পাবলিক সুপাবেস ক্রেডেনশিয়াল নিয়ে আসা হচ্ছে
                     const response = await fetch('/api/auth/config');
                     if (!response.ok) throw new Error("Config API Error");
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        supabase = supabaseJS.createClient(config.supabase_url, config.supabase_anon_key);
+                        // window.supabase ব্যবহার করায় এটি ১০০% নিশ্চিতভাবে ব্রাউজার ক্লায়েন্ট ইনিশিয়েট করবে
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         console.log("Supabase Client initialized dynamically from environment variables.");
                     } else {
                         console.warn("Supabase credentials not received from server config.");
@@ -135,7 +137,7 @@
                 e.preventDefault();
                 
                 // ডিফেন্সিভ চেক: ডাটাবেজ কানেক্ট না থাকলে নোটিফিকেশন দেবে
-                if (!supabase) {
+                if (!supabaseClient) {
                     alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
@@ -150,7 +152,8 @@
                 const address = document.getElementById('address').value;
 
                 try {
-                    const { data, error } = await supabase.auth.signUp({
+                    // supabaseClient ব্যবহার করা হয়েছে
+                    const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
                         options: {
