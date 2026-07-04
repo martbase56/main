@@ -35,7 +35,7 @@
     </script>
 
     <style>
-        /* Hide scrollbars for clean app look */
+        /* Scrollbar hide helper classes */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -45,7 +45,7 @@
     <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <!-- Sidebar Drawer Toggle Menu -->
+            <!-- Sidebar Drawer Toggle -->
             <button id="drawer-toggle" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-dark text-lg active:scale-95 transition-transform">
                 <i class="fa-solid fa-bars-staggered"></i>
             </button>
@@ -62,7 +62,6 @@
 
     <!-- 📁 Off-Canvas App Drawer Menu (Toggle Menu) -->
     <div id="app-drawer" class="fixed inset-y-0 left-0 w-[280px] bg-dark text-gray-300 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
-        <!-- Drawer Header with Reseller Username and ID -->
         <div class="p-6 bg-gradient-to-r from-primary to-secondary text-white flex flex-col items-center text-center">
             <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold mb-3 border-2 border-white/30">
                 <i class="fa-solid fa-user-tie"></i>
@@ -71,12 +70,10 @@
             <span class="text-xs font-bold bg-black/20 px-3 py-1 rounded-full mt-2 font-body" id="drawer-id">আইডি: ----</span>
         </div>
 
-        <!-- Drawer Body Links -->
         <div class="flex-grow p-4 space-y-2 overflow-y-auto">
             <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-house"></i> হোম পেজ</a>
-            <a href="#orders-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-box-open"></i> আমার অর্ডারসমূহ</a>
+            <a href="#orders-list-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-box-open"></i> আমার অর্ডারসমূহ</a>
             <a href="#withdraw-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-wallet"></i> উইথড্র প্যানেল</a>
-            <a href="#referrals-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-gift"></i> রেফারেল সেন্টার</a>
             <a href="/profile" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-user-gear"></i> প্রোফাইল সেটিংস</a>
         </div>
 
@@ -86,8 +83,7 @@
             </button>
         </div>
     </div>
-    <!-- Drawer Overlay Back -->
-    <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-30 hidden" onclick="toggleSidebarMenu()"></div>
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-30 hidden"></div>
 
     <!-- Main Container -->
     <div class="max-w-[1200px] mx-auto px-5 pt-5 space-y-6">
@@ -96,11 +92,6 @@
         <div class="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-center gap-3">
             <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"><i class="fa-solid fa-bullhorn text-sm animate-bounce"></i></span>
             <marquee class="text-xs font-bold text-dark" id="ticker-text">সিস্টেম নোটিশ লোড হচ্ছে...</marquee>
-        </div>
-
-        <!-- 📸 স্লাইডার ব্যানার -->
-        <div class="w-full aspect-[3/1] max-sm:aspect-[2.2/1] rounded-2xl overflow-hidden shadow-sm border border-primary/5">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
 
         <!-- 💸 ২. Earning Zone (ওয়ালেট ও রেফারেল কুইক স্ট্যাটস) -->
@@ -116,12 +107,111 @@
                 <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-gift"></i></div>
                 <div>
                     <span class="text-[0.65rem] text-muted font-bold block">মোট রেফারেল</span>
-                    <h3 class="text-base font-extrabold text-dark font-body" id="referrals-count">0</h3>
+                    <h3 class="text-base font-extrabold text-dark font-body" id="wallet-referrals">--</h3>
                 </div>
             </div>
         </section>
 
-        <!-- 📞 ৩. সাপোর্ট সেন্টার (2x2 Small Grid) -->
+        <!-- 🚀 ৩. Highlighted Features Grid (Small Circular Navs) -->
+        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
+            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4"><i class="fa-solid fa-circle-check"></i> প্রিমিয়াম ফিচারস</h4>
+            <div class="grid grid-cols-4 gap-4 text-center">
+                <!-- Offers -->
+                <a href="#offers-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-12 h-12 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-lg border border-red-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-fire"></i></div>
+                    <span class="text-[0.7rem] font-bold text-dark">অফার প্রোডাক্ট</span>
+                </a>
+                <!-- Categories -->
+                <a href="#categories-pills-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-lg border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-list-ul"></i></div>
+                    <span class="text-[0.7rem] font-bold text-dark">ক্যাটাগরি সমূহ</span>
+                </a>
+                <!-- Verified -->
+                <a href="#verified-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-lg border border-emerald-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-shield-halved"></i></div>
+                    <span class="text-[0.7rem] font-bold text-dark">ভেরিফাইড পণ্য</span>
+                </a>
+                <!-- Wishlist -->
+                <a href="#wishlist-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-12 h-12 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center text-lg border border-rose-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-heart"></i></div>
+                    <span class="text-[0.7rem] font-bold text-dark">পছন্দের তালিকা</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 💼 ৪. Standard Features Grid (Not Highlighted Circular Navs) -->
+        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
+            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4"><i class="fa-solid fa-sliders"></i> অন্যান্য সার্ভিস সমূহ</h4>
+            <div class="grid grid-cols-5 gap-3 text-center">
+                <!-- All Products -->
+                <a href="/" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-box-open"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">সকল প্রোডাক্ট</span>
+                </a>
+                <!-- Search -->
+                <a href="/#search-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">সার্চ প্রোডাক্ট</span>
+                </a>
+                <!-- Withdraw -->
+                <a href="#withdraw-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-money-bill-transfer"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">উইথড্র</span>
+                </a>
+                <!-- My Orders -->
+                <a href="#orders-list-section" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-bag-shopping"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">আমার অর্ডার</span>
+                </a>
+                <!-- History -->
+                <a href="/profile" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">অর্ডার হিস্ট্রি</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 📦 ৫. Horizontal/Vertical lists below (রিসেলার লাইভ ডাটা) -->
+        
+        <!-- ক. ধামাকা অফার প্রোডাক্টস (Offers Products list) -->
+        <section id="offers-section" class="space-y-3">
+            <h4 class="text-sm font-bold text-dark flex justify-between items-center">
+                <span>🔥 ধামাকা অফার প্রোডাক্টস</span>
+                <a href="/" class="text-xs text-primary font-bold">সব দেখুন</a>
+            </h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="offers-products-scroll">
+                <p class="text-xs text-muted">অফার প্রোডাক্ট লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- খ. ক্যাটাগরি তালিকা পিলস -->
+        <section id="categories-pills-section" class="space-y-3">
+            <h4 class="text-sm font-bold text-dark">🏷️ ক্যাটাগরি সমূহ</h4>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="categories-scroll">
+                <p class="text-xs text-muted">লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- গ. ভেরিফাইড প্রোডাক্টস কালেকশন -->
+        <section id="verified-section" class="space-y-3">
+            <h4 class="text-sm font-bold text-dark">✨ ভেরিফাইড প্রোডাক্ট কালেকশন</h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="verified-products-scroll">
+                <p class="text-xs text-muted">লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- ঘ. পছন্দের প্রোডাক্টস তালিকা -->
+        <section id="wishlist-section" class="space-y-3">
+            <h4 class="text-sm font-bold text-dark flex justify-between items-center">
+                <span>❤️ আমার পছন্দের তালিকা</span>
+                <a href="/profile?tab=wishlist" class="text-xs text-primary font-bold">ম্যানেজ করুন</a>
+            </h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="wishlist-products-scroll">
+                <p class="text-xs text-muted">পছন্দের তালিকায় পণ্য নেই।</p>
+            </div>
+        </section>
+
+        <!-- 📞 চ. সাপোর্ট সেন্টার -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
             <h4 class="text-sm font-bold text-dark"><i class="fa-solid fa-headset text-primary"></i> রিসেলার সাপোর্ট হেল্পলাইন</h4>
             <div class="grid grid-cols-2 gap-3">
@@ -132,55 +222,15 @@
             </div>
         </section>
 
-        <!-- 🌟 ৪. Highlighted Sections (Horizontal Scroll List) -->
-        
-        <!-- ক. অফার প্রোডাক্টস (Offers) -->
-        <section class="space-y-3">
-            <h4 class="text-sm font-bold text-dark flex items-center justify-between">
-                <span>🔥 ধামাকা অফার প্রোডাক্টস</span>
-                <a href="#all-products" class="text-xs text-primary font-bold">সব দেখুন</a>
-            </h4>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="offers-products-scroll">
-                <p class="text-xs text-muted">অফার লোড হচ্ছে...</p>
-            </div>
-        </section>
-
-        <!-- খ. ডাইনামিক ক্যাটাগরি তালিকা (Categories) -->
-        <section class="space-y-3">
-            <h4 class="text-sm font-bold text-dark">🏷️ ক্যাটাগরি সমূহ</h4>
-            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="categories-scroll">
-                <!-- ডাইনামিক ক্যাটাগরি পিল লোড হবে -->
-            </div>
-        </section>
-
-        <!-- গ. ভেরিফাইড প্রোডাক্টস (Verified Products) -->
-        <section class="space-y-3">
-            <h4 class="text-sm font-bold text-dark">✨ ভেরিফাইড প্রোডাক্ট কালেকশন</h4>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="verified-products-scroll">
-                <p class="text-xs text-muted">লোড হচ্ছে...</p>
-            </div>
-        </section>
-
-        <!-- ঘ. পছন্দের প্রোডাক্টস (Wishlist Products) -->
-        <section class="space-y-3">
-            <h4 class="text-sm font-bold text-dark flex items-center justify-between">
-                <span>❤️ আমার পছন্দের তালিকা</span>
-                <a href="/profile?tab=wishlist" class="text-xs text-primary font-bold">ম্যানেজ করুন</a>
-            </h4>
-            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="wishlist-products-scroll">
-                <p class="text-xs text-muted">পছন্দের তালিকায় পণ্য নেই।</p>
-            </div>
-        </section>
-
     </div>
 
-    <!-- 📱 ৫. App Style Sticky Bottom Navigation Bar (Bottom Nav) -->
+    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
         </a>
-        <a href="#orders-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-clock-rotate-left text-lg"></i>
             <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
         </a>
@@ -209,7 +259,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সাইডবার ড্রয়ার টগল লজিক ---
+            // সাইডবার ড্রয়ার টগল লজিক
             const drawerToggle = document.getElementById('drawer-toggle');
             const appDrawer = document.getElementById('app-drawer');
             const drawerOverlay = document.getElementById('drawer-overlay');
@@ -219,11 +269,11 @@
                 drawerOverlay.classList.toggle('hidden');
             }
 
-            drawerToggle.addEventListener('click', toggleSidebarMenu);
-            drawerOverlay.addEventListener('click', toggleSidebarMenu);
+            if (drawerToggle) drawerToggle.addEventListener('click', toggleSidebarMenu);
+            if (drawerOverlay) drawerOverlay.addEventListener('click', toggleSidebarMenu);
             window.closeDrawer = toggleSidebarMenu;
 
-            // --- খ. বিকাশ-স্টাইল ট্যাপ টু ব্যালেন্স লজিক ---
+            // বিকাশ-স্টাইল ট্যাপ টু ব্যালেন্স লজিক (ট্যাপ করলে ব্যালেন্স দেখা যাবে)
             window.toggleBalance = function() {
                 const label = document.getElementById('balance-label');
                 const amount = document.getElementById('balance-amount');
@@ -235,7 +285,6 @@
                     amount.innerText = `৳${walletBalanceAmount.toFixed(2)}`;
                     amount.classList.remove('hidden');
                     
-                    // ৪ সেকেন্ড পর ব্যালেন্স আবার অটো-হাইড হবে
                     setTimeout(() => {
                         isBalanceVisible = false;
                         amount.classList.add('hidden');
@@ -247,7 +296,7 @@
                 }
             };
 
-            // --- গ. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
+            // ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -263,7 +312,7 @@
                 }
             }
 
-            // --- ঘ. রিসেলার ভেরিফিকেশন ও লাইভ ডাটা কল ---
+            // রিসেলার ভেরিফিকেশন ও লাইভ ডাটা কল
             async function verifyResellerAndLoad() {
                 try {
                     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -274,7 +323,6 @@
                     }
                     resellerUserId = session.user.id;
 
-                    // প্রোফাইল চেক
                     const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', resellerUserId).single();
                     if (!profile || profile.role !== 'reseller') {
                         alert("দুঃখিত, শুধুমাত্র রিসেলাররাই ড্যাশবোর্ড অ্যাক্সেস করতে পারবেন।");
@@ -282,17 +330,15 @@
                         return;
                     }
 
-                    // ইউজার ডাটা ড্যাশবোর্ড ড্রয়ারে সেট করা
                     document.getElementById('drawer-fullname').innerText = profile.full_name || "Reseller User";
                     document.getElementById('drawer-id').innerText = `রিসেলার আইডি: ${profile.refer_code}`;
                     
-                    walletBalanceAmount = float(profile.wallet_balance || 0);
+                    // (গুরুত্বপূর্ণ ফিক্স) জাভাস্ক্রিপ্ট float পরিবর্তন করে parseFloat করা হয়েছে
+                    walletBalanceAmount = parseFloat(profile.wallet_balance || 0);
                     document.getElementById('wallet-val').innerText = `৳${walletBalanceAmount}`;
 
-                    // ড্যাশবোর্ডে প্রবেশের সাথে সাথে সচলতা (Activity) আপডেট করা (রেফারেলের জন্য)
                     fetch(`/api/auth/update-activity/${resellerUserId}`, { method: 'POST' });
 
-                    // লাইভ ডাটা লোড
                     loadNotice();
                     loadReferralsCount();
                     loadHighlightedProducts();
@@ -303,7 +349,6 @@
                 }
             }
 
-            // --- ঙ. ডাইনামিক লাইভ নোটিশ লোড ---
             async function loadNotice() {
                 try {
                     const { data: setting } = await supabaseClient.from('system_settings').select('value').eq('key', 'dashboard_notice').single();
@@ -313,18 +358,16 @@
                 } catch(e) {}
             }
 
-            // --- চ. রেফারেল কাউন্ট লোড ---
             async function loadReferralsCount() {
                 try {
                     const response = await fetch(`/api/auth/referrals/${resellerUserId}`);
                     if (response.ok) {
                         const referrals = await response.json();
-                        document.getElementById('referrals-count').innerText = referrals ? referrals.length : 0;
+                        document.getElementById('wallet-referrals').innerText = referrals ? referrals.length : 0;
                     }
                 } catch(e) {}
             }
 
-            // --- ছ. ডাইনামিক প্রোডাক্ট ও ক্যাটাগরি স্ক্রোল লোড ---
             async function loadCategoriesScroll() {
                 const scrollContainer = document.getElementById('categories-scroll');
                 try {
@@ -410,7 +453,6 @@
                 } catch(e) {}
             }
 
-            // লগআউট লজিক
             window.handleLogout = async function() {
                 if (supabaseClient) {
                     await supabaseClient.auth.signOut();
@@ -418,9 +460,8 @@
                 }
             };
 
-            // প্রসেস শুরু করুন
             initializeSupabase();
         });
     </script>
 </body>
-  </html>
+</html>
