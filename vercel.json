@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "cleanUrls": true,
   "builds": [
     {
       "src": "api/main.py",
@@ -22,7 +23,7 @@
     {
       "source": "/signup",
       "destination": "/public/signup.html"
-                },
+    },
     {
       "source": "/login",
       "destination": "/public/login.html"
