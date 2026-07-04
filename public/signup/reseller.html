@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartBaseBD - রিসেলার রেজিস্ট্রেশন</title>
+    <title>MerketBaseBD - রিসেলার রেজিস্ট্রেশন</title>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-
     <script>
         tailwind.config = {
             theme: {
@@ -41,7 +38,7 @@
 
     <div class="w-full max-w-[550px] bg-white rounded-2xl border border-black/[0.02] p-8 md:p-10 shadow-xl shadow-primary/5">
         <div class="text-center mb-6">
-            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MartBaseBD</a>
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MerketBaseBD</a>
             <p class="text-sm text-muted mt-1">Premium Work & Earn Platform</p>
         </div>
 
@@ -52,7 +49,7 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">সম্পূর্ণ নাম</label>
-                    <input type="text" id="fullname" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="যেমন: আলী হোসেন" required>
+                    <input type="text" id="fullname" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: আলী হোসেন" required>
                 </div>
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">ইমেইল ঠিকানা</label>
@@ -63,54 +60,60 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">মোবাইল নম্বর</label>
-                    <input type="tel" id="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="01XXXXXXXXX" required>
+                    <input type="tel" id="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="01XXXXXXXXX" required>
                 </div>
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">পাসওয়ার্ড</label>
-                    <input type="password" id="password" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="পাসওয়ার্ড দিন" required>
+                    <input type="password" id="password" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="পাসওয়ার্ড দিন" required>
                 </div>
             </div>
 
             <div>
                 <label class="block font-semibold text-sm mb-1 text-dark">ফেসবুক পেজ / প্রোফাইল লিংক (ঐচ্ছিক)</label>
-                <input type="url" id="fb_link" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="https://facebook.com/yourprofile">
+                <input type="url" id="fb_link" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="https://facebook.com/yourprofile">
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">শিক্ষাগত যোগ্যতা</label>
-                    <input type="text" id="education" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="যেমন: অনার্স / ডিগ্রি" required>
+                    <input type="text" id="education" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: অনার্স / ডিগ্রি" required>
                 </div>
                 <div>
                     <label class="block font-semibold text-sm mb-1 text-dark">বয়স</label>
-                    <input type="number" id="age" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="যেমন: ২৫" min="15" required>
+                    <input type="number" id="age" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: ২৫" min="15" required>
                 </div>
             </div>
 
             <div>
-                <label class="block font-semibold text-sm mb-1 text-dark">বর্তমান ঠিকানা</label>
-                <textarea id="address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all h-20 resize-none" placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন" required></textarea>
+                <label class="block font-semibold text-sm mb-1 text-dark">वर्तमान ঠিকানা</label>
+                <textarea id="address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark h-20 resize-none" placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন" required></textarea>
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2"><i class="fa-solid fa-briefcase"></i> রিসেলার হিসেবে রেজিস্ট্রেশন করুন</button>
+            <!-- রেফার কোড ইনপুট -->
+            <div>
+                <label class="block font-semibold text-sm mb-1 text-dark">রেফার কোড (ঐচ্ছিক - শুধুমাত্র রিসেলারদের জন্য)</label>
+                <input type="number" id="referred_by" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: ৬৭৬৫">
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2 text-lg">
+                <i class="fa-solid fa-briefcase"></i> রিসেলার হিসেবে রেজিস্ট্রেশন করুন
+            </button>
         </form>
 
         <div class="text-center mt-6 text-sm text-muted space-y-2">
             <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-semibold hover:underline">লগইন করুন</a></p>
-            <p>সাধারণ ক্রেতা অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-semibold hover:underline">এখানে ক্লিক করুন</a></p>
+            <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-semibold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
     </div>
 
     <!-- Supabase SDK -->
- <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // গ্লোবাল কনফ্লিক্ট এড়াতে ভেরিয়েবলের নাম supabaseClient রাখা হয়েছে
             let supabaseClient = null;
 
-            // --- ক. ব্যাকএন্ড থেকে ডাইনামিক সুপাবেস কনফিগ নিয়ে আসা ---
+            // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড করার ফাংশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -118,41 +121,37 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        // window.supabase ব্যবহার করায় এটি ১০০% নিশ্চিতভাবে ব্রাউজার ক্লায়েন্ট ইনিশিয়েট করবে
+                        // window.supabase ব্যবহার করা হয়েছে (conflicts এড়াতে)
                         supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        console.log("Supabase Client initialized dynamically from environment variables.");
-                    } else {
-                        console.warn("Supabase credentials not received from server config.");
+                        console.log("Supabase Client initialized dynamically.");
                     }
                 } catch (err) {
                     console.error("Supabase failed to load dynamically:", err);
                 }
             }
 
-            // সেশন ইনিশিয়ালাইজ শুরু
             initializeSupabase();
 
-            // --- খ. রিসেলার রেজিস্ট্রেশন সাবমিশন হ্যান্ডলার ---
+            // --- খ. রিসেলার রেজিস্ট্রেশন হ্যান্ডলার ---
             document.getElementById('reseller-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                // ডিফেন্সিভ চেক: ডাটাবেজ কানেক্ট না থাকলে নোটিফিকেশন দেবে
                 if (!supabaseClient) {
-                    alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
+                    alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি।");
                     return;
                 }
 
-                const fullname = document.getElementById('fullname').value;
-                const email = document.getElementById('email').value;
-                const phone = document.getElementById('phone').value;
-                const password = document.getElementById('password').value;
-                const fb_link = document.getElementById('fb_link').value;
-                const education = document.getElementById('education').value;
-                const age = document.getElementById('age').value;
-                const address = document.getElementById('address').value;
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const fb_link = document.getElementById('fb_link').value.trim();
+                const education = document.getElementById('education').value.trim();
+                const age = document.getElementById('age').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const referredByCode = document.getElementById('referred_by').value.trim();
 
                 try {
-                    // supabaseClient ব্যবহার করা হয়েছে
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
@@ -164,7 +163,9 @@
                                 fb_link: fb_link,
                                 education: education,
                                 age: parseInt(age),
-                                address: address
+                                address: address,
+                                // রেফারেল কোড মেটাডেটায় পাঠানো হচ্ছে
+                                referred_by_code: referredByCode ? parseInt(referredByCode) : null
                             }
                         }
                     });
