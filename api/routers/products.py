@@ -1,10 +1,10 @@
 # api/routers/products.py
 import os
 import httpx
-from fastapi import APIRouter, HTTPException, UploadFile, File, Header, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from pydantic import BaseModel
 from api.database import supabase
-from api.routers.auth import get_current_user # পূর্বের মেথড থেকে এডমিন চেক করার জন্য
+from api.routers.auth import get_current_user # এডমিন চেক করার জন্য
 
 router = APIRouter()
 
@@ -14,15 +14,15 @@ class ProductCreateSchema(BaseModel):
     description: str = None
     sizes: str = None
     colors: str = None
-    price: float                        -- regular_price
+    price: float                        # regular_price
     customer_offer_price: float = None
     reseller_price: float
     reseller_hold_bonus: float = 0.0
-    images: list[str] = []              -- সর্বোচ্চ ৪টি ছবির লিংক
+    images: list[str] = []              # সর্বোচ্চ ৪টি ছবির লিংক
     stock: int = 0
     category_id: str = None
     subcategory: str = None
-    warranty_type: str = "no"           -- 'yes' অথবা 'no'
+    warranty_type: str = "no"           # 'yes' অথবা 'no'
     warranty_days: int = 0
     product_code: str
 
