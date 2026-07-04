@@ -36,30 +36,26 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
 
-    <div class="max-w-[1000px] mx-auto p-5 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
-        
-        <!-- Header -->
-        <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
-            <h2 class="text-2xl font-extrabold text-dark flex items-center gap-2">
-                <i class="fa-solid fa-cart-shopping text-primary"></i> চেকআউট ও অর্ডার কনফার্ম
-            </h2>
-            <a href="/" class="text-sm font-semibold text-primary hover:underline"><i class="fa-solid fa-arrow-left"></i> কেনাকাটা চালিয়ে যান</a>
-        </div>
+    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
+    <div id="header-placeholder"></div>
 
+    <div class="max-w-[1100px] mx-auto p-5 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
+        
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- 👤 Left Side: Billing & Shipping Address Form -->
+            <!-- 👤 Left Side: Shipping Address & Payment Form -->
             <form id="checkout-form" class="lg:col-span-7 space-y-5">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2"><i class="fa-solid fa-truck"></i> ডেলিভারি ঠিকানা</h3>
 
-                <div>
-                    <label class="block font-semibold text-sm mb-1">কাস্টমারের নাম</label>
-                    <input type="text" id="customer_name" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="সম্পূর্ণ নাম লিখুন" required>
-                </div>
-
-                <div>
-                    <label class="block font-semibold text-sm mb-1">কাস্টমারের মোবাইল নম্বর</label>
-                    <input type="tel" id="customer_phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body outline-none focus:border-primary text-dark" placeholder="01XXXXXXXXX" required>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">কাস্টমারের নাম</label>
+                        <input type="text" id="customer_name" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="সম্পূর্ণ নাম লিখুন" required>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">কাস্টমারের মোবাইল নম্বর</label>
+                        <input type="tel" id="customer_phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body outline-none focus:border-primary text-dark" placeholder="01XXXXXXXXX" required>
+                    </div>
                 </div>
 
                 <!-- Division, District, Upazila Selector -->
@@ -85,44 +81,59 @@
                 </div>
 
                 <div>
-                    <label class="block font-semibold text-sm mb-1">বিস্তারিত বর্তমান ঠিকানা</label>
+                    <label class="block font-semibold text-sm mb-1">বিস্তারিত ঠিকানা</label>
                     <textarea id="delivery_address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark h-20 resize-none" placeholder="বাসা নং, রোড নং এবং পরিচিত ল্যান্ডমার্ক লিখুন..." required></textarea>
                 </div>
 
-                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-150">
-                    <span class="block font-bold text-sm mb-2"><i class="fa-solid fa-credit-card"></i> পেমেন্ট মেথড</span>
-                    <label class="flex items-center gap-2 cursor-pointer font-semibold text-sm">
-                        <input type="radio" name="payment_method" value="COD" checked class="accent-primary"> ক্যাশ অন ডেলিভারি (COD)
-                    </label>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">অর্ডার নোট / নির্দেশনা (ঐচ্ছিক)</label>
+                    <input type="text" id="order_note" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: ডেলিভারির আগে ফোন দিবেন।">
+                </div>
+
+                <!-- 💳 Payment Options with Fixed Dynamic Fields -->
+                <div class="bg-gray-50 p-5 rounded-2xl border border-gray-150 space-y-4">
+                    <span class="block font-bold text-sm mb-2"><i class="fa-solid fa-credit-card"></i> পেমেন্ট মেথড নির্বাচন করুন</span>
+                    
+                    <div class="flex gap-6">
+                        <label class="flex items-center gap-2 cursor-pointer font-semibold text-sm">
+                            <input type="radio" name="payment_method" value="COD" checked class="payment-method-radio accent-primary"> ক্যাশ অন ডেলিভারি (COD)
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer font-semibold text-sm">
+                            <input type="radio" name="payment_method" value="Prepaid" class="payment-method-radio accent-primary"> বিকাশ / নগদ (Mobile Banking)
+                        </label>
+                    </div>
+
+                    <!-- Hidden Prepaid Instructions Card (Fixed Display) -->
+                    <div id="prepaid-instructions" class="hidden p-4 bg-white border border-primary/20 rounded-xl space-y-3">
+                        <p class="text-xs text-muted">আমাদের বিকাশ/নগদ পার্সোনাল নম্বরে <strong>সেন্ড মানি</strong> করুন: <strong class="text-primary font-body">017XXXXXXXX</strong></p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <input type="text" id="sender_no" class="px-3 py-2 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary text-dark" placeholder="যে নম্বর থেকে পাঠিয়েছেন">
+                            <input type="text" id="trx_id" class="px-3 py-2 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary uppercase text-dark" placeholder="Transaction ID (TrxID)">
+                        </div>
+                    </div>
                 </div>
             </form>
 
-            <!-- 🛒 Right Side: Order Summary & Coupon System -->
+            <!-- 🛒 Right Side: Cart Summary -->
             <div class="lg:col-span-5 bg-gray-50/50 border border-gray-100 p-6 rounded-2xl flex flex-col h-fit">
-                <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-invoice-dollar"></i> অর্ডারের বিবরণ</h3>
+                <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-invoice-dollar"></i> কার্ট তালিকা</h3>
 
-                <!-- Product Mini Card -->
-                <div class="flex gap-4 border-b border-gray-100 pb-4 mb-4">
-                    <div class="w-16 h-16 bg-gray-200 rounded-xl flex items-center justify-center text-gray-400 text-xl overflow-hidden" id="prod-img">
-                        <i class="fa-solid fa-image"></i>
-                    </div>
-                    <div class="flex-grow">
-                        <h4 class="font-bold text-sm text-dark leading-tight line-clamp-2" id="prod-title">প্রোডাক্টের নাম লোড হচ্ছে...</h4>
-                        <p class="text-xs text-muted mt-1 font-body">পরিমাণ: <span id="prod-qty">১</span> টি</p>
-                    </div>
+                <!-- Dynamic Cart Items Container -->
+                <div class="divide-y divide-gray-100 max-h-[220px] overflow-y-auto mb-4 pr-1" id="cart-items-list">
+                    <p class="text-center py-5">লোড হচ্ছে...</p>
                 </div>
 
-                <!-- Coupon Promo Code Input -->
-                <div class="mb-5">
+                <!-- Coupon System -->
+                <div class="mb-5 border-t border-gray-100 pt-4">
                     <label class="block font-semibold text-xs mb-1 text-muted">কুপন কোড (Promo Code)</label>
                     <div class="flex gap-2">
-                        <input type="text" id="coupon-input" class="flex-grow px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary text-sm font-body uppercase" placeholder="যেমন: FREE50">
+                        <input type="text" id="coupon-input" class="flex-grow px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary text-sm font-body uppercase text-dark" placeholder="যেমন: FREE50">
                         <button type="button" id="btn-apply-coupon" class="bg-dark text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-black transition-colors">Apply</button>
                     </div>
                     <p id="coupon-message" class="text-xs font-semibold mt-1 hidden"></p>
                 </div>
 
-                <!-- Financial calculation summary -->
+                <!-- Financial calculations -->
                 <div class="space-y-3 text-sm border-t border-gray-100 pt-4">
                     <div class="flex justify-between">
                         <span class="text-muted">সাবটোটাল</span>
@@ -148,15 +159,17 @@
             </div>
 
         </div>
-    </main>
+    </div>
 
-    <!-- Supabase SDK -->
+    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে ফুটার ইনজেক্ট করবে) -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <!-- 🇧🇩 BD Locations Map and Dynamic Checkout Logic Script -->
     <script>
-        // ১. সম্পূর্ণ বাংলাদেশের ৮টি বিভাগ, ৬৪টি জেলা ও উপজেলার ডাইনামিক অবজেক্ট
-        // ঢাকা বিভাগের জেলাগুলোকে (ঢাকা সিটি ছাড়া) "Dhaka Sub Area" হিসেবে চিহ্নিত করার লজিক এতে রয়েছে
         const bdLocations = {
             "Dhaka": {
                 "Dhaka (City)": ["Mirpur", "Uttara", "Dhanmondi", "Gulshan", "Badda", "Motijheel", "Mohammadpur", "Khilgaon"],
@@ -175,7 +188,7 @@
                 "Shariatpur": ["Shariatpur Sadar", "Damudya", "Gosairhat", "Naria", "Zajira", "Bhedarganj"]
             },
             "Chittagong": {
-                "Chittagong": ["Panchlaish", "Double Mooring", "Hathazari", "Sandwip", "Raozan", "Rangunia", "Patiya", "Anwara"],
+                "Chittagong": ["Double Mooring", "Hathazari", "Sandwip", "Raozan", "Rangunia", "Patiya", "Anwara"],
                 "Cox's Bazar": ["Cox's Bazar Sadar", "Chakaria", "Maheshkhali", "Ramu", "Teknaf", "Ukhiya", "Pekua"],
                 "Feni": ["Feni Sadar", "Chhagalnaiya", "Daganbhuiyan", "Parshuram", "Sonavazi"],
                 "Comilla": ["Comilla Sadar", "Barura", "Chandina", "Daudkandi", "Debidwar", "Homna", "Laksam", "Muradnagar"]
@@ -206,80 +219,92 @@
             }
         };
 
-        let supabaseClient = null;
-        let productPrice = 200; // প্রোডাক্টের ডামি বেইজ প্রাইস (যা সুপাবেস থেকে লোড হবে)
-        let productQty = 1;
+        let cartItems = [];
         let shippingCost = 0;
         let couponDiscount = 0.0;
         let couponCodeApplied = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
-            const supabaseUrl = 'YOUR_SUPABASE_URL';
-            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-
-            async function initializeSupabase() {
-                try {
-                    const response = await fetch('/api/auth/config');
-                    if (!response.ok) throw new Error("Config error");
-                    const config = await response.json();
-                    
-                    if (config.supabase_url && config.supabase_anon_key) {
-                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        // সুপাবেস কানেক্ট সফল হলে প্রোডাক্টের রিয়েল ডাটা ফেচ হবে
-                        loadCheckoutProduct();
-                    } else {
-                        console.warn("সুপাবেস ডেমো মোডে চলছে।");
-                        renderCheckoutSummary();
-                    }
-                } catch (err) {
-                    console.error("Supabase failed", err);
-                    renderCheckoutSummary();
-                }
-            }
-
-            // --- খ. প্রোডাক্ট ইনফো ডাইনামিক লোড ---
-            async function loadCheckoutProduct() {
-                // ইউআরএল থেকে প্রোডাক্টের ID ও পরিমাণ (Qty) বের করা
-                const urlParams = new URLSearchParams(window.location.search);
-                const productId = urlParams.get('id');
-                const qtyParam = urlParams.get('qty') || 1;
-                productQty = parseInt(qtyParam);
-
-                if (!productId) {
-                    document.getElementById('prod-title').innerText = "কোনো প্রোডাক্ট সিলেক্ট করা হয়নি।";
+            // --- ক. সুপাবেস সেশন ও অটো-ফিল অ্যাড্রেস ---
+            async function autofillUserProfile() {
+                // layout.js গ্লোবালি সুপাবেস ক্লায়েন্ট রেডি করলে এটি ট্রিগার হবে
+                if (!window.supabaseClient) {
+                    setTimeout(autofillUserProfile, 100);
                     return;
                 }
-
+                const client = window.supabaseClient;
                 try {
-                    const { data: product } = await supabaseClient.from('products').select('*').eq('id', productId).single();
-                    if (product) {
-                        productPrice = parseFloat(product.regular_price);
+                    const { data: { session } } = await client.auth.getSession();
+                    if (!session) return;
+
+                    const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).single();
+                    if (profile) {
+                        if (profile.full_name) document.getElementById('customer_name').value = profile.full_name;
+                        if (profile.phone_number) document.getElementById('customer_phone').value = profile.phone_number;
                         
-                        document.getElementById('prod-title').innerText = product.title;
-                        document.getElementById('prod-qty').innerText = productQty;
-                        if (product.images && product.images.length > 0) {
-                            document.getElementById('prod-img').innerHTML = `<img src="${product.images[0]}" class="w-full h-full object-cover">`;
+                        // স্বয়ংক্রিয়ভাবে আগের সংরক্ষিত ড্রপডাউন সিলেক্ট করা
+                        if (profile.division) {
+                            divisionSelect.value = profile.division;
+                            divisionSelect.dispatchEvent(new Event('change'));
+                            
+                            if (profile.district) {
+                                districtSelect.value = profile.district;
+                                districtSelect.dispatchEvent(new Event('change'));
+                                
+                                if (profile.upazila) {
+                                    upazilaSelect.value = profile.upazila;
+                                }
+                            }
                         }
-                        renderCheckoutSummary();
+                        if (profile.address_details) {
+                            document.getElementById('delivery_address').value = profile.address_details;
+                        }
+                        calculateShipping(); // ডেলিভারি চার্জ হিসাব করা
                     }
-                } catch(e) {
-                    console.error("Product load error", e);
+                } catch (e) {
+                    console.error("Autofill profiles error:", e);
                 }
             }
 
-            // --- গ. ডাইনামিক ডিস্ট্রিক্ট ও উপজেলা লোডার এবং শিপিং কস্ট ক্যালকুলেশন ---
+            // --- খ. লোকাল স্টোরেজ থেকে কার্ট লোড ---
+            function loadCartFromLocalStorage() {
+                cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                const listContainer = document.getElementById('cart-items-list');
+
+                if (cartItems.length > 0) {
+                    listContainer.innerHTML = '';
+                    cartItems.forEach(item => {
+                        listContainer.innerHTML += `
+                            <div class="flex gap-4 py-3 items-center">
+                                <div class="w-12 h-12 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden shrink-0">
+                                    ${item.image_url ? `<img src="${item.image_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image"></i>`}
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="font-bold text-xs text-dark truncate">${item.title}</h4>
+                                    <p class="text-[0.65rem] text-muted font-body">৳${item.price} x ${item.quantity}</p>
+                                </div>
+                                <div class="text-right font-bold text-xs text-dark shrink-0 font-body">
+                                    ৳${item.price * item.quantity}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    listContainer.innerHTML = '<p class="text-center py-5 text-sm text-gray-500">আপনার কার্টটি খালি।</p>';
+                }
+                renderCheckoutSummary();
+            }
+
+            // --- গ. ডিস্ট্রিক্ট ও উপজেলা লোডার ---
             const divisionSelect = document.getElementById('division');
             const districtSelect = document.getElementById('district');
             const upazilaSelect = document.getElementById('upazila');
 
-            // ১. বিভাগ লোড করা
             for (let division in bdLocations) {
                 divisionSelect.innerHTML += `<option value="${division}">${division}</option>`;
             }
 
-            // ২. বিভাগ পরিবর্তনের ওপর ভিত্তি করে জেলা ও ডেলিভারি চার্জ নির্ধারণ
             divisionSelect.addEventListener('change', (e) => {
                 const selectedDivision = e.target.value;
                 districtSelect.innerHTML = `<option value="">নির্বাচন করুন</option>`;
@@ -290,10 +315,9 @@
                         districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
                     }
                 }
-                calculateShipping(); // ডেলিভারি চার্জ হিসাব করা
+                calculateShipping();
             });
 
-            // ৩. জেলা পরিবর্তনের ওপর ভিত্তি করে উপজেলা এবং ডেলিভারি চার্জ নির্ধারণ
             districtSelect.addEventListener('change', (e) => {
                 const selectedDivision = divisionSelect.value;
                 const selectedDistrict = e.target.value;
@@ -304,10 +328,9 @@
                         upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
                     });
                 }
-                calculateShipping(); // ডেলিভারি চার্জ হিসাব করা
+                calculateShipping();
             });
 
-            // ৪. ডেলিভারি চার্জের অটোমেটিক লজিক
             function calculateShipping() {
                 const division = divisionSelect.value;
                 const district = districtSelect.value;
@@ -315,17 +338,30 @@
                 if (!division || !district) {
                     shippingCost = 0;
                 } else if (district === "Dhaka (City)") {
-                    shippingCost = 60; // ঢাকা সিটি
+                    shippingCost = 60;
                 } else if (division === "Dhaka") {
-                    shippingCost = 100; // ঢাকা বিভাগের অন্যান্য জেলা (Dhaka Sub Area)
+                    shippingCost = 100;
                 } else {
-                    shippingCost = 120; // অন্যান্য সকল জেলা (Outside Dhaka)
+                    shippingCost = 120;
                 }
-
                 renderCheckoutSummary();
             }
 
-            // --- ঘ. ডাইনামিক কুপন ডিসকাউন্ট সিস্টেম (FastAPI ইন্টিগ্রেটেড) ---
+            // --- ঘ. প্রিপেইড পেমেন্ট অপশন ডাইনামিক ফিল্ড টগল (ফিক্সড) ---
+            const prepaidInstructions = document.getElementById('prepaid-instructions');
+            const paymentRadios = document.querySelectorAll('.payment-method-radio');
+
+            paymentRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    if (e.target.value === 'Prepaid') {
+                        prepaidInstructions.classList.remove('hidden');
+                    } else {
+                        prepaidInstructions.classList.add('hidden');
+                    }
+                });
+            });
+
+            // --- ঙ. কুপন ডিসকাউন্ট প্রসেস ---
             document.getElementById('btn-apply-coupon').addEventListener('click', async () => {
                 const couponCode = document.getElementById('coupon-input').value.trim();
                 const couponMsg = document.getElementById('coupon-message');
@@ -335,19 +371,13 @@
                     return;
                 }
 
-                const subtotal = productPrice * productQty;
+                const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
                 try {
-                    // ব্যাকএন্ডের কুপন ভ্যালিডেশন এপিআই কল করা হচ্ছে
                     const response = await fetch('/api/orders/validate-coupon', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            code: couponCode,
-                            order_amount: subtotal
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ code: couponCode, order_amount: subtotal })
                     });
 
                     const result = await response.json();
@@ -356,13 +386,11 @@
                         couponDiscount = parseFloat(result.discount_amount);
                         couponCodeApplied = couponCode.toUpperCase();
                         
-                        // সাকসেস মেসেজ ও রো প্রদর্শন
                         couponMsg.innerText = `সাফল্য! ৳${couponDiscount} ডিসকাউন্ট পাওয়া গেছে।`;
                         couponMsg.className = "text-xs font-semibold mt-1 text-emerald-600 block";
                         document.getElementById('discount-row').classList.remove('hidden');
                         document.getElementById('discount-val').innerText = `-৳ ${couponDiscount}`;
                     } else {
-                        // এরর মেসেজ প্রদর্শন
                         couponDiscount = 0;
                         couponCodeApplied = "";
                         couponMsg.innerText = result.detail;
@@ -370,15 +398,14 @@
                         document.getElementById('discount-row').classList.add('hidden');
                     }
                 } catch (err) {
-                    console.error("Coupon API connection error", err);
+                    console.error("Coupon error", err);
                 } finally {
                     renderCheckoutSummary();
                 }
             });
 
-            // --- ঙ. ফাইন্যান্সিয়াল হিসাব-নিকাশ রেন্ডারিং ---
             function renderCheckoutSummary() {
-                const subtotal = productPrice * productQty;
+                const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
                 const totalPayable = (subtotal + shippingCost) - couponDiscount;
 
                 document.getElementById('subtotal-val').innerText = `৳ ${subtotal}`;
@@ -386,27 +413,45 @@
                 document.getElementById('total-val').innerText = `৳ ${totalPayable}`;
             }
 
-            // --- চ. ফাইনাল অর্ডার প্লেসিং লজিক (COD Payment) ---
+            // --- চ. ফাইনাল অর্ডার প্লেসিং এবং ডাইনামিক অটো-সেভ অ্যাড্রেস লজিক ---
             document.getElementById('btn-place-order').addEventListener('click', async () => {
+                if (cartItems.length === 0) {
+                    alert("আপনার কার্টে কোনো প্রোডাক্ট নেই।");
+                    return;
+                }
+
                 const customerName = document.getElementById('customer_name').value.trim();
                 const customerPhone = document.getElementById('customer_phone').value.trim();
                 const division = divisionSelect.value;
                 const district = districtSelect.value;
                 const upazila = upazilaSelect.value;
                 const addressDetails = document.getElementById('delivery_address').value.trim();
+                const orderNote = document.getElementById('order_note').value.trim();
+                const paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
 
                 if (!customerName || !customerPhone || !division || !district || !upazila || !addressDetails) {
                     alert("অর্ডার সম্পন্ন করতে ফর্মের সমস্ত তথ্য পূরণ করা আবশ্যক।");
                     return;
                 }
 
-                if (!supabaseClient) {
-                    alert("ডেমো মোডে অর্ডার সাবমিট করা সম্ভব নয়।");
+                let paymentDetails = null;
+                if (paymentMethod === 'Prepaid') {
+                    const senderNo = document.getElementById('sender_no').value.trim();
+                    const trxId = document.getElementById('trx_id').value.trim();
+                    if (!senderNo || !trxId) {
+                        alert("বিকাশ/নগদ পেমেন্ট সম্পন্ন করতে প্রেরক নম্বর এবং Trx ID প্রদান করুন।");
+                        return;
+                    }
+                    paymentDetails = { sender_number: senderNo, trx_id: trxId };
+                }
+
+                if (!window.supabaseClient) {
+                    alert("সুপাবেস ডাটাবেজ কানেক্ট করা হয়নি।");
                     return;
                 }
 
-                // সুপাবেস সেশন থেকে ইউজার আইডি চেক
-                const sessionData = await supabaseClient.auth.getSession();
+                const client = window.supabaseClient;
+                const sessionData = await client.auth.getSession();
                 const user = sessionData.data.session ? sessionData.data.session.user : null;
 
                 if (!user) {
@@ -416,49 +461,69 @@
                 }
 
                 const fullDeliveryAddress = `${addressDetails}, ${upazila}, ${district}, ${division}`;
-                
-                const payload = {
-                    user_id: user.id,
-                    product_id: new URLSearchParams(window.location.search).get('id'),
-                    quantity: productQty,
-                    customer_name: customerName,
-                    customer_phone: customerPhone,
-                    delivery_address: fullDeliveryAddress,
-                    collectable_amount: (productPrice * productQty) + shippingCost - couponDiscount
-                };
+                const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
                 const orderBtn = document.getElementById('btn-place-order');
                 orderBtn.disabled = true;
                 orderBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-lg"></i> প্রসেসিং হচ্ছে...`;
 
                 try {
-                    // ব্যাকএন্ডের এপিআই-এর মাধ্যমে অর্ডার প্লেস করা
+                    // ১. কাস্টমারের নতুন ঠিকানাটিprofiles টেবিলে ডাইনামিকালি অটো-সেভ করা (পরবর্তী অর্ডারের অটো-ফিলের জন্য) [1.1.1]
+                    await client.from('profiles').update({
+                        full_name: customerName,
+                        phone_number: customerPhone,
+                        division: division,
+                        district: district,
+                        upazila: upazila,
+                        address_details: addressDetails
+                    }).eq('id', user.id);
+
+                    // ২. ব্যাকএন্ডের এপিআই-এর মাধ্যমে অর্ডার প্লেস করা
+                    const payload = {
+                        user_id: user.id,
+                        customer_name: customerName,
+                        customer_phone: customerPhone,
+                        delivery_address: fullDeliveryAddress,
+                        payment_method: paymentMethod,
+                        payment_details: paymentDetails,
+                        order_note: orderNote || null,
+                        items: cartItems.map(item => ({
+                            product_id: item.product_id,
+                            quantity: item.quantity,
+                            price: item.price
+                        })),
+                        collectable_amount: (subtotal + shippingCost) - couponDiscount,
+                        shipping_cost: shippingCost,
+                        coupon_code: couponCodeApplied || null,
+                        coupon_discount: couponDiscount
+                    };
+
                     const response = await fetch('/api/orders/place', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
 
                     const result = await response.json();
                     if (response.ok) {
                         alert("সাফল্য! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
-                        window.location.href = "/profile"; // প্রোফাইল অর্ডার হিস্ট্রিতে নিয়ে যাওয়া
+                        localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
+                        window.location.href = "/profile";
                     } else {
-                        alert("অর্ডার প্লেস করতে সমস্যা হয়েছে: " + result.message);
+                        alert("অর্ডার প্লেস করতে সমস্যা হয়েছে: " + result.detail);
                     }
                 } catch (err) {
-                    alert("নেটওয়ার্ক এরর! অর্ডার সফল হয়নি।");
+                    alert("সার্ভার বা নেটওয়ার্ক কানেকশন ফেইলড।");
                 } finally {
                     orderBtn.disabled = false;
                     orderBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> অর্ডার কনফার্ম করুন`;
                 }
             });
 
-            // প্রসেস শুরু করুন
-            initializeSupabase();
+            // ট্রিগার প্রসেস স্টার্ট
+            loadCartFromLocalStorage();
+            autofillUserProfile();
         });
     </script>
 </body>
-  </html>
+</html>
