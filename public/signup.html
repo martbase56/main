@@ -57,17 +57,17 @@
 
             <div>
                 <label class="block font-semibold text-sm mb-1 text-dark">ইমেইল ঠিকানা</label>
-                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="example@domain.com" required>
+                <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="example@domain.com" required>
             </div>
 
             <div>
                 <label class="block font-semibold text-sm mb-1 text-dark">মোবাইল নম্বর</label>
-                <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="017XXXXXXXX" required>
+                <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="017XXXXXXXX" required>
             </div>
 
             <div>
                 <label class="block font-semibold text-sm mb-1 text-dark">পাসওয়ার্ড</label>
-                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড" required>
+                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড" required>
             </div>
 
             <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2">
@@ -86,7 +86,7 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let supabase = null;
+            let supabaseClient = null;
 
             // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড ---
             async function initializeSupabase() {
@@ -96,7 +96,8 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        supabase = supabaseJS.createClient(config.supabase_url, config.supabase_anon_key);
+                        // window.supabase ব্যবহার করে ইনিশিয়ালাইজেশন করা হয়েছে
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         console.log("Supabase Client initialized successfully.");
                     } else {
                         console.warn("Credentials missing in env variables.");
@@ -111,7 +112,7 @@
             // --- খ. কাস্টমার রেজিস্ট্রেশন হ্যান্ডলার ---
             document.getElementById('customer-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!supabase) {
+                if (!supabaseClient) {
                     alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
@@ -122,8 +123,7 @@
                 const password = document.getElementById('password').value;
 
                 try {
-                    // Supabase Auth-এ সাইনআপ এবং মেটাডেটা প্রেরণ (যা ট্রিগারের মাধ্যমে profiles টেবিলে যাবে)
-                    const { data, error } = await supabase.auth.signUp({
+                    const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
                         options: {
