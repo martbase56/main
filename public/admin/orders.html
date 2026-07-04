@@ -36,7 +36,7 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (Admin Navigation Menu) -->
+    <!-- 🗂️ Left Sticky Sidebar -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -54,7 +54,6 @@
                 <i class="fa-solid fa-users text-lg"></i>
                 <span>ইউজার লিস্ট</span>
             </a>
-            <!-- অর্ডার ম্যানেজমেন্ট একটিভ পেজ -->
             <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
                 <i class="fa-solid fa-cart-shopping text-lg"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
@@ -79,7 +78,6 @@
 
     <!-- 📊 Main Content Area -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
-        <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
             <div>
                 <h2 class="text-2xl font-extrabold text-dark">লাইভ অর্ডার ম্যানেজমেন্ট</h2>
@@ -91,26 +89,25 @@
             </div>
         </header>
 
-        <!-- 🔍 Search & Filter Header -->
+        <!-- Search Header -->
         <div class="bg-white rounded-2xl border border-black/[0.01] p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
                 <h3 class="font-bold text-base flex items-center gap-1.5 text-primary"><i class="fa-solid fa-receipt animate-pulse"></i> লাইভ ট্র্যাকিং সার্চ</h3>
-                <p class="text-xs text-muted mt-0.5">অর্ডার আইডি দিয়ে তাৎক্ষণিকভাবে ফিল্টার করুন</p>
+                <p class="text-xs text-muted mt-0.5">অর্ডার আইডি দিয়ে ফিল্টার করুন</p>
             </div>
             <!-- 🔍 Live Order ID Search -->
             <div class="relative w-full sm:w-[320px]">
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input type="text" id="order-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-mono text-dark placeholder-gray-400" placeholder="অর্ডার আইডি (যেমন: d39b) দিয়ে খুঁজুন...">
+                <input type="text" id="order-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-mono text-dark placeholder-gray-400" placeholder="অর্ডার আইডি (যেমন: 0827) দিয়ে খুঁজুন...">
             </div>
         </div>
 
-        <!-- Orders Table List (With 2 Tabs: Normal vs Reseller Orders) -->
+        <!-- Orders Table List -->
         <div class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg shadow-primary/2">
-            <!-- Sub-tab selectors -->
             <div class="flex gap-4 border-b border-gray-100 pb-4 mb-6">
-                <button id="btn-normal-orders" class="px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-white transition-all shadow-md shadow-primary/10" onclick="filterOrderTable('customer')">সাধারণ কাস্টমার অর্ডার</button>
+                <button id="btn-normal-orders" class="px-4 py-1.5 rounded-full text-xs font-bold bg-primary text-white shadow-md shadow-primary/10" onclick="filterOrderTable('customer')">সাধারণ কাস্টমার অর্ডার</button>
                 <button id="btn-reseller-orders" class="px-4 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-dark transition-all" onclick="filterOrderTable('reseller')">রিসেলার কাস্টম অর্ডার</button>
             </div>
 
@@ -122,8 +119,8 @@
                             <th class="py-3 px-4">অর্ডারকারী</th>
                             <th class="py-3 px-4">ডেলিভারি তথ্য</th>
                             <th class="py-3 px-4">টাকা (৳)</th>
-                            <th class="py-3 px-4">বর্তমান স্ট্যাটাস</th>
-                            <th class="py-3 px-4 text-center">স্ট্যাটাস পরিবর্তন (৫টি ধাপ)</th>
+                            <th class="py-3 px-4">স্ট্যাটাস</th>
+                            <th class="py-3 px-4 text-center">স্ট্যাটাস পরিবর্তন</th>
                         </tr>
                     </thead>
                     <tbody id="admin-orders-list" class="divide-y divide-gray-100">
@@ -143,7 +140,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // মোবাইল সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -155,7 +151,7 @@
 
             let supabaseClient = null;
             let currentToken = null;
-            let allOrdersList = []; // লাইভ ফিল্টারের জন্য গ্লোবাল এরে
+            let allOrdersList = []; 
 
             async function initializeSupabase() {
                 try {
@@ -204,7 +200,6 @@
                 }
             }
 
-            // --- ক. এপিআই এর মাধ্যমে অর্ডারের তালিকা লোড ---
             async function loadAdminOrders(token) {
                 try {
                     const response = await fetch('/api/admin/orders', {
@@ -213,7 +208,6 @@
 
                     if (response.ok) {
                         allOrdersList = await response.json();
-                        // ডিফল্টভাবে সাধারণ কাস্টমারদের অর্ডার রেন্ডার করা হবে
                         filterOrderTable('customer');
                     }
                 } catch(e) {
@@ -221,7 +215,6 @@
                 }
             }
 
-            // সাধারণ ক্রেতা বনাম রিসেলার অর্ডার ফিল্টারিং রেন্ডার
             window.filterOrderTable = function(role) {
                 const ordersList = document.getElementById('admin-orders-list');
                 const btnNormal = document.getElementById('btn-normal-orders');
@@ -243,15 +236,17 @@
                         const userName = order.profiles ? order.profiles.full_name : 'N/A';
                         const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50' : (order.status === 'cancelled' ? 'text-red-500 bg-red-50' : 'text-primary bg-primary/5');
 
+                        // (গুরুত্বপূর্ণ ফিক্স) ব্যাকটিক কনফ্লিক্ট এড়াতে স্ট্রিং কনক্যাটিনেশন ব্যবহার করা হয়েছে [2]
+                        const displayOrderId = order.order_id_code || ("#0" + order.order_id_num) || order.id.substring(0,8);
+
                         ordersList.innerHTML += `
                             <tr class="hover:bg-gray-50/50 transition-colors">
-                                <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${order.id}</td>
+                                <td class="py-4 px-4 font-mono text-sm text-primary font-bold">${displayOrderId}</td>
                                 <td class="py-4 px-4 font-semibold text-dark">${userName}</td>
                                 <td class="py-4 px-4 text-xs text-muted max-w-[200px] truncate" title="${order.delivery_address}">${order.delivery_address}</td>
                                 <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
                                 <td class="py-4 px-4"><span class="px-2 py-0.5 rounded text-xs font-bold ${statusColor}">${order.status}</span></td>
                                 <td class="py-4 px-4 text-center">
-                                    <!-- ৫টি কাস্টম স্ট্যাটাস ড্রপডাউন ( pending, accepted, shipped, delivered, cancelled ) -->
                                     <select onchange="updateOrderStatus('${order.id}', this.value)" class="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary text-dark font-bold cursor-pointer bg-white">
                                         <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
                                         <option value="accepted" ${order.status === 'accepted' ? 'selected' : ''}>Accepted</option>
@@ -268,7 +263,6 @@
                 }
             }
 
-            // --- খ. এপিআই একশন: ৫টি স্ট্যাটাস পরিবর্তন লজিক ---
             window.updateOrderStatus = async function(orderId, newStatus) {
                 if(!confirm(`আপনি কি অর্ডারটির স্ট্যাটাস পরিবর্তন করে '${newStatus}' করতে চান?`)) return;
                 try {
@@ -279,7 +273,7 @@
                     const result = await response.json();
                     if (response.ok) {
                         alert(result.message);
-                        loadAdminOrders(currentToken); // ডাটা রিফ্রেশ করা
+                        loadAdminOrders(currentToken); 
                     } else {
                         alert("ত্রুটি: " + result.detail);
                     }
@@ -288,7 +282,7 @@
                 }
             };
 
-            // --- 🔍 অর্ডার আইডি লাইভ সার্চ লজিক ---
+            // --- 🔍 অর্ডার আইডি লাইভ সার্চ লজিক (৪ ডিজিটের ডাইনামিক ফিল্টার) ---
             const orderSearchInput = document.getElementById('order-search-input');
             if (orderSearchInput) {
                 orderSearchInput.addEventListener('input', (e) => {
@@ -318,4 +312,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
