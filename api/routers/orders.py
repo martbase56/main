@@ -3,6 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from api.database import supabase
 from api.routers.auth import get_current_user
+from pydantic import BaseModel
 
 router = APIRouter()
 
@@ -112,3 +113,50 @@ def update_order_status(order_id: str, new_status: str, admin_user: dict = Depen
             }
 
     return {"status": "success", "message": f"Order status updated to {new_status}."}
+
+
+# api/routers/orders.py এর ভেতরে যুক্ত করুন
+
+class CouponValidateSchema(BaseModel):
+    code: str
+    order_amount: float
+
+@router.post("/validate-coupon")
+def validate_coupon(data: CouponValidateSchema):
+    try:
+        # সচল কুপন কোডটি ডাটাবেজ থেকে খুঁজে বের করা
+        query = supabase.table("coupons")\
+            .select("*")\
+            .eq("code", data.code.upper())\
+            .eq("is_active", True)\
+            .execute()
+            
+        if not query.data:
+            raise HTTPException(status_code=404, detail="দুঃখিত, কুপন কোডটি সঠিক নয় অথবা এটির মেয়াদ শেষ হয়েছে।")
+        
+        coupon = query.data[0]
+        
+        # মিনিমাম অর্ডার অ্যামাউন্ট চেক
+        if data.order_amount < float(coupon['min_order_amount']):
+            raise HTTPException(
+                status_code=400, 
+                detail=f"এই কুপনটি ব্যবহার করতে ন্যূনতম ৳{coupon['min_order_amount']} অর্ডারের প্রয়োজন।"
+            )
+        
+        # ডিসকাউন্ট হিসাব করা
+        discount = 0.0
+        if coupon['discount_type'] == 'percentage':
+            discount = data.order_amount * (float(coupon['discount_value']) / 100.0)
+        else:
+            discount = float(coupon['discount_value'])
+            
+        return {
+            "status": "success",
+            "discount_amount": discount,
+            "discount_type": coupon['discount_type'],
+            "discount_value": coupon['discount_value']
+        }
+    except Exception as e:
+        if isinstance(e, HTTPException): raise e
+        raise HTTPException(status_code=500, detail=str(e))
+        
