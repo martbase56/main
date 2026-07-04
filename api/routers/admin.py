@@ -1,8 +1,9 @@
-# api/routers/admin.py (পরিপূর্ণ ও চূড়ান্ত কোড)
+# api/routers/admin.py
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from typing import List, Dict, Any, Optional
 from api.database import supabase
 from api.routers.auth import get_current_user
 
@@ -87,7 +88,6 @@ def get_all_orders(admin: dict = Depends(verify_admin)):
 def get_settings(admin: dict = Depends(verify_admin)):
     try:
         query = supabase.table("system_settings").select("*").execute()
-        # লিস্ট অব ডিকশনারিকে কি-ভ্যালু পেয়ারে রূপান্তর
         settings_dict = {item['key']: item['value'] for item in query.data}
         return settings_dict
     except Exception as e:
@@ -102,5 +102,53 @@ def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_adm
         supabase.table("system_settings").upsert({"key": "dashboard_notice", "value": data.dashboard_notice}).execute()
         supabase.table("system_settings").upsert({"key": "imgbb_api_key", "value": data.imgbb_api_key}).execute()
         return {"status": "success", "message": "সিস্টেম সেটিংস সফলভাবে আপডেট করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ==================== ব্যবহারকারী নিয়ন্ত্রণ এন্ডপয়েন্টসমূহ ====================
+
+# --- ৮. এন্ডপয়েন্ট: সকল ব্যবহারকারীর তালিকা ফেচ করা ---
+@router.get("/users")
+def get_all_users(admin: dict = Depends(verify_admin)):
+    try:
+        # profiles টেবিল থেকে সফলভাবে তালিকা নিয়ে আসা
+        query = supabase.table("profiles").select("*").order("created_at", desc=True).execute()
+        return query.data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ৯. এন্ডপয়েন্ট: ব্যবহারকারীকে ব্যান করা ---
+@router.post("/users/{user_id}/ban")
+def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
+    try:
+        supabase.table("profiles").update({"is_active": False, "activation_status": "banned"}).eq("id", user_id).execute()
+        return {"status": "success", "message": "ব্যবহারকারীকে সফলভাবে ব্যান করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ১০. এন্ডপয়েন্ট: ব্যবহারকারীকে আনব্যান/একটিভ করা ---
+@router.post("/users/{user_id}/unban")
+def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
+    try:
+        supabase.table("profiles").update({"is_active": True, "activation_status": "active"}).eq("id", user_id).execute()
+        return {"status": "success", "message": "ব্যবহারকারীকে সফলভাবে সচল ও অ্যাক্টিভ করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ১১. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল চিরতরে ডিলিট করা ---
+@router.delete("/users/{user_id}")
+def delete_user_account(user_id: str, admin: dict = Depends(verify_admin)):
+    try:
+        # Supabase Auth সিস্টেম থেকে অ্যাকাউন্ট ডিলিট করা (service_role ক্ষমতার মাধ্যমে) [1]
+        supabase.auth.admin.delete_user(user_id)
+        
+        # Profiles টেবিল থেকে ডাটা ডিলিট করা
+        supabase.table("profiles").delete().eq("id", user_id).execute()
+        
+        return {"status": "success", "message": "ব্যবহারকারীর অ্যাকাউন্ট ও প্রোফাইল ডাটাবেজ থেকে চিরতরে ডিলিট করা হয়েছে।"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
