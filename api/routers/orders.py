@@ -1,149 +1,49 @@
-# api/routers/orders.py
+# api/routers/orders.py (সম্পূর্ণ ও চূড়ান্ত কোড)
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
 from api.database import supabase
 from api.routers.auth import get_current_user
-from pydantic import BaseModel
 
 router = APIRouter()
 
-class OrderSchema(BaseModel):
-    user_id: str
+# --- ১. Pydantic ডেটা ভ্যালিডেশন স্কিমাস ---
+
+class OrderItemSchema(BaseModel):
     product_id: str
     quantity: int
+    price: float
+
+class OrderCreateSchema(BaseModel):
+    user_id: str
     customer_name: str
     customer_phone: str
     delivery_address: str
-    collectable_amount: float = 0
-
-@router.post("/place")
-def place_order(order: OrderSchema):
-    # ১. ব্যবহারকারীর প্রোফাইল থেকে রোল চেক
-    user_query = supabase.table("profiles").select("role").eq("id", order.user_id).single().execute()
-    user_profile = user_query.data
-    if not user_profile:
-        raise HTTPException(status_code=404, detail="User profile not found")
-    
-    user_role = user_profile['role']
-
-    # ২. প্রোডাক্টের মূল্য তালিকা চেক
-    product_query = supabase.table("products").select("*").eq("id", order.product_id).single().execute()
-    product = product_query.data
-    if not product:
-        raise HTTPException(status_code=404, detail="Product not found")
-
-    regular_price = float(product['regular_price'])
-    reseller_price = float(product['reseller_price'])
-
-    # ৩. লাভ ও মূল্যের হিসাবনিকাশ
-    total_cost = 0.0
-    reseller_profit = 0.0
-
-    if user_role == 'reseller':
-        total_cost = reseller_price * order.quantity
-        if order.collectable_amount > total_cost:
-            reseller_profit = order.collectable_amount - total_cost
-        else:
-            order.collectable_amount = total_cost
-            reseller_profit = 0.0
-    else:
-        total_cost = regular_price * order.quantity
-        order.collectable_amount = total_cost
-        reseller_profit = 0.0
-
-    # ৪. ডাটাবেজে নতুন অর্ডার রেকর্ড তৈরি
-    order_payload = {
-        "placed_by": order.user_id,
-        "user_role": user_role,
-        "product_id": order.product_id,
-        "quantity": order.quantity,
-        "customer_name": order.customer_name,
-        "customer_phone": order.customer_phone,
-        "delivery_address": order.delivery_address,
-        "total_cost": total_cost,
-        "collectable_amount": order.collectable_amount,
-        "reseller_profit": reseller_profit,
-        "status": "pending"
-    }
-
-    inserted_order = supabase.table("orders").insert(order_payload).execute()
-    
-    return {
-        "status": "success",
-        "message": "Order placed successfully!",
-        "order": inserted_order.data
-    }
-
-@router.post("/admin/update-status/{order_id}")
-def update_order_status(order_id: str, new_status: str, admin_user: dict = Depends(get_current_user)):
-    # এডমিন সিকিউরিটি চেক
-    admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
-    if not admin_check.data or admin_check.data['role'] != 'admin':
-        raise HTTPException(status_code=403, detail="Only admins can update order status.")
-
-    # ১. অর্ডারের বর্তমান তথ্য ডাটাবেজ থেকে আনা
-    order_query = supabase.table("orders").select("*").eq("id", order_id).single().execute()
-    order = order_query.data
-    if not order:
-        raise HTTPException(status_code=404, detail="Order not found")
-
-    if order['status'] == 'delivered':
-        raise HTTPException(status_code=400, detail="This order is already delivered and profit was credited.")
-
-    # ২. অর্ডারের স্ট্যাটাস আপডেট করা
-    supabase.table("orders").update({"status": new_status}).eq("id", order_id).execute()
-
-    # ৩. স্ট্যাটাস যদি 'delivered' হয় এবং অর্ডারটি যদি কোনো রিসেলার প্লেস করে থাকে
-    if new_status == 'delivered' and order['user_role'] == 'reseller':
-        reseller_id = order['placed_by']
-        profit = float(order['reseller_profit'])
-
-        if profit > 0:
-            # রিসেলারের বর্তমান ব্যালেন্স নিয়ে আসা
-            res_query = supabase.table("profiles").select("wallet_balance").eq("id", reseller_id).single().execute()
-            current_balance = float(res_query.data['wallet_balance']) if res_query.data else 0.0
-            
-            # নতুন ব্যালেন্স হিসাব করে আপডেট করা
-            new_balance = current_balance + profit
-            supabase.table("profiles").update({"wallet_balance": new_balance}).eq("id", reseller_id).execute()
-
-            return {
-                "status": "success", 
-                "message": f"Order status updated. Profit BDT {profit} credited to reseller wallet."
-            }
-
-    return {"status": "success", "message": f"Order status updated to {new_status}."}
-
-
-# api/routers/orders.py এর ভেতরে যুক্ত করুন
+    payment_method: str = "COD"
+    payment_details: dict = None          # {"sender_number": "...", "trx_id": "..."}
+    order_note: str = None
+    items: list[OrderItemSchema]          # কার্টের সমস্ত প্রোডাক্টের তালিকা
+    collectable_amount: float             # কাস্টমার থেকে টোটাল কালেকশন (Discounts সহ)
+    shipping_cost: float
+    coupon_code: str = None
+    coupon_discount: float = 0.0
 
 class CouponValidateSchema(BaseModel):
     code: str
     order_amount: float
 
+
+# --- ২. এন্ডপয়েন্ট: কুপন ভ্যালিডেশন ---
 @router.post("/validate-coupon")
 def validate_coupon(data: CouponValidateSchema):
     try:
-        # সচল কুপন কোডটি ডাটাবেজ থেকে খুঁজে বের করা
-        query = supabase.table("coupons")\
-            .select("*")\
-            .eq("code", data.code.upper())\
-            .eq("is_active", True)\
-            .execute()
-            
+        query = supabase.table("coupons").select("*").eq("code", data.code.upper()).eq("is_active", True).execute()
         if not query.data:
-            raise HTTPException(status_code=404, detail="দুঃখিত, কুপন কোডটি সঠিক নয় অথবা এটির মেয়াদ শেষ হয়েছে।")
+            raise HTTPException(status_code=404, detail="অবৈধ বা নিষ্ক্রিয় কুপন কোড।")
         
         coupon = query.data[0]
-        
-        # মিনিমাম অর্ডার অ্যামাউন্ট চেক
         if data.order_amount < float(coupon['min_order_amount']):
-            raise HTTPException(
-                status_code=400, 
-                detail=f"এই কুপনটি ব্যবহার করতে ন্যূনতম ৳{coupon['min_order_amount']} অর্ডারের প্রয়োজন।"
-            )
+            raise HTTPException(status_code=400, detail=f"এই কুপনটি ব্যবহার করতে ন্যূনতম ৳{coupon['min_order_amount']} অর্ডারের প্রয়োজন।")
         
-        # ডিসকাউন্ট হিসাব করা
         discount = 0.0
         if coupon['discount_type'] == 'percentage':
             discount = data.order_amount * (float(coupon['discount_value']) / 100.0)
@@ -159,4 +59,58 @@ def validate_coupon(data: CouponValidateSchema):
     except Exception as e:
         if isinstance(e, HTTPException): raise e
         raise HTTPException(status_code=500, detail=str(e))
-        
+
+
+# --- ৩. এন্ডপয়েন্ট: মাল্টি-আইটেম অর্ডার প্লেসিং ---
+@router.post("/place")
+def place_order(order: OrderCreateSchema):
+    try:
+        # ক. ব্যবহারকারীর রোল চেক করা
+        user_query = supabase.table("profiles").select("role").eq("id", order.user_id).single().execute()
+        if not user_query.data:
+            raise HTTPException(status_code=404, detail="ব্যবহারকারী পাওয়া যায়নি।")
+        user_role = user_query.data['role']
+
+        # খ. প্রতিটি প্রোডাক্টের রিসেলার কস্ট গণনা করা (লাভ হিসাবের জন্য)
+        total_reseller_cost = 0.0
+        for item in order.items:
+            product_query = supabase.table("products").select("reseller_price").eq("id", item.product_id).single().execute()
+            if product_query.data:
+                total_reseller_cost += float(product_query.data['reseller_price']) * item.quantity
+
+        # গ. রিসেলার লাভ নির্ধারণ করা
+        reseller_profit = 0.0
+        if user_role == 'reseller':
+            # রিসেলারের লাভ = (কালেকশন অ্যামাউন্ট - শিপিং খরচ) - রিসেলার পাইকারি দাম
+            reseller_profit = (order.collectable_amount - order.shipping_cost) - total_reseller_cost
+            if reseller_profit < 0:
+                reseller_profit = 0.0
+
+        # ঘ. ডাটাবেজে অর্ডার ইনসার্ট করা
+        # Pydantic items অবজেক্টকে JSON ফরম্যাটে রূপান্তর
+        serialized_items = [item.dict() for item in order.items]
+
+        order_payload = {
+            "placed_by": order.user_id,
+            "user_role": user_role,
+            "customer_name": order.customer_name,
+            "customer_phone": order.customer_phone,
+            "delivery_address": order.delivery_address,
+            "payment_method": order.payment_method,
+            "payment_details": order.payment_details,
+            "order_note": order.order_note,
+            "items": serialized_items,
+            "total_cost": total_reseller_cost if user_role == 'reseller' else order.collectable_amount,
+            "collectable_amount": order.collectable_amount,
+            "shipping_cost": order.shipping_cost,
+            "coupon_code": order.coupon_code.upper() if order.coupon_code else None,
+            "coupon_discount": order.coupon_discount,
+            "reseller_profit": reseller_profit,
+            "status": "pending"
+        }
+
+        new_order = supabase.table("orders").insert(order_payload).execute()
+        return {"status": "success", "message": "আপনার অর্ডারটি সফলভাবে সাবমিট হয়েছে!", "order": new_order.data}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
