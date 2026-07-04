@@ -65,7 +65,7 @@
         </div>
     </header>
 
-    <!-- 🚀 Centered SaaS Style Modern Hero Section (Mockup Removed) -->
+    <!-- 🚀 Centered SaaS Style Modern Hero Section -->
     <section class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5">
         <div class="max-w-[850px] mx-auto px-5 text-center flex flex-col items-center">
             
@@ -91,7 +91,7 @@
 
     <main class="max-w-[1200px] mx-auto px-5">
 
-        <!-- 📸 Banner Slider (Responsive Web Banner 3:1 aspect ratio, 4 Slides, Indicator Dots below) -->
+        <!-- 📸 Banner Slider -->
         <section class="slider-section my-10 relative">
             <div class="slider-container w-full aspect-[3/1] max-sm:aspect-[2/1] rounded-2xl overflow-hidden relative shadow-md border border-primary/5">
                 <!-- Slide 1 -->
@@ -152,7 +152,6 @@
     <footer class="bg-[#0B0F19] text-gray-400 py-16 border-t border-white/5 font-bangla">
         <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             
-            <!-- Col 1: Brand Info & Socials -->
             <div class="footer-col">
                 <a href="/" class="font-headings font-extrabold text-3xl text-primary mb-5 inline-block">MartBaseBD</a>
                 <p class="text-[0.92rem] leading-relaxed mb-6 text-gray-400">
@@ -166,7 +165,6 @@
                 </div>
             </div>
 
-            <!-- Col 2: Top Nav Synced Quick Links -->
             <div class="footer-col">
                 <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">মেনু লিঙ্কসমূহ</h4>
                 <ul class="footer-links list-none text-sm space-y-3">
@@ -178,7 +176,6 @@
                 </ul>
             </div>
 
-            <!-- Col 3: Legal Policies -->
             <div class="footer-col">
                 <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পলিসি ও গাইডলাইন</h4>
                 <ul class="footer-links list-none text-sm space-y-3">
@@ -191,7 +188,6 @@
                 </ul>
             </div>
 
-            <!-- Col 4: Payments -->
             <div class="footer-col">
                 <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পেমেন্ট মেথডস</h4>
                 <p class="text-sm leading-relaxed mb-4">নিরাপদ পেমেন্ট গেটওয়ের মাধ্যমে আপনার ট্রানজেকশন সম্পন্ন করুন নিশ্চিন্তে।</p>
@@ -214,10 +210,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ১. সেফলি স্ক্রিপ্ট রান করার ডিফেন্সিভ মেকানিজম (DOMContentLoaded এর ভেতর)
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. মোবাইল টগল মেনু কন্ট্রোল (১০০% নিরাপদ) ---
+            // --- ক. মোবাইল টগল মেনু কন্ট্রোল ---
             const menuToggle = document.getElementById('menu-toggle');
             const navMenu = document.getElementById('nav-menu');
             const menuIcon = document.getElementById('menu-icon');
@@ -236,44 +231,19 @@
                 });
             }
 
-            // --- খ. ইমেজ স্লাইডার ইন্ডিকেটর ও অটো-স্লাইড লজিক (১০০% নিরাপদ) ---
+            // --- খ. ইমেজ স্লাইডার লজিক ---
+            let currentSlide = 0;
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
-            let currentSlide = 0;
-
-            // শুরুতে প্রথম স্লাইড বাদে বাকিগুলো হাইড করা
-            for (let i = 1; i < slides.length; i++) {
-                slides[i].classList.add('hidden');
-                slides[i].classList.remove('active');
-            }
-
+            
             function setSlide(index) {
-                if (!slides.length || index >= slides.length) return;
-                
-                // পূর্বের স্লাইড ও ডট নিষ্ক্রিয় করা
                 slides[currentSlide].classList.remove('active');
-                slides[currentSlide].classList.add('hidden');
-                if (dots[currentSlide]) {
-                    dots[currentSlide].classList.remove('active', 'bg-dark', 'w-[35px]');
-                    dots[currentSlide].classList.add('bg-gray-300', 'w-[25px]');
-                }
+                dots[currentSlide].classList.remove('active');
                 
-                // নতুন স্লাইড ও ডট সক্রিয় করা
                 currentSlide = index;
                 slides[currentSlide].classList.add('active');
-                slides[currentSlide].classList.remove('hidden');
-                if (dots[currentSlide]) {
-                    dots[currentSlide].classList.add('active', 'bg-dark', 'w-[35px]');
-                    dots[currentSlide].classList.remove('bg-gray-300', 'w-[25px]');
-                }
+                dots[currentSlide].classList.add('active');
             }
-
-            // গলোবাল স্লাইড চেঞ্জার যাতে HTML থেকে অন-ক্লিক ট্রিগার করা যায়
-            window.userSetSlide = function(index) {
-                clearInterval(slideInterval);
-                setSlide(index);
-                slideInterval = setInterval(autoSlide, 5000);
-            };
 
             function autoSlide() {
                 let nextSlide = (currentSlide + 1) % slides.length;
@@ -282,32 +252,46 @@
             
             let slideInterval = setInterval(autoSlide, 5000);
 
-            // --- গ. সুপাবেস কানেকশন ফেইল-সেফ মেকানিজম (Try-Catch) ---
-            const supabaseUrl = 'YOUR_SUPABASE_URL';
-            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-            let supabase = null;
+            window.userSetSlide = function(index) {
+                clearInterval(slideInterval);
+                setSlide(index);
+                slideInterval = setInterval(autoSlide, 5000);
+            };
 
-            try {
-                // প্লেসহোল্ডার না থাকলেই কেবল সুপাবেস ইনিশিয়ালাইজ হবে, অন্যথায় ক্র্যাশ করবে না
-                if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL') {
-                    supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
-                } else {
-                    console.warn("Supabase credentials are placeholders. Using dummy load placeholder state.");
+            // --- গ. ডাইনামিক সুপাবেস ও কনফিগ লোড মেকানিজম ---
+            let supabaseClient = null;
+
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        console.log("Supabase Client initialized successfully.");
+                        
+                        // সাকসেসফুল ইনিশিয়ালাইজেশনের পর ডেটা লোড শুরু হবে
+                        updateNavigation();
+                        loadHomePageData();
+                    } else {
+                        console.warn("Supabase credentials missing.");
+                    }
+                } catch (err) {
+                    console.error("Supabase failed to initialize:", err);
                 }
-            } catch (err) {
-                console.error("Supabase failed to initialize:", err);
             }
 
-            // ঘ. সুপাবেস কানেক্টেড থাকলে তবেই এপিআই কুয়েরি রান হবে
+            // --- ঘ. ডাইনামিক নেভিগেশন বার আপডেট (Auth Status ভিত্তিক) ---
             async function updateNavigation() {
-                if (!supabase) return;
+                if (!supabaseClient) return;
                 try {
                     const dynamicNav = document.getElementById('dynamic-nav');
-                    const { data: { session } } = await supabase.auth.getSession();
+                    const { data: { session } } = await supabaseClient.auth.getSession();
                     
                     if (session && dynamicNav) {
                         const userId = session.user.id;
-                        const { data: profile } = await supabase
+                        const { data: profile } = await supabaseClient
                             .from('profiles')
                             .select('role')
                             .eq('id', userId)
@@ -316,7 +300,12 @@
                         if (profile) {
                             if (profile.role === 'reseller') {
                                 dynamicNav.outerHTML = `
-                                    <li><a href="/dashboard/reseller" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i>  রিসেলার প্যানেল</a></li>
+                                    <li><a href="/dashboard/reseller" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            } else if (profile.role === 'admin') {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/dashboard/admin" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> এডমিন প্যানেল</a></li>
                                     <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
                                 `;
                             } else {
@@ -334,25 +323,20 @@
                 }
             }
 
-            // ঙ. লগআউট লজিক
+            // লগআউট লজিক
             window.handleLogout = async function() {
-                if (supabase) {
-                    await supabase.auth.signOut();
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
                     window.location.reload();
                 }
             };
 
-            // চ. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড
+            // --- ঙ. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড ---
             async function loadHomePageData() {
-                if (!supabase) {
-                    // প্লেসহোল্ডার ওয়ার্নিং যদি ডাটাবেজ কানেক্ট না থাকে
-                    document.getElementById('categories-container').innerHTML = '<p class="col-span-full text-center text-sm text-gray-500">ডাটাবেজ কানেকশনের অপেক্ষায় (প্লেসহোল্ডার)...</p>';
-                    document.getElementById('products-container').innerHTML = '<p class="col-span-full text-center text-sm text-gray-500">ডাটাবেজ কানেকশনের অপেক্ষায় (প্লেসহোল্ডার)...</p>';
-                    return;
-                }
+                if (!supabaseClient) return;
                 try {
                     // ক্যাটাগরি লোড
-                    const { data: categories } = await supabase.from('categories').select('*').limit(20);
+                    const { data: categories } = await supabaseClient.from('categories').select('*').limit(20);
                     const catContainer = document.getElementById('categories-container');
                     if (categories && categories.length > 0) {
                         catContainer.innerHTML = '';
@@ -368,8 +352,8 @@
                         catContainer.innerHTML = '<p class="col-span-full text-center">কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
                     }
 
-                    // প্রোডাক্ট লোড (এসকেপিং এরর দূর করে সংশোধিত কোড)
-                    const { data: products } = await supabase.from('products').select('*').limit(30).order('created_at', { ascending: false });
+                    // প্রোডাক্ট লোড (সংশোধিত এসকেপিং এরর ফ্রি টেমপ্লেট লিটেরাল)
+                    const { data: products } = await supabaseClient.from('products').select('*').limit(30).order('created_at', { ascending: false });
                     const prodContainer = document.getElementById('products-container');
                     if (products && products.length > 0) {
                         prodContainer.innerHTML = '';
@@ -395,9 +379,13 @@
                 }
             }
 
-            // রান করানোর ট্রিগার
-            updateNavigation();
-            loadHomePageData();
+            // স্লাইডারের ৩টি স্লাইড হিডেন করে প্রথম স্লাইড দিয়ে স্টার্ট করা
+            for (let i = 1; i < slides.length; i++) {
+                slides[i].classList.add('hidden');
+            }
+
+            // ইনিশিয়ালাইজেশন প্রসেস ট্রিগার
+            initializeSupabase();
         });
     </script>
 </body>
