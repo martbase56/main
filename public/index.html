@@ -13,905 +13,200 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <style>
-        :root {
-            --primary-color: #FF6B00;       /* ভাইব্রেন্ট অরেঞ্জ */
-            --secondary-color: #FF8C33;     /* লাইট অরেঞ্জ */
-            --bg-canvas: #FAF6F4;           /* লাইট ওয়ার্ম অফ-হোয়াইট */
-            --card-bg: #FFFFFF;             /* হোয়াইট */
-            --text-dark: #111827;           /* চারকোল ব্ল্যাক */
-            --text-muted: #4B5563;          /* গ্রে টেক্সট */
-            --glow-color: rgba(255, 107, 0, 0.15);
-            
-            --font-headings: 'Bricolage Grotesque', sans-serif;
-            --font-body: 'Rubik', sans-serif;
-            --font-bangla: 'Anek Bangla', sans-serif;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            background-color: var(--bg-canvas);
-            font-family: var(--font-bangla);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* 🌐 Sticky Header */
-        header {
-            background-color: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            border-bottom: 1px solid rgba(255, 107, 0, 0.08);
-        }
-
-        .nav-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-family: var(--font-headings);
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            letter-spacing: -1px;
-            transition: transform 0.2s;
-        }
-
-        .logo:hover {
-            transform: scale(1.02);
-        }
-
-        /* Hamburger Menu */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            color: var(--text-dark);
-            cursor: pointer;
-            outline: none;
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            list-style: none;
-            gap: 20px;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-dark);
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: color 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-color);
-        }
-
-        .btn-nav-auth {
-            background-color: var(--primary-color);
-            color: #FFF !important;
-            padding: 8px 20px;
-            border-radius: 50px;
-            box-shadow: 0 4px 12px var(--glow-color);
-            transition: all 0.2s;
-        }
-
-        .btn-nav-auth:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-1px);
-        }
-
-        /* 🚀 SaaS Style Modern Hero Section */
-        .hero {
-            padding: 80px 0;
-            background: radial-gradient(circle at 80% 20%, rgba(255, 107, 0, 0.08) 0%, rgba(255, 255, 255, 0) 50%);
-            border-bottom: 1px solid rgba(255, 107, 0, 0.04);
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 50px;
-            align-items: center;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background-color: rgba(255, 107, 0, 0.08);
-            color: var(--primary-color);
-            padding: 6px 16px;
-            border-radius: 50px;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            border: 1px solid rgba(255, 107, 0, 0.12);
-        }
-
-        .hero-title {
-            font-family: var(--font-bangla);
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: var(--text-dark);
-            line-height: 1.25;
-            margin-bottom: 20px;
-        }
-
-        .hero-title span {
-            color: var(--primary-color);
-        }
-
-        .hero-subtitle {
-            font-size: 1.15rem;
-            color: var(--text-muted);
-            margin-bottom: 35px;
-            max-width: 600px;
-        }
-
-        .hero-ctas {
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-cta {
-            padding: 14px 30px;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .btn-cta-buy {
-            background-color: var(--text-dark);
-            color: #FFF;
-        }
-
-        .btn-cta-buy:hover {
-            background-color: #000;
-            transform: translateY(-2px);
-        }
-
-        .btn-cta-earn {
-            background-color: var(--primary-color);
-            color: #FFF;
-            box-shadow: 0 4px 15px var(--glow-color);
-        }
-
-        .btn-cta-earn:hover {
-            background-color: var(--secondary-color);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.25);
-        }
-
-        /* 📱 Elegant Phone Mockup (Replacing Stats Widget) */
-        .phone-mockup-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .phone-mockup {
-            width: 270px;
-            height: 540px;
-            background: #000;
-            border-radius: 40px;
-            border: 12px solid #1F2937;
-            box-shadow: 0 25px 60px -15px rgba(255, 107, 0, 0.15);
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .phone-mockup:hover {
-            transform: translateY(-8px) rotate(1deg);
-        }
-
-        .phone-notch {
-            width: 110px;
-            height: 25px;
-            background: #1F2937;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            border-bottom-left-radius: 15px;
-            border-bottom-right-radius: 15px;
-            z-index: 10;
-        }
-
-        .phone-screen {
-            width: 100%;
-            height: 100%;
-            background-color: var(--bg-canvas);
-            display: flex;
-            flex-direction: column;
-            padding: 35px 15px 15px 15px;
-            font-family: var(--font-bangla);
-        }
-
-        .phone-header {
-            font-size: 0.9rem;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: 12px;
-            border-bottom: 2px solid rgba(255, 107, 0, 0.1);
-            padding-bottom: 5px;
-        }
-
-        .phone-card {
-            background: #FFF;
-            border-radius: 12px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid rgba(0,0,0,0.02);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
-        }
-
-        .phone-card-title {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .phone-card-value {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            font-family: var(--font-body);
-        }
-
-        /* 📸 Responsive Banner Slider Wrapper */
-        .slider-section {
-            margin: 40px 0;
-            position: relative;
-        }
-
-        .slider-container {
-            width: 100%;
-            aspect-ratio: 3 / 1;
-            border-radius: 20px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid rgba(255, 107, 0, 0.05);
-        }
-
-        .slide {
-            width: 100%;
-            height: 100%;
-            display: none;
-            transition: opacity 0.5s ease-in-out;
-        }
-
-        .slide.active {
-            display: block;
-        }
-
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* Indicator Dots Below Slider */
-        .slider-dots {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .dot {
-            width: 25px;
-            height: 6px;
-            background-color: #D1D5DB; /* Unselected Dot */
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .dot.active {
-            background-color: var(--text-dark); /* Selected Dot */
-            width: 35px;
-        }
-
-        /* Section Titles */
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 800;
-            margin: 45px 0 25px 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .section-title i {
-            color: var(--primary-color);
-        }
-
-        /* Categories Section */
-        .categories-grid {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            gap: 15px;
-            margin-bottom: 45px;
-        }
-
-        .category-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            padding: 18px 10px;
-            text-align: center;
-            text-decoration: none;
-            color: var(--text-dark);
-            border: 1px solid rgba(0,0,0,0.01);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
-        }
-
-        .category-card:hover {
-            transform: translateY(-4px);
-            border-color: rgba(255, 107, 0, 0.3);
-            box-shadow: 0 8px 24px rgba(255, 107, 0, 0.12);
-        }
-
-        .category-card i {
-            font-size: 1.7rem;
-            color: var(--primary-color);
-            margin-bottom: 8px;
-        }
-
-        .category-name {
-            font-size: 0.8rem;
-            font-weight: 700;
-            line-height: 1.3;
-        }
-
-        /* Products Showcase Section */
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            margin-bottom: 50px;
-        }
-
-        .product-card {
-            background-color: var(--card-bg);
-            border-radius: 18px;
-            border: 1px solid rgba(0,0,0,0.02);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
-        }
-
-        .product-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(255, 107, 0, 0.15);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
-        }
-
-        .product-img-box {
-            width: 100%;
-            height: 190px;
-            background-color: #EDF2F7;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .product-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .product-img-box i {
-            font-size: 2.5rem;
-            color: var(--text-muted);
-        }
-
-        .product-info {
-            padding: 15px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-title {
-            font-size: 0.95rem;
-            font-weight: 700;
-            color: var(--text-dark);
-            margin-bottom: 10px;
-            height: 40px;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-        }
-
-        .product-price {
-            font-family: var(--font-body);
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-top: auto;
-            margin-bottom: 12px;
-        }
-
-        .btn-buy {
-            width: 100%;
-            padding: 11px;
-            background-color: var(--primary-color);
-            color: #FFF;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            font-size: 0.9rem;
-            transition: background-color 0.2s;
-        }
-
-        .btn-buy:hover {
-            background-color: var(--secondary-color);
-        }
-
-        /* 📢 Modern Bottom CTA Section */
-        .bottom-cta-section {
-            background: radial-gradient(circle at 10% 20%, #FF8C33 0%, #FF6B00 100%);
-            border-radius: 24px;
-            padding: 60px 40px;
-            color: #FFF;
-            text-align: center;
-            margin: 60px 0;
-            box-shadow: 0 15px 35px var(--glow-color);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta-content h2 {
-            font-size: 2.2rem;
-            font-weight: 800;
-            margin-bottom: 15px;
-            font-family: var(--font-bangla);
-        }
-
-        .cta-content p {
-            font-size: 1.1rem;
-            margin-bottom: 35px;
-            opacity: 0.95;
-            max-width: 750px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.6;
-        }
-
-        .btn-cta-bottom {
-            background-color: var(--text-dark);
-            color: #FFF;
-            padding: 16px 45px;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-        }
-
-        .btn-cta-bottom:hover {
-            transform: translateY(-3px);
-            background-color: #000;
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-        }
-
-        /* 🌐 Rich Premium Footer Layout */
-        footer {
-            background-color: #0B0F19; /* গভীর লাক্সারি চারকোল */
-            color: #9CA3AF;
-            padding: 80px 0 30px 0;
-            border-top: 1px solid rgba(255, 107, 0, 0.08);
-            font-family: var(--font-bangla);
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 0.8fr 0.8fr 1.1fr;
-            gap: 50px;
-            margin-bottom: 60px;
-        }
-
-        .footer-logo {
-            font-family: var(--font-headings);
-            font-weight: 800;
-            font-size: 2rem;
-            color: var(--primary-color);
-            text-decoration: none;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-
-        .footer-desc {
-            font-size: 0.92rem;
-            line-height: 1.6;
-            color: #9CA3AF;
-            margin-bottom: 25px;
-        }
-
-        .footer-socials {
-            display: flex;
-            gap: 12px;
-        }
-
-        .social-icon {
-            width: 38px;
-            height: 38px;
-            background-color: rgba(255, 255, 255, 0.04);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #CBD5E1;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .social-icon:hover {
-            background-color: var(--primary-color);
-            color: #FFF;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px var(--glow-color);
-        }
-
-        .footer-col h4 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: #FFF;
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .footer-col h4::after {
-            content: '';
-            display: block;
-            width: 25px;
-            height: 3px;
-            background-color: var(--primary-color);
-            margin-top: 8px;
-            border-radius: 2px;
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 14px;
-        }
-
-        .footer-links a {
-            color: #9CA3AF;
-            text-decoration: none;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            display: inline-block;
-        }
-
-        .footer-links a:hover {
-            color: var(--primary-color);
-            transform: translateX(4px);
-        }
-
-        /* Payment Methods Section */
-        .payment-methods-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #FFF;
-            margin-bottom: 15px;
-        }
-
-        .payment-gateways {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .gateway-badge {
-            background-color: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            color: #FFF;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            font-family: var(--font-body);
-        }
-
-        .copyright-bar {
-            border-top: 1px solid rgba(255,255,255,0.06);
-            padding-top: 30px;
-            text-align: center;
-            font-size: 0.88rem;
-            color: #6B7280;
-        }
-
-        .copyright-bar a {
-            color: var(--primary-color);
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        /* Responsive Layouts */
-        @media (max-width: 992px) {
-            .menu-toggle { display: block; }
-            .nav-menu {
-                position: absolute;
-                top: 70px;
-                left: -100%;
-                width: 100%;
-                height: calc(100vh - 70px);
-                background-color: var(--card-bg);
-                flex-direction: column;
-                align-items: flex-start;
-                padding: 30px;
-                gap: 25px;
-                transition: left 0.3s ease;
-                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
-                overflow-y: auto;
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
+                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
+                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
+                        dark: '#111827',          /* চারকোল ব্ল্যাক */
+                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
             }
-            .nav-menu.active { left: 0; }
-            .nav-link {
-                font-size: 1.1rem;
-                width: 100%;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #EDF2F7;
-            }
-            .btn-nav-auth { text-align: center; border-bottom: none; width: 100%; }
-
-            .hero-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
-            .hero-title { font-size: 2.2rem; }
-            .hero-subtitle { margin: 0 auto 30px auto; }
-            .hero-ctas { justify-content: center; }
-            .phone-mockup-wrapper { margin-top: 15px; }
-
-            .categories-grid { grid-template-columns: repeat(5, 1fr); }
-            .products-grid { grid-template-columns: repeat(3, 1fr); }
-            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
         }
-
-        @media (max-width: 768px) {
-            .slider-container { aspect-ratio: 2 / 1; }
-        }
-
-        @media (max-width: 600px) {
-            .categories-grid { grid-template-columns: repeat(4, 1fr); }
-            .products-grid { grid-template-columns: repeat(2, 1fr); }
-            .footer-grid { grid-template-columns: 1fr; }
-            .hero-ctas { flex-direction: column; gap: 12px; }
-            .btn-cta { width: 100%; justify-content: center; }
-        }
-    </style>
+    </script>
 </head>
-<body>
+<body class="bg-canvas font-bangla text-dark leading-relaxed">
 
-    <!-- Header Navigation -->
-    <header>
-        <div class="nav-container">
-            <a href="/" class="logo">MartBaseBD</a>
+    <!-- 🌐 Sticky Navigation Header -->
+    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm">
+        <div class="max-width-1200 mx-auto px-5 py-4 flex justify-between items-center max-w-[1200px]">
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight hover:scale-[1.02] transition-transform">MartBaseBD</a>
             
-            <button class="menu-toggle" id="menu-toggle">
-                <i class="fa-solid fa-bars"></i>
+            <!-- Mobile Menu Toggle Button -->
+            <button class="menu-toggle lg:hidden text-2xl text-dark focus:outline-none" id="menu-toggle">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
             </button>
 
-            <ul class="nav-menu" id="nav-menu">
-                <li><a href="/" class="nav-link"><i class="fa-solid fa-house"></i> হোম</a></li>
-                <li><a href="#products-section" class="nav-link"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
-                <li><a href="#offers-section" class="nav-link"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
-                <li><a href="/earning" class="nav-link"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
-                <li><a href="/digital-services" class="nav-link"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
+            <!-- Navigation Links -->
+            <ul class="nav-menu hidden lg:flex items-center gap-6 list-none lg:static absolute top-[70px] left-0 w-full lg:w-auto bg-white lg:bg-transparent px-6 py-6 lg:p-0 flex-col lg:flex-row gap-4 shadow-lg lg:shadow-none z-50 border-t border-gray-100 lg:border-none" id="nav-menu">
+                <li><a href="/" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-house"></i> হোম</a></li>
+                <li><a href="#products-section" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
+                <li><a href="#offers-section" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
+                <li><a href="/earning" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
+                <li><a href="/digital-services" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
                 
-                <!-- ডাইনামিক রুটসমূহ (ইউজার স্ট্যাটাস অনুযায়ী জেএস দিয়ে পরিবর্তন হবে) -->
-                <li id="dynamic-nav"><a href="/login" class="nav-link btn-nav-auth">লগইন / রেজিস্টার</a></li>
+                <!-- Dynamic Navigation (Modified via JS based on Auth) -->
+                <li id="dynamic-nav" class="w-full lg:w-auto">
+                    <a href="/login" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10">লগইন / রেজিস্টার</a>
+                </li>
             </ul>
         </div>
     </header>
 
-    <!-- 🚀 SaaS Style Modern Hero Section -->
-    <section class="hero">
-        <div class="container hero-grid">
-            <div class="hero-left">
-                <div class="hero-badge">
-                    <i class="fa-solid fa-fire-flame-curved"></i> শূন্য পুঁজিতে ক্যারিয়ার গড়ুন
-                </div>
-                <h1 class="hero-title">সহজে কেনাকাটা করুন,<br>আজই শুরু করুন <span>উপার্জন</span>!</h1>
-                <p class="hero-subtitle">MartBaseBD বাংলাদেশের প্রিমিয়াম রিসেলিং ও ড্রপশিপিং প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কেনাকাটা করুন অথবা রিসেলার হয়ে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।</p>
-                <div class="hero-ctas">
-                    <a href="#products-section" class="btn-cta btn-cta-buy"><i class="fa-solid fa-bag-shopping"></i> কেনাকাটা করুন</a>
-                    <a href="/signup/reseller" class="btn-cta btn-cta-earn"><i class="fa-solid fa-arrow-up-right-dots"></i> রিসেলার হিসেবে আয় করুন</a>
-                </div>
+    <!-- 🚀 Centered SaaS Style Modern Hero Section (Mockup Removed) -->
+    <section class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5">
+        <div class="max-w-[850px] mx-auto px-5 text-center flex flex-col items-center">
+            
+            <div class="hero-badge inline-flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-primary/15">
+                <i class="fa-solid fa-fire-flame-curved"></i> শূন্য পুঁজিতে ক্যারিয়ার গড়ুন
             </div>
             
-            <!-- 📱 Modern Phone Mockup Illustration (Stats Section Removed) -->
-            <div class="phone-mockup-wrapper">
-                <div class="phone-mockup">
-                    <div class="phone-notch"></div>
-                    <div class="phone-screen">
-                        <div class="phone-header">MartBaseBD Mobile</div>
-                        <div class="phone-card">
-                            <span class="phone-card-title">প্রোডাক্ট কালেকশন</span>
-                            <div class="phone-card-value">১,৫০০+ টি</div>
-                        </div>
-                        <div class="phone-card">
-                            <span class="phone-card-title">লাইভ ড্রপশিপিং কুরিয়ার</span>
-                            <div class="phone-card-value">২৪/৭ এক্টিভ</div>
-                        </div>
-                        <div class="phone-card" style="background-color: rgba(255, 107, 0, 0.05); border-color: rgba(255, 107, 0, 0.2);">
-                            <span class="phone-card-title" style="color: var(--primary-color);">রিসেলার ওয়ালেট</span>
-                            <div class="phone-card-value" style="color: var(--primary-color);">৳ রেডি উইথড্র</div>
-                        </div>
-                    </div>
-                </div>
+            <h1 class="hero-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-6">
+                সহজে কেনাকাটা করুন,<br>আজই শুরু করুন <span class="text-primary">উপার্জন</span>!
+            </h1>
+            
+            <p class="hero-subtitle text-muted text-base lg:text-lg mb-8 max-w-[650px] mx-auto leading-relaxed">
+                MartBaseBD বাংলাদেশের প্রিমিয়াম রিসেলিং ও ড্রপশিপিং প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কেনাকাটা করুন অথবা রিসেলার হয়ে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।
+            </p>
+            
+            <div class="hero-ctas flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
+                <a href="#products-section" class="btn-cta bg-dark text-white py-3 px-8 rounded-full font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-md flex items-center justify-center gap-2"><i class="fa-solid fa-bag-shopping"></i> কেনাকাটা করুন</a>
+                <a href="/signup/reseller" class="btn-cta bg-primary text-white py-3 px-8 rounded-full font-bold hover:bg-secondary hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/15 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-dots"></i> রিসেলার হিসেবে আয় করুন</a>
             </div>
+
         </div>
     </section>
 
-    <main class="container">
+    <main class="max-w-[1200px] mx-auto px-5">
 
-        <!-- 📸 Banner Slider (Web Banner Size, 4 Slides, Indicator Dots below) -->
-        <section class="slider-section">
-            <div class="slider-container">
-                <!-- Slide 1: Shopping/Offers -->
-                <a href="#products-section" class="slide active">
-                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" alt="ঈদ অফার ব্যানার">
+        <!-- 📸 Banner Slider (Responsive Web Banner 3:1 aspect ratio, 4 Slides, Indicator Dots below) -->
+        <section class="slider-section my-10 relative">
+            <div class="slider-container w-full aspect-[3/1] max-sm:aspect-[2/1] rounded-2xl overflow-hidden relative shadow-md border border-primary/5">
+                <!-- Slide 1 -->
+                <a href="#products-section" class="slide active h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ঈদ অফার ব্যানার">
                 </a>
-                <!-- Slide 2: Reseller Earning -->
-                <a href="/signup/reseller" class="slide">
-                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="রিসেলিং সুবিধা">
+                <!-- Slide 2 -->
+                <a href="/signup/reseller" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="রিসেলিং সুবিধা">
                 </a>
-                <!-- Slide 3: Digital Services -->
-                <a href="/digital-services" class="slide">
-                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="ডিজিটাল সার্ভিস ব্যানার">
+                <!-- Slide 3 -->
+                <a href="/digital-services" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ডিজিটাল সার্ভিস ব্যানার">
                 </a>
-                <!-- Slide 4: Premium Gadgets -->
-                <a href="#products-section" class="slide">
-                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" alt="প্রিমিয়াম গ্যাজেট সম্ভার">
+                <!-- Slide 4 -->
+                <a href="#products-section" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="প্রিমিয়াম গ্যাজেট সম্ভার">
                 </a>
             </div>
 
-            <!-- Indicator Dots (Exactly like user image reference) -->
-            <div class="slider-dots" id="slider-dots">
-                <div class="dot active" onclick="setSlide(0)"></div>
-                <div class="dot" onclick="setSlide(1)"></div>
-                <div class="dot" onclick="setSlide(2)"></div>
-                <div class="dot" onclick="setSlide(3)"></div>
+            <!-- Indicator Dots -->
+            <div class="slider-dots flex justify-center gap-2.5 mt-5" id="slider-dots">
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all active-dot active" onclick="userSetSlide(0)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(1)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(2)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(3)"></div>
             </div>
         </section>
 
         <!-- Category Grid Section -->
-        <section>
-            <h3 class="section-title"><i class="fa-solid fa-list-ul"></i> ক্যাটাগরি সমূহ</h3>
-            <div class="categories-grid" id="categories-container">
-                <p>ক্যাটাগরি লোড হচ্ছে...</p>
+        <section class="my-10">
+            <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-list-ul text-primary"></i> ক্যাটাগরি সমূহ</h3>
+            <div class="categories-grid grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-3" id="categories-container">
+                <p class="col-span-full text-center py-5">ক্যাটাগরি লোড হচ্ছে...</p>
             </div>
         </section>
 
         <!-- Products Showcase Section -->
-        <section id="products-section">
-            <h3 class="section-title"><i class="fa-solid fa-bolt-lightning"></i> আজকের আকর্ষণীয় প্রোডাক্টস</h3>
-            <div class="products-grid" id="products-container">
-                <p>প্রোডাক্ট লোড হচ্ছে...</p>
+        <section id="products-section" class="my-10">
+            <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-primary"></i> আজকের আকর্ষণীয় প্রোডাক্টস</h3>
+            <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="products-container">
+                <p class="col-span-full text-center py-5">প্রোডাক্ট লোড হচ্ছে...</p>
             </div>
         </section>
 
         <!-- 📢 Bottom Ad CTA Section -->
-        <section class="bottom-cta-section">
-            <div class="cta-content">
-                <h2>আজই শুরু করুন সম্পূর্ণ বিনা পুঁজিতে ঘরে বসে ব্যবসা! 💼</h2>
-                <p>MartBaseBD রিসেলার হিসেবে আমাদের কোয়ালিটি সম্পন্ন প্রোডাক্টগুলো নিজের সুবিধামতো মূল্যে বিক্রি করে চমৎকার প্রফিট মার্জিন উপার্জন করুন। ডেলিভারি ও কাস্টমার সাপোর্টের সমস্ত টেনশন আমাদের!</p>
-                <a href="/signup/reseller" class="btn-cta-bottom"><i class="fa-solid fa-user-plus"></i> রিসেলার হিসেবে যুক্ত হোন</a>
+        <section class="bottom-cta-section bg-[radial-gradient(circle_at_10%_20%,_#FF8C33_0%,_#FF6B00_100%)] rounded-3xl p-10 text-white text-center my-14 shadow-lg shadow-primary/10">
+            <div class="cta-content max-w-[750px] mx-auto">
+                <h2 class="text-3xl font-extrabold mb-4">আজই শুরু করুন সম্পূর্ণ বিনা পুঁজিতে ঘরে বসে ব্যবসা! 💼</h2>
+                <p class="text-lg opacity-95 mb-8 leading-relaxed">MartBaseBD রিসেলার হিসেবে আমাদের কোয়ালিটি সম্পন্ন প্রোডাক্টগুলো নিজের সুবিধামতো মূল্যে বিক্রি করে চমৎকার প্রফিট মার্জিন উপার্জন করুন। ডেলিভারি ও কাস্টমার সাপোর্টের সমস্ত টেনশন আমাদের!</p>
+                <a href="/signup/reseller" class="btn-cta-bottom bg-dark text-white py-4 px-10 rounded-full font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg flex inline-flex items-center gap-2.5 justify-center"><i class="fa-solid fa-user-plus"></i> রিসেলার হিসেবে যুক্ত হোন</a>
             </div>
         </section>
 
     </main>
 
     <!-- 🌐 Premium Modern Footer Section -->
-    <footer>
-        <div class="container">
-            <div class="footer-grid">
-                <!-- Col 1: Brand Info & Socials -->
-                <div class="footer-col">
-                    <a href="/" class="footer-logo">MartBaseBD</a>
-                    <p class="footer-desc">
-                        বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
-                    </p>
-                    <div class="footer-socials">
-                        <a href="https://facebook.com" class="social-icon" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="https://youtube.com" class="social-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="https://telegram.org" class="social-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
-                        <a href="https://whatsapp.com" class="social-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
-                    </div>
-                </div>
-
-                <!-- Col 2: Useful Links -->
-                <div class="footer-col">
-                    <h4>গুরুত্বপূর্ণ লিংক</h4>
-                    <ul class="footer-links">
-                        <li><a href="/about"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> আমাদের সম্পর্কে</a></li>
-                        <li><a href="/contact"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> যোগাযোগ করুন</a></li>
-                        <li><a href="/privacy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> গোপনীয়তা নীতি</a></li>
-                        <li><a href="/report"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> অভিযোগ ও রিপোর্ট</a></li>
-                    </ul>
-                </div>
-
-                <!-- Col 3: Policies -->
-                <div class="footer-col">
-                    <h4>রিসেলার গাইড</h4>
-                    <ul class="footer-links">
-                        <li><a href="/reseller-rules"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিসেলার গাইডলাইন</a></li>
-                        <li><a href="/refund-policy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিফান্ড পলিসি</a></li>
-                        <li><a href="/reseller-policy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিসেলার পলিসি</a></li>
-                    </ul>
-                </div>
-
-                <!-- Col 4: Payments Accepted -->
-                <div class="footer-col">
-                    <h4>পেমেন্ট মেথডস</h4>
-                    <p style="font-size: 0.9rem; color: #9CA3AF; margin-bottom: 15px; line-height: 1.5;">
-                        নিরাপদ পেমেন্ট গেটওয়ের মাধ্যমে পেমেন্ট সম্পন্ন করুন নিশ্চিন্তে।
-                    </p>
-                    <div class="payment-gateways">
-                        <span class="gateway-badge">bKash</span>
-                        <span class="gateway-badge">Nagad</span>
-                        <span class="gateway-badge">Rocket</span>
-                        <span class="gateway-badge">Cards</span>
-                    </div>
-                </div>
-            </div>
+    <footer class="bg-[#0B0F19] text-gray-400 py-16 border-t border-white/5 font-bangla">
+        <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
             
-            <div class="copyright-bar">
-                <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. All rights reserved. | Developed by <a href="https://github.com/alihosen" target="_blank">Ali Hosen</a></p>
+            <!-- Col 1: Brand Info & Socials -->
+            <div class="footer-col">
+                <a href="/" class="font-headings font-extrabold text-3xl text-primary mb-5 inline-block">MartBaseBD</a>
+                <p class="text-[0.92rem] leading-relaxed mb-6 text-gray-400">
+                    বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
+                </p>
+                <div class="footer-socials flex gap-3">
+                    <a href="https://facebook.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://youtube.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://telegram.org" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="https://whatsapp.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
             </div>
+
+            <!-- Col 2: Top Nav Synced Quick Links -->
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">মেনু লিঙ্কসমূহ</h4>
+                <ul class="footer-links list-none text-sm space-y-3">
+                    <li><a href="/" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> হোম</a></li>
+                    <li><a href="#products-section" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> প্রোডাক্টস</a></li>
+                    <li><a href="#offers-section" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> অফারসমূহ</a></li>
+                    <li><a href="/earning" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> আর্ন জোন</a></li>
+                    <li><a href="/digital-services" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> ডিজিটাল সার্ভিস</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Legal Policies -->
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পলিসি ও গাইডলাইন</h4>
+                <ul class="footer-links list-none text-sm space-y-3">
+                    <li><a href="/about" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> আমাদের সম্পর্কে</a></li>
+                    <li><a href="/contact" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> যোগাযোগ করুন</a></li>
+                    <li><a href="/privacy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> গোপনীয়তা নীতি</a></li>
+                    <li><a href="/refund-policy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> রিফান্ড পলিসি</a></li>
+                    <li><a href="/reseller-policy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> রিসেলার পলিসি</a></li>
+                    <li><a href="/report" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> অভিযোগ ও রিপোর্ট</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Payments -->
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পেমেন্ট মেথডস</h4>
+                <p class="text-sm leading-relaxed mb-4">নিরাপদ পেমেন্ট গেটওয়ের মাধ্যমে আপনার ট্রানজেকশন সম্পন্ন করুন নিশ্চিন্তে।</p>
+                <div class="payment-gateways flex flex-wrap gap-2">
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">bKash</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Nagad</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Rocket</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Cards</span>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="copyright-bar border-t border-white/5 pt-6 text-center text-sm text-gray-500">
+            <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. All rights reserved. | Developed by <a href="https://github.com/alihosen" class="text-primary hover:underline font-semibold" target="_blank">Ali Hosen</a></p>
         </div>
     </footer>
 
@@ -919,151 +214,188 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
-        // ১. Supabase ইনিশিয়ালাইজেশন
-        const supabaseUrl = 'YOUR_SUPABASE_URL';
-        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-        const supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
-
-        // ২. মোবাইল মেনু টগল লজিক
-        const menuToggle = document.getElementById('menu-toggle');
-        const navMenu = document.getElementById('nav-menu');
-
-        menuToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
-        });
-
-        // ৩. ডাইনামিক নেভিগেশন বার আপডেট (Auth Status ভিত্তিক)
-        async function updateNavigation() {
-            const dynamicNav = document.getElementById('dynamic-nav');
+        // ১. সেফলি স্ক্রিপ্ট রান করার ডিফেন্সিভ মেকানিজম (DOMContentLoaded এর ভেতর)
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // বর্তমান সেশন চেক করা
-            const { data: { session } } = await supabase.auth.getSession();
-            
-            if (session) {
-                const userId = session.user.id;
-                
-                // ইউজার রোল (customer/reseller) চেক করা
-                const { data: profile } = await supabase
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', userId)
-                    .single();
+            // --- ক. মোবাইল টগল মেনু কন্ট্রোল (১০০% নিরাপদ) ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            const menuIcon = document.getElementById('menu-icon');
 
-                if (profile) {
-                    if (profile.role === 'reseller') {
-                        // রিসেলার মেনু
-                        dynamicNav.outerHTML = `
-                            <li><a href="/dashboard/reseller" class="nav-link"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
-                            <li><a href="#" onclick="handleLogout()" class="nav-link btn-nav-auth"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
-                        `;
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navMenu.classList.toggle('hidden');
+                    navMenu.classList.toggle('flex');
+                    
+                    if(navMenu.classList.contains('hidden')){
+                        menuIcon.className = "fa-solid fa-bars";
                     } else {
-                        // সাধারণ ইউজার মেনু
-                        dynamicNav.outerHTML = `
-                            <li><a href="/my-orders" class="nav-link"><i class="fa-solid fa-box"></i> আমার অর্ডার</a></li>
-                            <li><a href="/profile" class="nav-link"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
-                            <li><a href="/checkout" class="nav-link"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
-                            <li><a href="#" onclick="handleLogout()" class="nav-link btn-nav-auth"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
-                        `;
+                        menuIcon.className = "fa-solid fa-xmark";
                     }
+                });
+            }
+
+            // --- খ. ইমেজ স্লাইডার ইন্ডিকেটর ও অটো-স্লাইড লজিক (১০০% নিরাপদ) ---
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            let currentSlide = 0;
+
+            // শুরুতে প্রথম স্লাইড বাদে বাকিগুলো হাইড করা
+            for (let i = 1; i < slides.length; i++) {
+                slides[i].classList.add('hidden');
+                slides[i].classList.remove('active');
+            }
+
+            function setSlide(index) {
+                if (!slides.length || index >= slides.length) return;
+                
+                // পূর্বের স্লাইড ও ডট নিষ্ক্রিয় করা
+                slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add('hidden');
+                if (dots[currentSlide]) {
+                    dots[currentSlide].classList.remove('active', 'bg-dark', 'w-[35px]');
+                    dots[currentSlide].classList.add('bg-gray-300', 'w-[25px]');
+                }
+                
+                // নতুন স্লাইড ও ডট সক্রিয় করা
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+                slides[currentSlide].classList.remove('hidden');
+                if (dots[currentSlide]) {
+                    dots[currentSlide].classList.add('active', 'bg-dark', 'w-[35px]');
+                    dots[currentSlide].classList.remove('bg-gray-300', 'w-[25px]');
                 }
             }
-        }
 
-        // ৪. লগআউট লজিক
-        async function handleLogout() {
-            await supabase.auth.signOut();
-            window.location.reload();
-        }
+            // গলোবাল স্লাইড চেঞ্জার যাতে HTML থেকে অন-ক্লিক ট্রিগার করা যায়
+            window.userSetSlide = function(index) {
+                clearInterval(slideInterval);
+                setSlide(index);
+                slideInterval = setInterval(autoSlide, 5000);
+            };
 
-        // ৫. ব্যানার স্লাইডার ও ডট ইন্ডিকেটর লজিক (৪টি স্লাইড, ক্লিকযোগ্য)
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const dots = document.querySelectorAll('.dot');
-        
-        function setSlide(index) {
-            // পূর্বের একটিভ স্লাইড এবং ডট রিমুভ করা
-            slides[currentSlide].classList.remove('active');
-            dots[currentSlide].classList.remove('active');
+            function autoSlide() {
+                let nextSlide = (currentSlide + 1) % slides.length;
+                setSlide(nextSlide);
+            }
             
-            // নতুন একটিভ স্লাইড এবং ডট সিলেক্ট করা
-            currentSlide = index;
-            slides[currentSlide].classList.add('active');
-            dots[currentSlide].classList.add('active');
-        }
+            let slideInterval = setInterval(autoSlide, 5000);
 
-        function autoSlide() {
-            let nextSlide = (currentSlide + 1) % slides.length;
-            setSlide(nextSlide);
-        }
-        
-        let slideInterval = setInterval(autoSlide, 5000); // ৫ সেকেন্ড পর পর স্লাইড পরিবর্তন
+            // --- গ. সুপাবেস কানেকশন ফেইল-সেফ মেকানিজম (Try-Catch) ---
+            const supabaseUrl = 'YOUR_SUPABASE_URL';
+            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+            let supabase = null;
 
-        // ইউজার কোনো ডটে ক্লিক করলে অটো-স্লাইড ইন্টারভাল রিসেট হবে
-        function userSetSlide(index) {
-            clearInterval(slideInterval);
-            setSlide(index);
-            slideInterval = setInterval(autoSlide, 5000); // আবার নতুন ইন্টারভাল চালু
-        }
-
-        // ৬. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড করার ফাংশন
-        async function loadHomePageData() {
             try {
-                // ক. ক্যাটাগরি লোড করা
-                const { data: categories, error: catError } = await supabase
-                    .from('categories')
-                    .select('*')
-                    .limit(20);
-
-                const catContainer = document.getElementById('categories-container');
-                if (categories && categories.length > 0) {
-                    catContainer.innerHTML = '';
-                    categories.forEach(cat => {
-                        catContainer.innerHTML += `
-                            <a href="/category/${cat.slug}" class="category-card">
-                                <i class="fa-solid ${cat.icon}"></i>
-                                <p class="category-name">${cat.name}</p>
-                            </a>
-                        `;
-                    });
+                // প্লেসহোল্ডার না থাকলেই কেবল সুপাবেস ইনিশিয়ালাইজ হবে, অন্যথায় ক্র্যাশ করবে না
+                if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL') {
+                    supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
                 } else {
-                    catContainer.innerHTML = '<p>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
+                    console.warn("Supabase credentials are placeholders. Using dummy load placeholder state.");
                 }
-
-                // খ. প্রোডাক্ট লোড করা (সর্বোচ্চ ৩০টি)
-                const { data: products, error: prodError } = await supabase
-                    .from('products')
-                    .select('*')
-                    .limit(30)
-                    .order('created_at', { ascending: false });
-
-                const prodContainer = document.getElementById('products-container');
-                if (products && products.length > 0) {
-                    prodContainer.innerHTML = '';
-                    products.forEach(prod => {
-                        prodContainer.innerHTML += `
-                            <div class="product-card">
-                                <a href="/product/${prod.id}" class="product-img-box">
-                                    ${prod.image_url ? `<img src="${prod.image_url}" alt="${prod.title}">` : `<i class="fa-solid fa-image"></i>`}
-                                </a>
-                                <div class="product-info">
-                                    <h4 class="product-title">${prod.title}</h4>
-                                    <p class="product-price">৳${prod.regular_price}</p>
-                                    <a href="/product/${prod.id}" class="btn-buy"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
-                                </div>
-                            </div>
-                        `;
-                    });
-                } else {
-                    prodContainer.innerHTML = '<p>কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
-                }
-
             } catch (err) {
-                console.error("ডেটা লোডে সমস্যা হয়েছে:", err);
+                console.error("Supabase failed to initialize:", err);
             }
-        }
 
-        // পেজ লোড হওয়ার সাথে সাথে ফাংশন রান হওয়া
-        window.addEventListener('DOMContentLoaded', () => {
+            // ঘ. সুপাবেস কানেক্টেড থাকলে তবেই এপিআই কুয়েরি রান হবে
+            async function updateNavigation() {
+                if (!supabase) return;
+                try {
+                    const dynamicNav = document.getElementById('dynamic-nav');
+                    const { data: { session } } = await supabase.auth.getSession();
+                    
+                    if (session && dynamicNav) {
+                        const userId = session.user.id;
+                        const { data: profile } = await supabase
+                            .from('profiles')
+                            .select('role')
+                            .eq('id', userId)
+                            .single();
+
+                        if (profile) {
+                            if (profile.role === 'reseller') {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/dashboard/reseller" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i>  রিসেলার প্যানেল</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            } else {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/my-orders" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-box"></i> আমার অর্ডার</a></li>
+                                    <li><a href="/profile" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
+                                    <li><a href="/checkout" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            }
+                        }
+                    }
+                } catch(e) {
+                    console.error("Auth routing failure", e);
+                }
+            }
+
+            // ঙ. লগআউট লজিক
+            window.handleLogout = async function() {
+                if (supabase) {
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                }
+            };
+
+            // চ. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড
+            async function loadHomePageData() {
+                if (!supabase) {
+                    // প্লেসহোল্ডার ওয়ার্নিং যদি ডাটাবেজ কানেক্ট না থাকে
+                    document.getElementById('categories-container').innerHTML = '<p class="col-span-full text-center text-sm text-gray-500">ডাটাবেজ কানেকশনের অপেক্ষায় (প্লেসহোল্ডার)...</p>';
+                    document.getElementById('products-container').innerHTML = '<p class="col-span-full text-center text-sm text-gray-500">ডাটাবেজ কানেকশনের অপেক্ষায় (প্লেসহোল্ডার)...</p>';
+                    return;
+                }
+                try {
+                    // ক্যাটাগরি লোড
+                    const { data: categories } = await supabase.from('categories').select('*').limit(20);
+                    const catContainer = document.getElementById('categories-container');
+                    if (categories && categories.length > 0) {
+                        catContainer.innerHTML = '';
+                        categories.forEach(cat => {
+                            catContainer.innerHTML += `
+                                <a href="/category/${cat.slug}" class="category-card bg-white rounded-2xl p-4 text-center border border-black/[0.01] hover:translate-y-[-4px] hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 shadow-sm">
+                                    <i class="fa-solid ${cat.icon} text-2xl text-primary mb-2 block"></i>
+                                    <p class="category-name font-bold text-[0.8rem] leading-snug">${cat.name}</p>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        catContainer.innerHTML = '<p class="col-span-full text-center">কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
+                    }
+
+                    // প্রোডাক্ট লোড (এসকেপিং এরর দূর করে সংশোধিত কোড)
+                    const { data: products } = await supabase.from('products').select('*').limit(30).order('created_at', { ascending: false });
+                    const prodContainer = document.getElementById('products-container');
+                    if (products && products.length > 0) {
+                        prodContainer.innerHTML = '';
+                        products.forEach(prod => {
+                            prodContainer.innerHTML += `
+                                <div class="product-card bg-white rounded-2xl border border-black/[0.02] overflow-hidden flex flex-col hover:translate-y-[-5px] hover:border-primary/15 hover:shadow-lg transition-all duration-300">
+                                    <a href="/product/${prod.id}" class="product-img-box w-full h-[190px] bg-gray-100 flex items-center justify-center overflow-hidden">
+                                        ${prod.image_url ? `<img src="${prod.image_url}" class="w-full h-full object-cover" alt="${prod.title}">` : `<i class="fa-solid fa-image text-3xl text-gray-400"></i>`}
+                                    </a>
+                                    <div class="product-info p-4 flex flex-col flex-grow">
+                                        <h4 class="product-title font-bold text-[0.95rem] text-dark mb-2 h-10 overflow-hidden line-clamp-2">${prod.title}</h4>
+                                        <p class="product-price font-body font-bold text-[1.15rem] text-primary mb-3 mt-auto">৳${prod.regular_price}</p>
+                                        <a href="/product/${prod.id}" class="btn-buy w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-center text-[0.9rem] hover:bg-secondary transition-colors"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        prodContainer.innerHTML = '<p class="col-span-full text-center">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
+                    }
+                } catch (err) {
+                    console.error("Home data load error", err);
+                }
+            }
+
+            // রান করানোর ট্রিগার
             updateNavigation();
             loadHomePageData();
         });
