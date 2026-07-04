@@ -44,9 +44,10 @@ def get_dashboard_stats(admin: dict = Depends(verify_admin)):
         today_orders_data = today_orders_query.data
         today_amount = sum(float(order['total_cost']) for order in today_orders_data) if today_orders_data else 0.0
 
+        # (সংশোধিত অংশ) 'todayUsers' টাইপো পরিবর্তন করে 'today_users_count' করা হয়েছে
         return {
             "total_users": total_users_count,
-            "today_users": todayUsers,
+            "today_users": today_users_count,
             "today_orders": today_orders_count,
             "today_amount": today_amount
         }
@@ -73,7 +74,6 @@ def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
 # --- ৪. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন অনুমোদন করা ---
 @router.post("/approve-activation/{request_id}")
 def approve_activation(request_id: str, admin: dict = Depends(verify_admin)):
-    # রিকোয়েস্টটি খুঁজে বের করা
     req_query = supabase.table("activation_requests").select("*").eq("id", request_id).single().execute()
     req_data = req_query.data
     if not req_data:
@@ -82,7 +82,6 @@ def approve_activation(request_id: str, admin: dict = Depends(verify_admin)):
     if req_data['status'] == 'approved':
         return {"status": "info", "message": "এটি ইতিমধ্যেই অনুমোদিত হয়েছে।"}
 
-    # ডাটাবেজ আপডেট
     try:
         supabase.table("activation_requests").update({"status": "approved"}).eq("id", request_id).execute()
         supabase.table("profiles").update({
