@@ -1,15 +1,38 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/main.py",
-      "use": "@vercel/python"
-    }
-  ],
+  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/(.*)",
       "destination": "api/main.py"
+    },
+    {
+      "source": "/signup/reseller",
+      "destination": "/public/signup-reseller.html"
+    },
+    {
+      "source": "/signup",
+      "destination": "/public/signup.html"
+    },
+    {
+      "source": "/login",
+      "destination": "/public/login.html"
+    },
+    {
+      "source": "/dashboard/admin",
+      "destination": "/public/dashboard/admin.html"
+    },
+    {
+      "source": "/dashboard/add-product",
+      "destination": "/public/dashboard/add-product.html"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/public/$1"
     }
   ]
 }
