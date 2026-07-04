@@ -11,12 +11,12 @@
       "destination": "/signup-reseller.html"
     },
     {
-      "source": "/signup/resseler",
-      "destination": "/signup-reseller.html"
+      "source": "/dashboard/reseller",
+      "destination": "/public/dashboard/reseller.html"
     },
     {
-      "source": "/signupressler",
-      "destination": "/signup-reseller.html"
+      "source": "/dashboard/reseller-profile",
+      "destination": "/public/dashboard/reseller-profile.html"
     }
   ]
 }
