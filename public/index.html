@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MartBaseBD - Premium Shop & Earn Platform</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
+                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
+                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
+                        dark: '#111827',          /* চারকোল ব্ল্যাক */
+                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark leading-relaxed">
+
+    <!-- 🌐 Sticky Navigation Header -->
+    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm">
+        <div class="max-width-1200 mx-auto px-5 py-4 flex justify-between items-center max-w-[1200px]">
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight hover:scale-[1.02] transition-transform">MartBaseBD</a>
+            
+            <!-- Mobile Menu Toggle Button -->
+            <button class="menu-toggle lg:hidden text-2xl text-dark focus:outline-none" id="menu-toggle">
+                <i class="fa-solid fa-bars" id="menu-icon"></i>
+            </button>
+
+            <!-- Navigation Links -->
+            <ul class="nav-menu hidden lg:flex items-center gap-6 list-none lg:static absolute top-[70px] left-0 w-full lg:w-auto bg-white lg:bg-transparent px-6 py-6 lg:p-0 flex-col lg:flex-row gap-4 shadow-lg lg:shadow-none z-50 border-t border-gray-100 lg:border-none" id="nav-menu">
+                <li><a href="/" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-house"></i> হোম</a></li>
+                <li><a href="#products-section" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
+                <li><a href="#offers-section" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
+                <li><a href="/earning" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
+                <li><a href="/digital-services" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
+                
+                <!-- Dynamic Navigation (Modified via JS based on Auth) -->
+                <li id="dynamic-nav" class="w-full lg:w-auto">
+                    <a href="/login" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10">লগইন / রেজিস্টার</a>
+                </li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- 🚀 Centered SaaS Style Modern Hero Section (Targeted by JS to auto-hide) -->
+    <section id="hero-section" class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5 transition-all duration-300">
+        <div class="max-w-[850px] mx-auto px-5 text-center flex flex-col items-center">
+            
+            <div class="hero-badge inline-flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-primary/15">
+                <i class="fa-solid fa-fire-flame-curved"></i> শূন্য পুঁজিতে ক্যারিয়ার গড়ুন
+            </div>
+            
+            <h1 class="hero-title text-3xl sm:text-4xl lg:text-5xl font-extrabold text-dark leading-tight mb-6">
+                সহজে কেনাকাটা করুন,<br>আজই শুরু করুন <span class="text-primary">উপার্জন</span>!
+            </h1>
+            
+            <p class="hero-subtitle text-muted text-base lg:text-lg mb-8 max-w-[650px] mx-auto leading-relaxed">
+                MartBaseBD বাংলাদেশের প্রিমিয়াম রিসেলিং ও ড্রপশিপিং প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কেনাকাটা করুন অথবা রিসেলার হয়ে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।
+            </p>
+            
+            <div class="hero-ctas flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
+                <a href="#products-section" class="btn-cta bg-dark text-white py-3 px-8 rounded-full font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-md flex items-center justify-center gap-2"><i class="fa-solid fa-bag-shopping"></i> কেনাকাটা করুন</a>
+                <a href="/signup/reseller" class="btn-cta bg-primary text-white py-3 px-8 rounded-full font-bold hover:bg-secondary hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/15 flex items-center justify-center gap-2"><i class="fa-solid fa-arrow-up-right-dots"></i> রিসেলার হিসেবে আয় করুন</a>
+            </div>
+
+        </div>
+    </section>
+
+    <main class="max-w-[1200px] mx-auto px-5">
+
+        <!-- 🔍 রিয়েল-টাইম সার্চ বার সেকশন (লগইন অবস্থায় এটিই সবার উপরে থাকবে) -->
+        <section class="my-8" id="search-section">
+            <div class="max-w-[600px] mx-auto">
+                <div class="relative flex items-center bg-white rounded-full border border-gray-200 shadow-md focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden px-5 py-0.5">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-lg mr-3"></i>
+                    <input type="text" id="search-input" class="w-full py-4 outline-none font-bangla text-dark bg-transparent text-sm placeholder-gray-400" placeholder="প্রোডাক্টের নাম দিয়ে ইনস্ট্যান্ট সার্চ করুন...">
+                </div>
+            </div>
+        </section>
+
+        <!-- 📸 Banner Slider -->
+        <section class="slider-section my-10 relative">
+            <div class="slider-container w-full aspect-[3/1] max-sm:aspect-[2/1] rounded-2xl overflow-hidden relative shadow-md border border-primary/5">
+                <!-- Slide 1 -->
+                <a href="#products-section" class="slide active h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ঈদ অফার ব্যানার">
+                </a>
+                <!-- Slide 2 -->
+                <a href="/signup/reseller" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="রিসেলিং সুবিধা">
+                </a>
+                <!-- Slide 3 -->
+                <a href="/digital-services" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ডিজিটাল সার্ভিস ব্যানার">
+                </a>
+                <!-- Slide 4 -->
+                <a href="#products-section" class="slide h-full w-full">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="প্রিমিয়াম গ্যাজেট সম্ভার">
+                </a>
+            </div>
+
+            <!-- Indicator Dots -->
+            <div class="slider-dots flex justify-center gap-2.5 mt-5" id="slider-dots">
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all active-dot active" onclick="userSetSlide(0)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(1)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(2)"></div>
+                <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(3)"></div>
+            </div>
+        </section>
+
+        <!-- Category Grid Section -->
+        <section class="my-10">
+            <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-list-ul text-primary"></i> ক্যাটাগরি সমূহ</h3>
+            <div class="categories-grid grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-3" id="categories-container">
+                <p class="col-span-full text-center py-5">ক্যাটাগরি লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- Products Showcase Section -->
+        <section id="products-section" class="my-10">
+            <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-primary"></i> আজকের আকর্ষণীয় প্রোডাক্টস</h3>
+            <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="products-container">
+                <p class="col-span-full text-center py-5">প্রোডাক্ট লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- 📢 Bottom Ad CTA Section -->
+        <section class="bottom-cta-section bg-[radial-gradient(circle_at_10%_20%,_#FF8C33_0%,_#FF6B00_100%)] rounded-3xl p-10 text-white text-center my-14 shadow-lg shadow-primary/10">
+            <div class="cta-content max-w-[750px] mx-auto">
+                <h2 class="text-3xl font-extrabold mb-4">আজই শুরু করুন সম্পূর্ণ বিনা পুঁজিতে ঘরে বসে ব্যবসা! 💼</h2>
+                <p class="text-lg opacity-95 mb-8 leading-relaxed">MartBaseBD রিসেলার হিসেবে আমাদের কোয়ালিটি সম্পন্ন প্রোডাক্টগুলো নিজের সুবিধামতো মূল্যে বিক্রি করে চমৎকার প্রফিট মার্জিন উপার্জন করুন। ডেলিভারি ও কাস্টমার সাপোর্টের সমস্ত টেনশন আমাদের!</p>
+                <a href="/signup/reseller" class="btn-cta-bottom bg-dark text-white py-4 px-10 rounded-full font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-lg flex inline-flex items-center gap-2.5 justify-center"><i class="fa-solid fa-user-plus"></i> রিসেলার হিসেবে যুক্ত হোন</a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 🌐 Premium Modern Footer Section -->
+    <footer class="bg-[#0B0F19] text-gray-400 py-16 border-t border-white/5 font-bangla">
+        <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
+            
+            <div class="footer-col">
+                <a href="/" class="font-headings font-extrabold text-3xl text-primary mb-5 inline-block">MartBaseBD</a>
+                <p class="text-[0.92rem] leading-relaxed mb-6 text-gray-400">
+                    বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
+                </p>
+                <div class="footer-socials flex gap-3">
+                    <a href="https://facebook.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://youtube.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://telegram.org" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="https://whatsapp.com" class="social-icon w-9 h-9 bg-white/5 rounded-full flex items-center justify-center text-gray-300 hover:bg-primary hover:text-white hover:-translate-y-1 transition-all" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">মেনু লিঙ্কসমূহ</h4>
+                <ul class="footer-links list-none text-sm space-y-3">
+                    <li><a href="/" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> হোম</a></li>
+                    <li><a href="#products-section" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> প্রোডাক্টস</a></li>
+                    <li><a href="#offers-section" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> অফারসমূহ</a></li>
+                    <li><a href="/earning" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> আর্ন জোন</a></li>
+                    <li><a href="/digital-services" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> ডিজিটাল সার্ভিস</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পলিসি ও গাইডলাইন</h4>
+                <ul class="footer-links list-none text-sm space-y-3">
+                    <li><a href="/about" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> আমাদের সম্পর্কে</a></li>
+                    <li><a href="/contact" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> যোগাযোগ করুন</a></li>
+                    <li><a href="/privacy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> গোপনীয়তা নীতি</a></li>
+                    <li><a href="/refund-policy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> রিফান্ড পলিসি</a></li>
+                    <li><a href="/reseller-policy" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> রিসেলার পলিসি</a></li>
+                    <li><a href="/report" class="hover:text-primary hover:translate-x-1 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> অভিযোগ ও রিপোর্ট</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পেমেন্ট মেথডস</h4>
+                <p class="text-sm leading-relaxed mb-4">নিরাপদ পেমেন্ট গেটওয়ের মাধ্যমে আপনার ট্রানজেকশন সম্পন্ন করুন নিশ্চিন্তে।</p>
+                <div class="payment-gateways flex flex-wrap gap-2">
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">bKash</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Nagad</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Rocket</span>
+                    <span class="gateway-badge bg-white/5 border border-white/10 px-3 py-1 rounded text-xs font-bold text-white font-body">Cards</span>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="copyright-bar border-t border-white/5 pt-6 text-center text-sm text-gray-500">
+            <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. All rights reserved. | Developed by <a href="https://github.com/alihosen" class="text-primary hover:underline font-semibold" target="_blank">Ali Hosen</a></p>
+        </div>
+    </footer>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. মোবাইল টগল মেনু কন্ট্রোল ---
+            const menuToggle = document.getElementById('menu-toggle');
+            const navMenu = document.getElementById('nav-menu');
+            const menuIcon = document.getElementById('menu-icon');
+
+            if (menuToggle && navMenu) {
+                menuToggle.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    navMenu.classList.toggle('hidden');
+                    navMenu.classList.toggle('flex');
+                    
+                    if(navMenu.classList.contains('hidden')){
+                        menuIcon.className = "fa-solid fa-bars";
+                    } else {
+                        menuIcon.className = "fa-solid fa-xmark";
+                    }
+                });
+            }
+
+            // --- খ. ইমেজ স্লাইডার লজিক ---
+            let currentSlide = 0;
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            function setSlide(index) {
+                if(!slides.length || index >= slides.length) return;
+                slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add('hidden');
+                dots[currentSlide].classList.remove('active');
+                
+                currentSlide = index;
+                slides[currentSlide].classList.add('active');
+                slides[currentSlide].classList.remove('hidden');
+                dots[currentSlide].classList.add('active');
+            }
+
+            function autoSlide() {
+                let nextSlide = (currentSlide + 1) % slides.length;
+                setSlide(nextSlide);
+            }
+            
+            let slideInterval = setInterval(autoSlide, 5000);
+
+            window.userSetSlide = function(index) {
+                clearInterval(slideInterval);
+                setSlide(index);
+                slideInterval = setInterval(autoSlide, 5000);
+            };
+
+            // --- গ. ডাইনামিক সুপাবেস ও কনফিগ লোড মেকানিজম ---
+            let supabaseClient = null;
+
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        console.log("Supabase Client initialized successfully.");
+                        
+                        // সাকসেসফুল ইনিশিয়ালাইজেশনের পর ডেটা লোড শুরু হবে
+                        updateNavigation();
+                        loadHomePageData();
+                    } else {
+                        console.warn("Supabase credentials missing.");
+                    }
+                } catch (err) {
+                    console.error("Supabase failed to initialize:", err);
+                }
+            }
+
+            // --- ঘ. ডাইনামিক নেভিগেশন বার আপডেট ও হিরো হাইড লজিক ---
+            async function updateNavigation() {
+                if (!supabaseClient) return;
+                try {
+                    const dynamicNav = document.getElementById('dynamic-nav');
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    
+                    if (session) {
+                        // ১. ইউজার লগইন থাকলে হিরো সেকশন হাইড হবে (রিকোয়ারমেন্ট অনুযায়ী)
+                        const heroSection = document.getElementById('hero-section');
+                        if (heroSection) {
+                            heroSection.classList.add('hidden');
+                        }
+
+                        const userId = session.user.id;
+                        const { data: profile } = await supabaseClient
+                            .from('profiles')
+                            .select('role')
+                            .eq('id', userId)
+                            .single();
+
+                        if (profile && dynamicNav) {
+                            if (profile.role === 'reseller') {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/dashboard/reseller" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            } else if (profile.role === 'admin') {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/dashboard/admin" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> এডমিন প্যানেল</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            } else {
+                                dynamicNav.outerHTML = `
+                                    <li><a href="/my-orders" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-box"></i> আমার অর্ডার</a></li>
+                                    <li><a href="/profile" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
+                                    <li><a href="/checkout" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
+                                    <li class="w-full lg:w-auto"><a href="#" onclick="handleLogout()" class="nav-link block text-center font-semibold text-[0.95rem] bg-primary text-white py-2 px-5 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                                `;
+                            }
+                        }
+                    }
+                } catch(e) {
+                    console.error("Auth routing failure", e);
+                }
+            }
+
+            // লগআউট লজিক
+            window.handleLogout = async function() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                    window.location.reload();
+                }
+            };
+
+            // --- ঙ. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড ---
+            async function loadHomePageData() {
+                if (!supabaseClient) return;
+                try {
+                    // ক্যাটাগরি লোড
+                    const { data: categories } = await supabaseClient.from('categories').select('*').limit(20);
+                    const catContainer = document.getElementById('categories-container');
+                    if (categories && categories.length > 0) {
+                        catContainer.innerHTML = '';
+                        categories.forEach(cat => {
+                            catContainer.innerHTML += `
+                                <a href="/category/${cat.slug}" class="category-card bg-white rounded-2xl p-4 text-center border border-black/[0.01] hover:translate-y-[-4px] hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 shadow-sm">
+                                    <i class="fa-solid ${cat.icon} text-2xl text-primary mb-2 block"></i>
+                                    <p class="category-name font-bold text-[0.8rem] leading-snug">${cat.name}</p>
+                                </a>
+                            `;
+                        });
+                    } else {
+                        catContainer.innerHTML = '<p class="col-span-full text-center">কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
+                    }
+
+                    // প্রোডাক্ট লোড
+                    const { data: products } = await supabaseClient.from('products').select('*').limit(30).order('created_at', { ascending: false });
+                    const prodContainer = document.getElementById('products-container');
+                    if (products && products.length > 0) {
+                        prodContainer.innerHTML = '';
+                        products.forEach(prod => {
+                            prodContainer.innerHTML += `
+                                <div class="product-card bg-white rounded-2xl border border-black/[0.02] overflow-hidden flex flex-col hover:translate-y-[-5px] hover:border-primary/15 hover:shadow-lg transition-all duration-300">
+                                    <a href="/product/${prod.id}" class="product-img-box w-full h-[190px] bg-gray-100 flex items-center justify-center overflow-hidden">
+                                        ${prod.image_url ? `<img src="${prod.image_url}" class="w-full h-full object-cover" alt="${prod.title}">` : `<i class="fa-solid fa-image text-3xl text-gray-400"></i>`}
+                                    </a>
+                                    <div class="product-info p-4 flex flex-col flex-grow">
+                                        <h4 class="product-title font-bold text-[0.95rem] text-dark mb-2 h-10 overflow-hidden line-clamp-2">${prod.title}</h4>
+                                        <p class="product-price font-body font-bold text-[1.15rem] text-primary mb-3 mt-auto">৳${prod.regular_price}</p>
+                                        <a href="/product/${prod.id}" class="btn-buy w-full py-2.5 bg-primary text-white rounded-xl font-semibold text-center text-[0.9rem] hover:bg-secondary transition-colors"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        prodContainer.innerHTML = '<p class="col-span-full text-center">কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
+                    }
+                } catch (err) {
+                    console.error("Home data load error", err);
+                }
+            }
+
+            // --- চ. ইনস্ট্যান্ট রিয়েল-টাইম ক্লায়েন্ট ফিল্টার সার্চ লজিক ---
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const keyword = e.target.value.toLowerCase().trim();
+                    const productCards = document.querySelectorAll('.product-card');
+                    
+                    productCards.forEach(card => {
+                        const title = card.querySelector('.product-title').innerText.toLowerCase();
+                        if (title.includes(keyword)) {
+                            card.style.display = 'flex'; // ম্যাচ করলে শো করবে
+                        } else {
+                            card.style.display = 'none'; // ম্যাচ না করলে হাইড হবে
+                        }
+                    });
+                });
+            }
+
+            // স্লাইডারের ২য়, ৩য় ও ৪র্থ স্লাইড ডিফল্ট হাইড করা
+            for (let i = 1; i < slides.length; i++) {
+                slides[i].classList.add('hidden');
+            }
+
+            // ইনিশিয়ালাইজেশন প্রসেস ট্রিগার
+            initializeSupabase();
+        });
+    </script>
+</body>
+                  </html>
