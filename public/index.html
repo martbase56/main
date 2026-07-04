@@ -65,8 +65,8 @@
         </div>
     </header>
 
-    <!-- 🚀 Centered SaaS Style Modern Hero Section -->
-    <section class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5">
+    <!-- 🚀 Centered SaaS Style Modern Hero Section (Targeted by JS to auto-hide) -->
+    <section id="hero-section" class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5 transition-all duration-300">
         <div class="max-w-[850px] mx-auto px-5 text-center flex flex-col items-center">
             
             <div class="hero-badge inline-flex items-center gap-1.5 bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold mb-6 border border-primary/15">
@@ -90,6 +90,16 @@
     </section>
 
     <main class="max-w-[1200px] mx-auto px-5">
+
+        <!-- 🔍 রিয়েল-টাইম সার্চ বার সেকশন (লগইন অবস্থায় এটিই সবার উপরে থাকবে) -->
+        <section class="my-8" id="search-section">
+            <div class="max-w-[600px] mx-auto">
+                <div class="relative flex items-center bg-white rounded-full border border-gray-200 shadow-md focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden px-5 py-0.5">
+                    <i class="fa-solid fa-magnifying-glass text-gray-400 text-lg mr-3"></i>
+                    <input type="text" id="search-input" class="w-full py-4 outline-none font-bangla text-dark bg-transparent text-sm placeholder-gray-400" placeholder="প্রোডাক্টের নাম দিয়ে ইনস্ট্যান্ট সার্চ করুন...">
+                </div>
+            </div>
+        </section>
 
         <!-- 📸 Banner Slider -->
         <section class="slider-section my-10 relative">
@@ -237,11 +247,14 @@
             const dots = document.querySelectorAll('.dot');
             
             function setSlide(index) {
+                if(!slides.length || index >= slides.length) return;
                 slides[currentSlide].classList.remove('active');
+                slides[currentSlide].classList.add('hidden');
                 dots[currentSlide].classList.remove('active');
                 
                 currentSlide = index;
                 slides[currentSlide].classList.add('active');
+                slides[currentSlide].classList.remove('hidden');
                 dots[currentSlide].classList.add('active');
             }
 
@@ -282,14 +295,20 @@
                 }
             }
 
-            // --- ঘ. ডাইনামিক নেভিগেশন বার আপডেট (Auth Status ভিত্তিক) ---
+            // --- ঘ. ডাইনামিক নেভিগেশন বার আপডেট ও হিরো হাইড লজিক ---
             async function updateNavigation() {
                 if (!supabaseClient) return;
                 try {
                     const dynamicNav = document.getElementById('dynamic-nav');
                     const { data: { session } } = await supabaseClient.auth.getSession();
                     
-                    if (session && dynamicNav) {
+                    if (session) {
+                        // ১. ইউজার লগইন থাকলে হিরো সেকশন হাইড হবে (রিকোয়ারমেন্ট অনুযায়ী)
+                        const heroSection = document.getElementById('hero-section');
+                        if (heroSection) {
+                            heroSection.classList.add('hidden');
+                        }
+
                         const userId = session.user.id;
                         const { data: profile } = await supabaseClient
                             .from('profiles')
@@ -297,7 +316,7 @@
                             .eq('id', userId)
                             .single();
 
-                        if (profile) {
+                        if (profile && dynamicNav) {
                             if (profile.role === 'reseller') {
                                 dynamicNav.outerHTML = `
                                     <li><a href="/dashboard/reseller" class="nav-link font-semibold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
@@ -352,7 +371,7 @@
                         catContainer.innerHTML = '<p class="col-span-full text-center">কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
                     }
 
-                    // প্রোডাক্ট লোড (সংশোধিত এসকেপিং এরর ফ্রি টেমপ্লেট লিটেরাল)
+                    // প্রোডাক্ট লোড
                     const { data: products } = await supabaseClient.from('products').select('*').limit(30).order('created_at', { ascending: false });
                     const prodContainer = document.getElementById('products-container');
                     if (products && products.length > 0) {
@@ -379,7 +398,25 @@
                 }
             }
 
-            // স্লাইডারের ৩টি স্লাইড হিডেন করে প্রথম স্লাইড দিয়ে স্টার্ট করা
+            // --- চ. ইনস্ট্যান্ট রিয়েল-টাইম ক্লায়েন্ট ফিল্টার সার্চ লজিক ---
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    const keyword = e.target.value.toLowerCase().trim();
+                    const productCards = document.querySelectorAll('.product-card');
+                    
+                    productCards.forEach(card => {
+                        const title = card.querySelector('.product-title').innerText.toLowerCase();
+                        if (title.includes(keyword)) {
+                            card.style.display = 'flex'; // ম্যাচ করলে শো করবে
+                        } else {
+                            card.style.display = 'none'; // ম্যাচ না করলে হাইড হবে
+                        }
+                    });
+                });
+            }
+
+            // স্লাইডারের ২য়, ৩য় ও ৪র্থ স্লাইড ডিফল্ট হাইড করা
             for (let i = 1; i < slides.length; i++) {
                 slides[i].classList.add('hidden');
             }
