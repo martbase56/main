@@ -131,9 +131,9 @@ def update_activity(user_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+# api/routers/auth.py এর শুধুমাত্র রেফারেল এন্ডপয়েন্ট অংশটি পরিবর্তন করুন:
 
-# --- ৮. এন্ডপয়েন্ট: রিসেলার রেফারেল স্ট্যাটাস মূল্যায়ন ও রেফারেল তালিকা ভিউ ---
-
+# --- ৮. এন্ডপয়েন্ট: পেন্ডিং রেফারেল মূল্যায়ন ও রেফারেল তালিকা দেখা (ব্যানড ফিল্টার সহ) ---
 @router.get("/referrals/{user_id}")
 def get_and_evaluate_referrals(user_id: str):
     try:
@@ -147,17 +147,26 @@ def get_and_evaluate_referrals(user_id: str):
             expires_at = datetime.fromisoformat(ref['expires_at'].replace('Z', '+00:00'))
             now = datetime.now(timezone.utc)
             
+            # নতুন সচলতা ও ব্যান চেক
+            profile_check = supabase.table("profiles").select("last_active_at", "is_active", "activation_status").eq("id", referred_id).single().execute()
+            referred_profile = profile_check.data
+            
+            # (গুরুত্বপূর্ণ ফিক্স) ইউজার যদি ব্যান (Banned) হয়ে থাকেন, তবে রেফারেল সরাসরি 'failed' হবে [1.1.2]
+            if referred_profile and (referred_profile['is_active'] == False or referred_profile['activation_status'] == 'banned'):
+                supabase.table("referrals").update({"status": "failed"}).eq("id", ref['id']).execute()
+                continue # লুপের পরবর্তী রিকোর্ডে চলে যাবে
+            
             # ১. কাস্টমার কোনো সফল অর্ডার করেছে কিনা চেক
-            order_check = supabase.table("orders").select("id", count="exact").eq("placed_by", referred_id).execute()
+            order_check = supabase.table("orders").select("id", count="exact").eq("placed_by", referred_id).eq("status", "delivered").execute()
             has_order = order_check.count > 0 if order_check.count is not None else False
             
             # ২. ড্যাশবোর্ডে সচল ছিল কিনা চেক (লাস্ট একটিভ টাইম রেজিস্ট্রেশন টাইমের ৫ মিনিট পর কিনা)
-            profile_check = supabase.table("profiles").select("last_active_at").eq("id", referred_id).single().execute()
-            last_active = datetime.fromisoformat(profile_check.data['last_active_at'].replace('Z', '+00:00'))
+            last_active = datetime.fromisoformat(referred_profile['last_active_at'].replace('Z', '+00:00'))
             is_active_session = (last_active - created_at).total_seconds() > 300 # ৫ মিনিটের বেশি ড্যাশবোর্ডে ছিল
             
             # কন্ডিশন ম্যাচ করলে রেফারার ১০ টাকা পাবে এবং রেফারেল সাকসেস হবে [1.1.2]
             if has_order or is_active_session:
+                # রেফারেল সফল করা
                 supabase.table("referrals").update({"status": "success"}).eq("id", ref['id']).execute()
                 
                 # রেফারারের ওয়ালেটে ১০ টাকা যোগ করা [1.1.2]
@@ -178,7 +187,7 @@ def get_and_evaluate_referrals(user_id: str):
         return all_referrals_query.data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+        
 
 # --- ৯. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট অ্যাপ্রুভ করা ---
 
