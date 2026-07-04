@@ -103,24 +103,40 @@
 
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const supabaseUrl = 'YOUR_SUPABASE_URL';
-            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
             let supabase = null;
 
-            try {
-                if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL') {
-                    supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
+            // --- ক. ডাইনামিক এনভায়রনমেন্ট কনফিগ লোড করার ফাংশন ---
+            async function initializeSupabase() {
+                try {
+                    // FastAPI এন্ডপয়েন্ট থেকে পাবলিক সুপাবেস ক্রেডেনশিয়াল নিয়ে আসা হচ্ছে
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config API Error");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabase = supabaseJS.createClient(config.supabase_url, config.supabase_anon_key);
+                        console.log("Supabase Client initialized dynamically from environment variables.");
+                    } else {
+                        console.warn("Supabase credentials not received from server config.");
+                    }
+                } catch (err) {
+                    console.error("Supabase failed to load dynamically:", err);
                 }
-            } catch (err) {
-                console.error("Supabase load fail", err);
             }
 
+            // সেশন ইনিশিয়ালাইজ শুরু
+            initializeSupabase();
+
+            // --- খ. রিসেলার রেজিস্ট্রেশন সাবমিশন হ্যান্ডলার ---
             document.getElementById('reseller-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
+                
+                // ডিফেন্সিভ চেক: ডাটাবেজ কানেক্ট না থাকলে নোটিফিকেশন দেবে
                 if (!supabase) {
-                    alert("সুপাবেস কানেকশন সেটআপ করা হয়নি।");
+                    alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
 
@@ -160,7 +176,7 @@
                         window.location.href = "/login";
                     }
                 } catch (err) {
-                    alert("রিসেলার সাইনআপ ফেইলড।");
+                    alert("রিসেলার সাইনআপ ফেইলড: " + err.message);
                 }
             });
         });
