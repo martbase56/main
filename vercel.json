@@ -1,16 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "builds": [
-    {
-      "src": "api/main.py",
-      "use": "@vercel/python"
-    },
-    {
-      "src": "public/**/*",
-      "use": "@vercel/static"
-    }
-  ],
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -18,19 +8,7 @@
     },
     {
       "source": "/signup/reseller",
-      "destination": "/public/signup-reseller.html"
-    },
-    {
-      "source": "/signup",
-      "destination": "/public/signup.html"
-    },
-    {
-      "source": "/login",
-      "destination": "/public/login.html"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/public/$1"
+      "destination": "/signup-reseller.html"
     }
   ]
 }
