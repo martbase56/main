@@ -44,15 +44,21 @@ async def get_current_user(authorization: str = Header(None)):
 
 # --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট ---
 
+# api/routers/auth.py এর ৩ নম্বর এন্ডপয়েন্টটি পরিবর্তন করে নিন:
+
+# --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট (অ্যাক্টিভেশন ফিসহ) ---
 @router.get("/config")
 def get_supabase_config():
+    # ডাইনামিক অ্যাক্টিভেশন ফি বের করা
+    fee_query = supabase.table("system_settings").select("value").eq("key", "activation_fee").single().execute()
+    activation_fee = float(fee_query.data['value']) if fee_query.data else 0.0
+
     return {
         "supabase_url": settings.SUPABASE_URL,
-        "supabase_anon_key": settings.SUPABASE_ANON_KEY
+        "supabase_anon_key": settings.SUPABASE_ANON_KEY,
+        "activation_fee": activation_fee  # এপিআই রেসপন্সে ফি যুক্ত করা হলো
     }
-
-
-# --- ৪. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
+    # --- ৪. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
 
 @router.get("/profile/{user_id}")
 def get_user_profile(user_id: str):
