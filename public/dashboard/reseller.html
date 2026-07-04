@@ -35,7 +35,6 @@
     </script>
 
     <style>
-        /* Hide scrollbars for clean mobile app experience */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
@@ -45,7 +44,6 @@
     <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <div class="flex items-center gap-3">
-            <!-- Sidebar Drawer Toggle -->
             <button id="drawer-toggle" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-dark text-lg active:scale-95 transition-transform">
                 <i class="fa-solid fa-bars-staggered"></i>
             </button>
@@ -92,10 +90,21 @@
         <!-- 📢 ১. ডাইনামিক নোটিশবোর্ড -->
         <div class="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-center gap-3">
             <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"><i class="fa-solid fa-bullhorn text-sm animate-bounce"></i></span>
-            <marquee class="text-xs font-bold text-dark" id="ticker-text">সিস্টেম নোটিশ লোড হচ্ছে...</marquee>
+            <marquee class="text-xs font-bold text-dark" id="ticker-text">সিস্টেম নোটিশবোর্ড লোড হচ্ছে...</marquee>
         </div>
 
-        <!-- 💸 ২. Earning Zone (ওয়ালেট ও রেফারেল কুইক স্ট্যাটস) -->
+        <!-- 📞 ২. সাপোর্ট সেন্টার (Moved to the very top as requested!) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
+            <h4 class="text-sm font-bold text-dark"><i class="fa-solid fa-headset text-primary"></i> রিসেলার সাপোর্ট হেল্পলাইন</h4>
+            <div class="grid grid-cols-2 gap-3">
+                <a href="https://wa.me/yourno" class="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl text-xs font-bold text-green-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp Support</a>
+                <a href="https://t.me/yourno" class="flex items-center gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs font-bold text-sky-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-telegram text-lg"></i> Telegram Support</a>
+                <a href="https://t.me/channel" class="flex items-center gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:scale-[1.02] transition-transform"><i class="fa-solid fa-bullhorn text-base"></i> Telegram Channel</a>
+                <a href="https://facebook.com/page" class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-facebook-f text-base"></i> Facebook Page</a>
+            </div>
+        </section>
+
+        <!-- 💸 ৩. Earning Zone -->
         <section class="grid grid-cols-2 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow flex items-center gap-4">
                 <div class="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wallet"></i></div>
@@ -113,7 +122,7 @@
             </div>
         </section>
 
-        <!-- 🚀 ৩. Highlighted Features Grid (Small Circular Navs) -->
+        <!-- 🚀 ৪. Highlighted Features Grid (Small Circular Navs) -->
         <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
             <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4"><i class="fa-solid fa-circle-check"></i> প্রিমিয়াম ফিচারস</h4>
             <div class="grid grid-cols-4 gap-4 text-center">
@@ -140,10 +149,10 @@
             </div>
         </section>
 
-        <!-- 💼 ৪. Standard Features Grid (Not Highlighted Circular Navs) -->
+        <!-- 💼 ৫. Standard Features Grid (Reseller Sidebar Navs Synced!) -->
         <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
             <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-4"><i class="fa-solid fa-sliders"></i> অন্যান্য সার্ভিস সমূহ</h4>
-            <div class="grid grid-cols-5 gap-3 text-center">
+            <div class="grid grid-cols-3 gap-y-4 gap-x-3 text-center">
                 <!-- All Products -->
                 <a href="/" class="flex flex-col items-center gap-1.5 group">
                     <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-box-open"></i></div>
@@ -154,25 +163,30 @@
                     <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-magnifying-glass"></i></div>
                     <span class="text-[0.65rem] font-bold text-dark">সার্চ প্রোডাক্ট</span>
                 </a>
-                <!-- Withdraw -->
-                <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-money-bill-transfer"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">উইথড্র</span>
-                </a>
-                <!-- My Orders -->
+                <!-- My Orders (Synced) -->
                 <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1.5 group">
                     <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-bag-shopping"></i></div>
                     <span class="text-[0.65rem] font-bold text-dark">আমার অর্ডার</span>
                 </a>
-                <!-- History -->
+                <!-- Refer & Earn (Synced) -->
+                <a href="/dashboard/referral" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-gift"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">রেফার ও উপার্জন</span>
+                </a>
+                <!-- Withdraw (Synced) -->
                 <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">অর্ডার হিস্ট্রি</span>
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-wallet"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">ওয়ালেট উইথড্র</span>
+                </a>
+                <!-- Profile Settings (Synced) -->
+                <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1.5 group">
+                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center text-sm border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-circle-user"></i></div>
+                    <span class="text-[0.65rem] font-bold text-dark">প্রোফাইল সেটিংস</span>
                 </a>
             </div>
         </section>
 
-        <!-- 📦 ৫. Horizontal/Vertical lists below -->
+        <!-- 📦 ৬. Horizontal Scroll Lists -->
         
         <!-- ক. ধামাকা অফার প্রোডাক্টস -->
         <section id="offers-section" class="space-y-3">
@@ -208,18 +222,7 @@
                 <a href="/dashboard/reseller-profile" class="text-xs text-primary font-bold">ম্যানেজ করুন</a>
             </h4>
             <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="wishlist-products-scroll">
-                <p class="text-xs text-muted">পصন্দের তালিকায় পণ্য নেই।</p>
-            </div>
-        </section>
-
-        <!-- 📞 চ. সাপোর্ট সেন্টার -->
-        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4 animate-fade-in">
-            <h4 class="text-sm font-bold text-dark"><i class="fa-solid fa-headset text-primary"></i> রিসেলার সাপোর্ট হেল্পলাইন</h4>
-            <div class="grid grid-cols-2 gap-3">
-                <a href="https://wa.me/yourno" class="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl text-xs font-bold text-green-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp Support</a>
-                <a href="https://t.me/yourno" class="flex items-center gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs font-bold text-sky-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-telegram text-lg"></i> Telegram Support</a>
-                <a href="https://t.me/channel" class="flex items-center gap-2 p-3 bg-indigo-50 border border-indigo-200 rounded-xl text-xs font-bold text-indigo-700 hover:scale-[1.02] transition-transform"><i class="fa-solid fa-bullhorn text-base"></i> Telegram Channel</a>
-                <a href="https://facebook.com/page" class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700 hover:scale-[1.02] transition-transform"><i class="fa-brands fa-facebook-f text-base"></i> Facebook Page</a>
+                <p class="text-xs text-muted">পছন্দের তালিকায় পণ্য নেই।</p>
             </div>
         </section>
 
