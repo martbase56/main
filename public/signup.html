@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartBaseBD - লগইন করুন</title>
+    <title>MartBaseBD - সাধারণ ক্রেতা সাইনআপ</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,35 +40,44 @@
 <body class="bg-canvas font-bangla text-dark min-h-screen flex items-center justify-center p-5">
 
     <div class="w-full max-w-[450px] bg-white rounded-2xl border border-black/[0.02] p-8 md:p-10 shadow-xl shadow-primary/5">
-        <!-- Brand logo -->
         <div class="text-center mb-8">
             <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MartBaseBD</a>
             <p class="text-sm text-muted mt-1">Premium Work & Earn Platform</p>
         </div>
 
         <h3 class="text-xl font-bold text-center mb-6 text-dark flex items-center justify-center gap-2">
-            <i class="fa-solid fa-lock text-primary"></i> অ্যাকাউন্টে প্রবেশ করুন
+            <i class="fa-solid fa-user-plus text-primary"></i> ক্রেতা অ্যাকাউন্ট খুলুন
         </h3>
 
-        <form id="login-form" class="space-y-5">
+        <form id="customer-signup-form" class="space-y-4">
             <div>
-                <label class="block font-semibold text-sm mb-2 text-dark">ইমেইল ঠিকানা</label>
+                <label class="block font-semibold text-sm mb-1 text-dark">সম্পূর্ণ নাম</label>
+                <input type="text" id="fullname" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: আলী হোসেন" required>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-sm mb-1 text-dark">ইমেইল ঠিকানা</label>
                 <input type="email" id="email" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="example@domain.com" required>
             </div>
 
             <div>
-                <label class="block font-semibold text-sm mb-2 text-dark">পাসওয়ার্ড</label>
-                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                <label class="block font-semibold text-sm mb-1 text-dark">মোবাইল নম্বর</label>
+                <input type="tel" id="phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="017XXXXXXXX" required>
+            </div>
+
+            <div>
+                <label class="block font-semibold text-sm mb-1 text-dark">পাসওয়ার্ড</label>
+                <input type="password" id="password" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="কমপক্ষে ৬ অক্ষরের পাসওয়ার্ড" required>
             </div>
 
             <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-semibold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2">
-                <i class="fa-solid fa-right-to-bracket"></i> লগইন করুন
+                <i class="fa-solid fa-user-plus"></i> রেজিস্ট্রেশন সম্পন্ন করুন
             </button>
         </form>
 
         <div class="text-center mt-6 text-sm text-muted space-y-2">
-            <p>নতুন অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-semibold hover:underline">ক্রেতা সাইনআপ</a> অথবা <a href="/signup/reseller" class="text-primary font-semibold hover:underline">রিসেলার সাইনআপ</a></p>
-            <p><a href="/" class="text-gray-500 hover:text-primary transition-colors"><i class="fa-solid fa-arrow-left"></i> হোমে ফিরে যান</a></p>
+            <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-semibold hover:underline">লগইন করুন</a></p>
+            <p>রিসেলার হিসেবে জয়েন করতে চান? <a href="/signup/reseller" class="text-primary font-semibold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
     </div>
 
@@ -79,7 +88,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             let supabase = null;
 
-            // --- ক. ব্যাকএন্ড থেকে ডাইনামিক সুপাবেস কনফিগ নিয়ে আসা ---
+            // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -97,55 +106,46 @@
                 }
             }
 
-            // সুপাবেস কনফিগ প্রসেস স্টার্ট
             initializeSupabase();
 
-            // --- খ. লগইন ফর্ম হ্যান্ডলিং ---
-            document.getElementById('login-form').addEventListener('submit', async (e) => {
+            // --- খ. কাস্টমার রেজিস্ট্রেশন হ্যান্ডলার ---
+            document.getElementById('customer-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabase) {
                     alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
 
+                const fullname = document.getElementById('fullname').value;
                 const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
                 const password = document.getElementById('password').value;
 
                 try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
+                    // Supabase Auth-এ সাইনআপ এবং মেটাডেটা প্রেরণ (যা ট্রিগারের মাধ্যমে profiles টেবিলে যাবে)
+                    const { data, error } = await supabase.auth.signUp({
                         email: email,
                         password: password,
+                        options: {
+                            data: {
+                                full_name: fullname,
+                                phone_number: phone,
+                                role: 'customer'
+                            }
+                        }
                     });
 
                     if (error) {
-                        alert("লগইন ব্যর্থ হয়েছে: " + error.message);
+                        alert("ভুল হয়েছে: " + error.message);
                         return;
                     }
 
                     if (data.user) {
-                        // ডাটাবেজের profiles টেবিল থেকে ইউজারের রোল (role) বের করা
-                        const { data: profile, error: profileError } = await supabase
-                            .from('profiles')
-                            .select('role')
-                            .eq('id', data.user.id)
-                            .single();
-
-                        if (profileError) {
-                            alert("ইউজার ডাটা যাচাই করতে ত্রুটি হয়েছে: " + profileError.message);
-                            return;
-                        }
-
-                        // রোলের ভিত্তিতে রিডাইরেকশন
-                        if (profile.role === 'reseller') {
-                            window.location.href = "/dashboard/reseller";
-                        } else if (profile.role === 'admin') {
-                            window.location.href = "/dashboard/admin";
-                        } else {
-                            window.location.href = "/";
-                        }
+                        alert("রেজিস্ট্রেশন সফল হয়েছে! অনুগ্রহ করে আপনার ইমেইল ইনবক্স ভেরিফাই করুন।");
+                        window.location.href = "/login";
                     }
                 } catch (err) {
-                    alert("একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: " + err.message);
+                    alert("সাইনআপ ব্যর্থ হয়েছে: " + err.message);
                 }
             });
         });
