@@ -1,14 +1,18 @@
 {
   "version": 2,
-  "cleanUrls": true,
+  "builds": [
+    {
+      "src": "api/main.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": "public/**"
+      }
+    }
+  ],
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "destination": "api/main.py"
-    },
-    {
-      "source": "/signup/reseller",
-      "destination": "/signup-reseller.html"
     }
   ]
 }
