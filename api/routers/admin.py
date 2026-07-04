@@ -1,4 +1,4 @@
-# api/routers/admin.py
+# api/routers/admin.py (কাউন্টার ও সর্টিং এরর ফিক্সড সম্পূর্ণ কোড)
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
@@ -9,13 +9,12 @@ from api.routers.auth import get_current_user
 
 router = APIRouter()
 
-# --- ১. Pydantic সেটিংস স্কিমা ---
 class SettingsUpdateSchema(BaseModel):
     activation_fee: float
     dashboard_notice: str
     imgbb_api_key: str
 
-# --- ২. হেল্পার ডিপেনডেন্সি: এডমিন রোল ভেরিফাই করা ---
+# --- ১. হেল্পার ডিপেনডেন্সি: এডমিন রোল ভেরিফাই করা ---
 def verify_admin(current_user: dict = Depends(get_current_user)):
     try:
         user_id = current_user.id
@@ -27,21 +26,25 @@ def verify_admin(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="এডমিন ভেরিফিকেশন ব্যর্থ হয়েছে।")
 
 
-# --- ৩. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস ---
+# --- ২. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস (কাউন্টার ফিক্সড) ---
 @router.get("/stats")
 def get_dashboard_stats(admin: dict = Depends(verify_admin)):
     try:
-        total_users_query = supabase.table("profiles").select("id", count="exact").execute()
-        total_users_count = total_users_query.count if total_users_query.count is not None else 0
+        # ক. মোট ইউজার সংখ্যা (ডাইনামিক এরে লেন্থ ভিত্তিক)
+        total_users_query = supabase.table("profiles").select("id").execute()
+        total_users_count = len(total_users_query.data) if total_users_query.data else 0
 
+        # খ. আজকের তারিখের শুরু (ISO Format in UTC)
         today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         today_start_iso = today_start.isoformat()
 
-        today_users_query = supabase.table("profiles").select("id", count="exact").gte("created_at", today_start_iso).execute()
-        today_users_count = today_users_query.count if today_users_query.count is not None else 0
+        # গ. আজকের নতুন ইউজার সংখ্যা
+        today_users_query = supabase.table("profiles").select("id").gte("created_at", today_start_iso).execute()
+        today_users_count = len(today_users_query.data) if today_users_query.data else 0
 
-        today_orders_query = supabase.table("orders").select("total_cost", count="exact").gte("created_at", today_start_iso).execute()
-        today_orders_count = today_orders_query.count if today_orders_query.count is not None else 0
+        # ঘ. আজকের মোট অর্ডার ও টাকার পরিমাণ
+        today_orders_query = supabase.table("orders").select("total_cost").gte("created_at", today_start_iso).execute()
+        today_orders_count = len(today_orders_query.data) if today_orders_query.data else 0
         
         today_orders_data = today_orders_query.data
         today_amount = sum(float(order['total_cost']) for order in today_orders_data) if today_orders_data else 0.0
@@ -56,7 +59,7 @@ def get_dashboard_stats(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা ---
+# --- ৩. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা ---
 @router.get("/activation-requests")
 def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
     try:
@@ -70,20 +73,21 @@ def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৫. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা ---
+# --- ৪. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (সর্টিং এরর ফিক্সড) ---
 @router.get("/orders")
 def get_all_orders(admin: dict = Depends(verify_admin)):
     try:
+        # (সংশোধিত) desc=True ব্যবহার করে পাইথন সর্টিং সম্পন্ন করা হয়েছে [2]
         query = supabase.table("orders")\
             .select("*, profiles(full_name)")\
-            .order("created_at", { "ascending": False })\
+            .order("created_at", desc=True)\
             .execute()
         return query.data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৬. এন্ডপয়েন্ট: সিস্টেম সেটিংস রিড করা ---
+# --- ৫. এন্ডপয়েন্ট: সিস্টেম সেটিংস রিড করা ---
 @router.get("/get-settings")
 def get_settings(admin: dict = Depends(verify_admin)):
     try:
@@ -94,7 +98,7 @@ def get_settings(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৭. এন্ডপয়েন্ট: সিস্টেম সেটিংস সেভ/আপডেট করা ---
+# --- ৬. এন্ডপয়েন্ট: সিস্টেম সেটিংস সেভ/আপডেট করা ---
 @router.post("/update-settings")
 def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_admin)):
     try:
@@ -106,20 +110,17 @@ def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_adm
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ==================== ব্যবহারকারী নিয়ন্ত্রণ এন্ডপয়েন্টসমূহ ====================
-
-# --- ৮. এন্ডপয়েন্ট: সকল ব্যবহারকারীর তালিকা ফেচ করা ---
+# --- ৭. এন্ডপয়েন্ট: সকল ব্যবহারকারীর তালিকা ফেচ করা ---
 @router.get("/users")
 def get_all_users(admin: dict = Depends(verify_admin)):
     try:
-        # profiles টেবিল থেকে সফলভাবে তালিকা নিয়ে আসা
         query = supabase.table("profiles").select("*").order("created_at", desc=True).execute()
         return query.data
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৯. এন্ডপয়েন্ট: ব্যবহারকারীকে ব্যান করা ---
+# --- ৮. এন্ডপয়েন্ট: ব্যবহারকারীকে ব্যান করা ---
 @router.post("/users/{user_id}/ban")
 def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -129,7 +130,7 @@ def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ১০. এন্ডপয়েন্ট: ব্যবহারকারীকে আনব্যান/একটিভ করা ---
+# --- ৯. এন্ডপয়েন্ট: ব্যবহারকারীকে আনব্যান/একটিভ করা ---
 @router.post("/users/{user_id}/unban")
 def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -139,16 +140,12 @@ def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ১১. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল চিরতরে ডিলিট করা ---
+# --- ১০. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল ডিলিট করা ---
 @router.delete("/users/{user_id}")
 def delete_user_account(user_id: str, admin: dict = Depends(verify_admin)):
     try:
-        # Supabase Auth সিস্টেম থেকে অ্যাকাউন্ট ডিলিট করা (service_role ক্ষমতার মাধ্যমে) [1]
         supabase.auth.admin.delete_user(user_id)
-        
-        # Profiles টেবিল থেকে ডাটা ডিলিট করা
         supabase.table("profiles").delete().eq("id", user_id).execute()
-        
         return {"status": "success", "message": "ব্যবহারকারীর অ্যাকাউন্ট ও প্রোফাইল ডাটাবেজ থেকে চিরতরে ডিলিট করা হয়েছে।"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
