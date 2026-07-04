@@ -93,7 +93,6 @@
 
         <!-- 🚀 4 Statistics Cards -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-            <!-- Total Users -->
             <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md flex items-center gap-5 hover:translate-y-[-2px] transition-transform">
                 <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-users"></i></div>
                 <div>
@@ -101,8 +100,6 @@
                     <h3 class="text-2xl font-extrabold text-dark font-body" id="total-users">--</h3>
                 </div>
             </div>
-
-            <!-- Today's New Users -->
             <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md flex items-center gap-5 hover:translate-y-[-2px] transition-transform">
                 <div class="w-12 h-12 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-user-plus"></i></div>
                 <div>
@@ -110,8 +107,6 @@
                     <h3 class="text-2xl font-extrabold text-dark font-body" id="today-users">--</h3>
                 </div>
             </div>
-
-            <!-- Today's Orders -->
             <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md flex items-center gap-5 hover:translate-y-[-2px] transition-transform">
                 <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-cart-arrow-down"></i></div>
                 <div>
@@ -119,8 +114,6 @@
                     <h3 class="text-2xl font-extrabold text-dark font-body" id="today-orders">--</h3>
                 </div>
             </div>
-
-            <!-- Today's Amount -->
             <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md flex items-center gap-5 hover:translate-y-[-2px] transition-transform">
                 <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-2xl flex items-center justify-center text-xl"><i class="fa-solid fa-money-bill-wave"></i></div>
                 <div>
@@ -135,7 +128,6 @@
             <h3 class="text-lg font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
                 <i class="fa-solid fa-user-check text-primary"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
             </h3>
-            
             <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
@@ -157,6 +149,43 @@
             </div>
         </section>
 
+        <!-- 📦 Section: Orders Management Panel (With Order ID Live Search) -->
+        <section id="orders-management" class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md mb-10">
+            <div class="border-b border-gray-100 pb-3 mb-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h3 class="text-lg font-bold text-dark flex items-center gap-2">
+                    <i class="fa-solid fa-box-open text-primary"></i> লাইভ অর্ডার ম্যানেজমেন্ট
+                </h3>
+                
+                <!-- 🔍 Order ID Live Search Input -->
+                <div class="relative w-full md:w-[320px]">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </span>
+                    <input type="text" id="order-search-input" class="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-mono text-dark placeholder-gray-400" placeholder="অর্ডার আইডি (যেমন: d39b) দিয়ে খুঁজুন...">
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">অর্ডার আইডি</th>
+                            <th class="py-3 px-4">রিসেলার/কাস্টমার</th>
+                            <th class="py-3 px-4">ডেলিভারি তথ্য</th>
+                            <th class="py-3 px-4">টাকা (৳)</th>
+                            <th class="py-3 px-4">বর্তমান স্ট্যাটাস</th>
+                            <th class="py-3 px-4 text-center">স্ট্যাটাস পরিবর্তন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-orders-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-gray-500">অর্ডার তালিকা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <!-- Footer -->
         <footer class="mt-16 text-center text-xs text-gray-500 border-t border-gray-200 pt-6">
             <p>&copy; 2026 MartBaseBD Admin Control Center. All rights reserved. | Developed by Ali Hosen</p>
@@ -168,8 +197,6 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -181,7 +208,6 @@
 
             let supabaseClient = null;
 
-            // --- ক. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -191,8 +217,6 @@
                     if (config.supabase_url && config.supabase_anon_key) {
                         supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         verifyAdminAndLoad();
-                    } else {
-                        console.warn("Credentials not received. Checking fallbacks.");
                     }
                 } catch (err) {
                     console.error("Supabase fail", err);
@@ -201,7 +225,6 @@
 
             initializeSupabase();
 
-            // --- খ. এডমিন এক্সেস যাচাই ও ডেটা কল ---
             async function verifyAdminAndLoad() {
                 if (!supabaseClient) return;
                 try {
@@ -212,7 +235,6 @@
                         return;
                     }
 
-                    // এডমিন রোল চেক করা
                     const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('role')
@@ -225,23 +247,20 @@
                         return;
                     }
 
-                    // এডমিন এক্সেস নিশ্চিত হলে এপিআই থেকে ডেটা আনা শুরু হবে
                     const token = session.access_token;
                     loadAdminStats(token);
                     loadActivationRequests(token);
+                    loadAdminOrders(token);
 
                 } catch (e) {
                     console.error("Admin validation error", e);
                 }
             }
 
-            // --- গ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড ---
             async function loadAdminStats(token) {
                 try {
                     const response = await fetch('/api/admin/stats', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
                     
                     if (response.ok) {
@@ -256,14 +275,11 @@
                 }
             }
 
-            // --- ঘ. এপিআই এর মাধ্যমে পেন্ডিং রিকোয়েস্ট লোড ---
             async function loadActivationRequests(token) {
                 const listContainer = document.getElementById('activation-requests-list');
                 try {
                     const response = await fetch('/api/admin/activation-requests', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (response.ok) {
@@ -271,9 +287,7 @@
                         if (requests && requests.length > 0) {
                             listContainer.innerHTML = '';
                             requests.forEach(req => {
-                                // রিলেশন প্রোফাইল থেকে ফুল নেম সেভ করা
                                 const fullName = req.profiles ? req.profiles.full_name : 'N/A';
-                                
                                 listContainer.innerHTML += `
                                     <tr class="hover:bg-gray-50/50 transition-colors" id="req-row-${req.id}">
                                         <td class="py-4 px-4 font-bold text-dark">${fullName}</td>
@@ -297,26 +311,84 @@
                 }
             }
 
-            // --- ঙ. অনুমোদন এবং বাতিলের এপিআই একশন লজিকস ---
+            async function loadAdminOrders(token) {
+                const ordersList = document.getElementById('admin-orders-list');
+                try {
+                    const response = await fetch('/api/admin/orders', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (response.ok) {
+                        const orders = await response.json();
+                        if (orders && orders.length > 0) {
+                            ordersList.innerHTML = '';
+                            orders.forEach(order => {
+                                const userName = order.profiles ? order.profiles.full_name : 'N/A';
+                                
+                                ordersList.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${order.id}</td>
+                                        <td class="py-4 px-4 font-semibold text-dark">${userName} (${order.user_role})</td>
+                                        <td class="py-4 px-4 text-xs text-muted max-w-[200px] truncate" title="${order.delivery_address}">${order.delivery_address}</td>
+                                        <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
+                                        <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold bg-primary/10 text-primary">${order.status}</span></td>
+                                        <td class="py-4 px-4 text-center">
+                                            <select onchange="updateOrderStatus('${order.id}', this.value)" class="px-2 py-1.5 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary text-dark font-bold cursor-pointer bg-white">
+                                                <option value="pending" ${order.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                                <option value="accepted" ${order.status === 'accepted' ? 'selected' : ''}>Accepted</option>
+                                                <option value="shipped" ${order.status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                                <option value="delivered" ${order.status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                                                <option value="cancelled" ${order.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            ordersList.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-gray-500">কোনো অর্ডারের রেকর্ড পাওয়া যায়নি।</td></tr>';
+                        }
+                    }
+                } catch(e) {
+                    console.error("Orders load failed", e);
+                }
+            }
+
+            // --- 🔍 অর্ডার আইডি লাইভ সার্চ লজিক ---
+            const orderSearchInput = document.getElementById('order-search-input');
+            if (orderSearchInput) {
+                orderSearchInput.addEventListener('input', (e) => {
+                    const keyword = e.target.value.toLowerCase().trim();
+                    const rows = document.querySelectorAll('#admin-orders-list tr');
+
+                    rows.forEach(row => {
+                        const orderIdCell = row.querySelector('td:first-child');
+                        if (orderIdCell) {
+                            const orderId = orderIdCell.innerText.toLowerCase();
+                            // ইনপুট কিওয়ার্ড ফাঁকা হলে বা আইডি আংশিক মিললে রো শো করবে
+                            if (orderId.includes(keyword) || keyword === '') {
+                                row.style.display = '';
+                            } else {
+                                row.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            }
+
             window.approveRequest = async function(requestId) {
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
-                
                 try {
                     const sessionData = await supabaseClient.auth.getSession();
                     const token = sessionData.data.session.access_token;
-
                     const response = await fetch(`/api/admin/approve-activation/${requestId}`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
-
                     const result = await response.json();
                     if (response.ok) {
                         alert(result.message);
                         document.getElementById(`req-row-${requestId}`).remove();
-                        loadAdminStats(token); // স্ট্যাটস আপডেট
+                        loadAdminStats(token);
                     } else {
                         alert("ত্রুটি: " + result.detail);
                     }
@@ -327,18 +399,13 @@
 
             window.rejectRequest = async function(requestId) {
                 if(!confirm("আপনি কি এই পেমেন্ট রিকোয়েস্টটি বাতিল করতে চান?")) return;
-
                 try {
                     const sessionData = await supabaseClient.auth.getSession();
                     const token = sessionData.data.session.access_token;
-
                     const response = await fetch(`/api/admin/reject-activation/${requestId}`, {
                         method: 'POST',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Authorization': `Bearer ${token}` }
                     });
-
                     const result = await response.json();
                     if (response.ok) {
                         alert(result.message);
@@ -348,6 +415,28 @@
                     }
                 } catch (err) {
                     alert("সার্ভার কানেকশনে সমস্যা হয়েছে।");
+                }
+            };
+
+            window.updateOrderStatus = async function(orderId, newStatus) {
+                if(!confirm(`আপনি কি অর্ডারটির স্ট্যাটাস পরিবর্তন করে '${newStatus}' করতে চান?`)) return;
+                try {
+                    const sessionData = await supabaseClient.auth.getSession();
+                    const token = sessionData.data.session.access_token;
+                    const response = await fetch(`/api/orders/admin/update-status/${orderId}?new_status=${newStatus}`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        loadAdminStats(token);
+                        loadAdminOrders(token);
+                    } else {
+                        alert("ত্রুটি: " + result.detail);
+                    }
+                } catch (err) {
+                    alert("সার্ভার কানেকশনে ত্রুটি ঘটেছে।");
                 }
             };
 
