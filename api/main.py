@@ -27,7 +27,7 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
 
 
 # এপিআই রুট চেক করার জন্য বেসিক টেস্ট এন্ডপয়েন্ট
-@app.get("/")
+@app.get("/api")
 def read_root():
     return {
         "status": "success",
