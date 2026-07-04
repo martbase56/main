@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartBaseBD - My Profile & Order Tracking</title>
+    <title>MerketBaseBD - User Dashboard</title>
     
     <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,212 +34,420 @@
         }
     </script>
 </head>
-<body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
+<body class="bg-canvas font-bangla text-dark min-h-screen">
 
-    <!-- Header Navigation -->
-    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm mb-8">
-        <div class="max-w-[1200px] mx-auto px-5 py-4 flex justify-between items-center">
-            <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MartBaseBD</a>
-            <a href="/" class="font-semibold text-sm hover:text-primary"><i class="fa-solid fa-house"></i> হোম পেজ</a>
-        </div>
-    </header>
+    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
+    <div id="header-placeholder"></div>
 
-    <main class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    <main class="max-w-[1200px] mx-auto px-5 py-8">
         
-        <!-- 👤 Left Column: User Profile Info -->
-        <div class="lg:col-span-4 bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md h-fit">
-            <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-user-gear"></i> প্রোফাইল তথ্য</h3>
-            <div class="space-y-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-user"></i></div>
-                    <div>
-                        <h4 class="font-bold text-dark" id="user-fullname">লোড হচ্ছে...</h4>
-                        <p class="text-xs text-muted" id="user-role">...</p>
-                    </div>
-                </div>
-                <div class="space-y-2 text-sm pt-4 border-t border-gray-50">
-                    <p class="text-muted"><i class="fa-solid fa-envelope w-5"></i> <span id="user-email">...</span></p>
-                    <p class="text-muted"><i class="fa-solid fa-phone w-5"></i> <span id="user-phone">...</span></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 📦 Right Column: Orders History & Live Tracking -->
-        <div class="lg:col-span-8 space-y-6">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- Live Tracking Panel (Shown when an order is selected or active) -->
-            <div id="tracking-panel" class="bg-white rounded-2xl border border-primary/15 p-6 shadow-md hidden bg-gradient-to-br from-white to-primary/[0.01]">
-                <h3 class="text-lg font-bold text-dark mb-4 flex items-center gap-2"><i class="fa-solid fa-truck-fast text-primary"></i> লাইভ অর্ডার ট্র্যাকিং</h3>
-                <p class="text-xs text-muted mb-6">অর্ডার আইডি: <span class="font-mono" id="track-order-id">#--</span></p>
-                
-                <!-- Tracking Timeline (Visualizer) -->
-                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative">
-                    <!-- Progress Line (Desktop Only) -->
-                    <div class="hidden sm:block absolute top-[22px] left-[40px] right-[40px] h-[3px] bg-gray-200 -z-10"></div>
-                    
-                    <!-- Step 1: Pending -->
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-pending">
-                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-receipt"></i></div>
-                        <span class="text-xs font-semibold">অর্ডার পেন্ডিং</span>
+            <!-- 📁 Left Column: Modern Sidebar Navigation Tabs -->
+            <div class="lg:col-span-3 space-y-4">
+                <!-- User Quick Info Card -->
+                <div class="bg-white rounded-3xl border border-black/[0.01] p-6 shadow-md flex flex-col items-center text-center">
+                    <div class="w-20 h-20 bg-primary/10 text-primary rounded-full flex items-center justify-center text-3xl font-bold mb-4 border-2 border-primary/20 shadow-inner">
+                        <i class="fa-solid fa-user-astronaut"></i>
                     </div>
-                    <!-- Step 2: Shipping -->
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-shipping">
-                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-truck-ramp-box"></i></div>
-                        <span class="text-xs font-semibold">কুরিয়ারে পাঠানো হয়েছে</span>
-                    </div>
-                    <!-- Step 3: Delivered -->
-                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-delivered">
-                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-box-open"></i></div>
-                        <span class="text-xs font-semibold">ডেলিভারি সফল!</span>
-                    </div>
+                    <h3 class="font-bold text-lg text-dark leading-tight" id="sidebar-fullname">লোডিং...</h3>
+                    <p class="text-xs text-primary font-bold bg-primary/10 px-3 py-1 rounded-full mt-2" id="sidebar-role">...</p>
+                </div>
+
+                <!-- Tab Selectors -->
+                <div class="bg-white rounded-2xl border border-black/[0.01] p-3 shadow-sm flex flex-col gap-1">
+                    <button onclick="switchTab('profile-tab')" id="btn-profile-tab" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all">
+                        <i class="fa-solid fa-user-gear text-lg"></i>
+                        <span>আমার প্রোফাইল</span>
+                    </button>
+                    <button onclick="switchTab('orders-tab')" id="btn-orders-tab" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 text-dark font-semibold transition-all">
+                        <i class="fa-solid fa-box-open text-lg"></i>
+                        <span>আমার অর্ডারসমূহ</span>
+                    </button>
+                    <button onclick="switchTab('wishlist-tab')" id="btn-wishlist-tab" class="tab-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-gray-50 text-dark font-semibold transition-all">
+                        <i class="fa-solid fa-heart text-lg text-red-500"></i>
+                        <span>পছন্দের তালিকা</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Orders List (History) -->
-            <div class="bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md">
-                <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-box-archive"></i> আমার অর্ডার হিস্ট্রি</h3>
+            <!-- 📄 Right Column: Interactive Dynamic Tab Content -->
+            <div class="lg:col-span-9 space-y-6">
                 
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
-                                <th class="py-3 px-4">অর্ডার আইডি</th>
-                                <th class="py-3 px-4">কাস্টমার</th>
-                                <th class="py-3 px-4">পরিমাণ (৳)</th>
-                                <th class="py-3 px-4">স্ট্যাটাস</th>
-                                <th class="py-3 px-4 text-center">ট্র্যাক করুন</th>
-                            </tr>
-                        </thead>
-                        <tbody id="orders-list-container" class="divide-y divide-gray-100">
-                            <tr>
-                                <td colspan="5" class="py-6 text-center text-gray-500">আপনার অর্ডারগুলো লোড করা হচ্ছে...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <!-- 👤 TAB 1: Profile Management & Edit Form -->
+                <div id="profile-tab" class="tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md">
+                    <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6"><i class="fa-solid fa-id-card text-primary"></i> অ্যাকাউন্ট প্রোফাইল সেটিংস</h3>
+                    
+                    <form id="profile-update-form" class="space-y-5">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">সম্পূর্ণ নাম</label>
+                                <input type="text" id="fullname" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" required>
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">ইমেইল ঠিকানা (পরিবর্তন অযোগ্য)</label>
+                                <input type="email" id="email" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl bg-gray-50 text-gray-400 outline-none font-body" disabled>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">মোবাইল নম্বর</label>
+                                <input type="tel" id="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary text-dark" required>
+                            </div>
+                            <!-- Location Dropdowns for Auto-fill Profiles -->
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">বিভাগ (Division)</label>
+                                <input type="text" id="division" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: Dhaka">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">জেলা (District)</label>
+                                <input type="text" id="district" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: Tangail">
+                            </div>
+                            <div>
+                                <label class="block font-semibold text-sm mb-1">উপজেলা (Upazila)</label>
+                                <input type="text" id="upazila" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: Mirzapur">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block font-semibold text-sm mb-1">বিস্তারিত ডেলিভারি ঠিকানা</label>
+                            <textarea id="address_details" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark h-20 resize-none" placeholder="বাসা নং, রোড নং এবং কুরিয়ার ডেলিভারি পয়েন্টের নাম লিখুন..."></textarea>
+                        </div>
+
+                        <button type="submit" id="btn-save-profile" class="py-3 px-8 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-circle-check"></i> প্রোফাইল তথ্য সংরক্ষণ করুন
+                        </button>
+                    </form>
                 </div>
+
+                <!-- 📦 TAB 2: Orders History & Live Timeline Tracker -->
+                <div id="orders-tab" class="tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md hidden space-y-6">
+                    
+                    <!-- 🚨 Live Tracking Timeline Panel -->
+                    <div id="tracking-panel" class="hidden p-6 bg-gradient-to-br from-white to-primary/[0.02] border border-primary/20 rounded-2xl shadow-inner space-y-5">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h4 class="font-extrabold text-base text-dark flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-primary animate-pulse"></i> রিয়েল-টাইম লাইভ ট্র্যাকিং</h4>
+                                <p class="text-xs text-muted mt-1">অর্ডার আইডি: <span class="font-mono font-bold text-primary" id="track-order-id">#--</span></p>
+                            </div>
+                            <button onclick="document.getElementById('tracking-panel').classList.add('hidden')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
+                        </div>
+
+                        <!-- Elegant Stepper Timeline -->
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative pt-4">
+                            <!-- Horizontal Progress Line (Desktop) -->
+                            <div class="hidden sm:block absolute top-[26px] left-[40px] right-[40px] h-[3px] bg-gray-100 -z-10"></div>
+                            
+                            <!-- Step 1: Pending -->
+                            <div class="flex sm:flex-col items-center gap-3 text-center" id="step-pending">
+                                <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-receipt"></i></div>
+                                <span class="text-xs font-bold">অর্ডার পেন্ডিং</span>
+                            </div>
+                            <!-- Step 2: Accepted -->
+                            <div class="flex sm:flex-col items-center gap-3 text-center" id="step-accepted">
+                                <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-check"></i></div>
+                                <span class="text-xs font-bold">অর্ডার গৃহীত</span>
+                            </div>
+                            <!-- Step 3: Shipped -->
+                            <div class="flex sm:flex-col items-center gap-3 text-center" id="step-shipped">
+                                <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-truck-fast"></i></div>
+                                <span class="text-xs font-bold">শিপড করা হয়েছে</span>
+                            </div>
+                            <!-- Step 4: Delivered -->
+                            <div class="flex sm:flex-col items-center gap-3 text-center" id="step-delivered">
+                                <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-circle-check"></i></div>
+                                <span class="text-xs font-bold">ডেলিভারি সফল</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Orders Table List -->
+                    <div>
+                        <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6"><i class="fa-solid fa-box-archive text-primary"></i> আমার সফল অর্ডারসমূহ</h3>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse text-sm">
+                                <thead>
+                                    <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                                        <th class="py-3 px-4">অর্ডার আইডি</th>
+                                        <th class="py-3 px-4">কাস্টমার নাম</th>
+                                        <th class="py-3 px-4">অ্যামাউন্ট (৳)</th>
+                                        <th class="py-3 px-4">স্ট্যাটাস</th>
+                                        <th class="py-3 px-4 text-center">লাইভ ট্র্যাকিং</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-list-container" class="divide-y divide-gray-100">
+                                    <tr>
+                                        <td colspan="5" class="py-6 text-center text-gray-500">ডাটা লোড হচ্ছে...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ❤️ TAB 3: Wishlist (Dynamic Favorite Grid) -->
+                <div id="wishlist-tab" class="tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md hidden">
+                    <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6"><i class="fa-solid fa-heart text-red-500"></i> আমার পছন্দের পণ্যসমূহ</h3>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5" id="wishlist-container">
+                        <p class="col-span-full text-center py-5 text-gray-500">পছন্দের তালিকায় কোনো পণ্য নেই।</p>
+                    </div>
+                </div>
+
             </div>
 
         </div>
 
     </main>
 
-    <!-- Supabase SDK -->
+    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে ফুটার ইনজেক্ট করবে) -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <script>
+        let currentUserId = null;
+
         document.addEventListener('DOMContentLoaded', () => {
-            let supabaseClient = null;
+            
+            // --- ১. ডাইনামিক ট্যাব সুইচিং লজিক ---
+            window.switchTab = function(tabId) {
+                // সব কন্টেন্ট হাইড করা
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+                document.getElementById(tabId).classList.remove('hidden');
+                
+                // বাটন অ্যাক্টিভ স্টাইল চেঞ্জ
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('bg-primary', 'text-white');
+                    btn.classList.add('hover:bg-gray-50', 'text-dark');
+                });
+                document.getElementById('btn-' + tabId).classList.add('bg-primary', 'text-white');
+                document.getElementById('btn-' + tabId).classList.remove('hover:bg-gray-50', 'text-dark');
 
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
-            const supabaseUrl = 'YOUR_SUPABASE_URL';
-            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
-
-            async function initializeSupabase() {
-                try {
-                    const response = await fetch('/api/auth/config');
-                    if (!response.ok) throw new Error("Config error");
-                    const config = await response.json();
-                    
-                    if (config.supabase_url && config.supabase_anon_key) {
-                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        loadUserProfileAndOrders();
-                    } else {
-                        console.warn("কনফিগ পাওয়া যায়নি।");
-                    }
-                } catch (err) {
-                    console.error("Supabase failed", err);
+                // পছন্দের তালিকা ট্যাবে গেলে উইশলিস্ট প্রোডাক্ট লোড করা
+                if (tabId === 'wishlist-tab') {
+                    loadWishlistData();
                 }
             }
 
-            // --- খ. প্রোফাইল ও অর্ডার হিস্ট্রি ডাটা লোড ---
-            async function loadUserProfileAndOrders() {
+            // --- ২. প্রোফাইল এডিটর ও ডাটাবেজ ইন্টিগ্রেশন ---
+            async function loadUserProfileAndData() {
+                if (!window.supabaseClient) {
+                    setTimeout(loadUserProfileAndData, 100);
+                    return;
+                }
+                const client = window.supabaseClient;
+
                 try {
-                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    const { data: { session } } = await client.auth.getSession();
                     if (!session) {
                         alert("অনুগ্রহ করে আগে লগইন সম্পন্ন করুন।");
                         window.location.href = "/login";
                         return;
                     }
+                    currentUserId = session.user.id;
 
-                    const userId = session.user.id;
-
-                    // ১. প্রোফাইল লোড
-                    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
+                    // ক. প্রোফাইল ডাটা ফেচিং ও অটো-ফিল
+                    const { data: profile } = await client.from('profiles').select('*').eq('id', currentUserId).single();
                     if (profile) {
-                        document.getElementById('user-fullname').innerText = profile.full_name;
-                        document.getElementById('user-role').innerText = profile.role === 'reseller' ? '💼 রেজিস্টার্ড রিসেলার' : '👤 সাধারণ ক্রেতা';
-                        document.getElementById('user-email').innerText = profile.email;
-                        document.getElementById('user-phone').innerText = profile.phone_number;
+                        document.getElementById('sidebar-fullname').innerText = profile.full_name || "MartBase User";
+                        document.getElementById('sidebar-role').innerText = profile.role === 'reseller' ? '💼 রেজিস্টার্ড রিসেলার' : '👤 সাধারণ ক্রেতা';
+                        
+                        document.getElementById('fullname').value = profile.full_name || "";
+                        document.getElementById('email').value = profile.email || "";
+                        document.getElementById('phone').value = profile.phone_number || "";
+                        document.getElementById('division').value = profile.division || "";
+                        document.getElementById('district').value = profile.district || "";
+                        document.getElementById('upazila').value = profile.upazila || "";
+                        document.getElementById('address_details').value = profile.address_details || "";
                     }
 
-                    // ২. অর্ডার হিস্ট্রি লোড
-                    const { data: orders } = await supabaseClient
+                    // খ. অর্ডার হিস্ট্রি তালিকা লোড
+                    const { data: orders } = await client
                         .from('orders')
                         .select('*')
-                        .eq('placed_by', userId)
+                        .eq('placed_by', currentUserId)
                         .order('created_at', { ascending: false });
 
                     const listContainer = document.getElementById('orders-list-container');
                     if (orders && orders.length > 0) {
                         listContainer.innerHTML = '';
                         orders.forEach(order => {
-                            const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50' : (order.status === 'shipping' ? 'text-amber-600 bg-amber-50' : 'text-gray-500 bg-gray-50');
+                            const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50 border-green-200' : (order.status === 'cancelled' ? 'text-red-500 bg-red-50 border-red-200' : 'text-primary bg-primary/5 border-primary/10');
                             
                             listContainer.innerHTML += `
                                 <tr class="hover:bg-gray-50/50 transition-colors">
                                     <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${order.id.substring(0,8)}...</td>
                                     <td class="py-4 px-4 font-semibold text-dark">${order.customer_name}</td>
-                                    <td class="py-4 px-4 font-body font-bold">৳${order.collectable_amount}</td>
-                                    <td class="py-4 px-4"><span class="px-2 py-1 rounded-md text-xs font-bold ${statusColor}">${order.status}</span></td>
+                                    <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
+                                    <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold border ${statusColor}">${order.status}</span></td>
                                     <td class="py-4 px-4 text-center">
-                                        <button onclick="trackOrder('${order.id}', '${order.status}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md shadow-primary/10 transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
+                                        <button onclick="trackOrder('${order.id}', '${order.status}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
                                     </td>
                                 </tr>
                             `;
                         });
                     } else {
-                        listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো অর্ডার পাওয়া যায়নি।</td></tr>';
+                        listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো সফল অর্ডারের রেকর্ড নেই।</td></tr>';
                     }
 
                 } catch (e) {
-                    console.error("Profile/Orders loading error", e);
+                    console.error("Dashboard database load error", e);
                 }
             }
 
-            // --- গ. ডাইনামিক লাইভ ট্র্যাকিং লজিক ---
+            // --- ৩. প্রোফাইল ডেটা আপডেট সাবমিট হ্যান্ডলার (অটো-সেভ এপিআই) ---
+            document.getElementById('profile-update-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!window.supabaseClient || !currentUserId) return;
+
+                const client = window.supabaseClient;
+                const fullname = document.getElementById('fullname').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const division = document.getElementById('division').value.trim();
+                const district = document.getElementById('district').value.trim();
+                const upazila = document.getElementById('upazila').value.trim();
+                const addressDetails = document.getElementById('address_details').value.trim();
+
+                const saveBtn = document.getElementById('btn-save-profile');
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেসিং হচ্ছে...`;
+
+                try {
+                    const { error } = await client.from('profiles').update({
+                        full_name: fullname,
+                        phone_number: phone,
+                        division: division,
+                        district: district,
+                        upazila: upazila,
+                        address_details: addressDetails
+                    }).eq('id', currentUserId);
+
+                    if (error) throw error;
+                    alert("সাফল্য! আপনার প্রোফাইল তথ্য সঠিকভাবে আপডেট করা হয়েছে।");
+                    window.location.reload();
+                } catch (err) {
+                    alert("প্রোফাইল আপডেট ব্যর্থ হয়েছে: " + err.message);
+                } finally {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> প্রোফাইল তথ্য সংরক্ষণ করুন`;
+                }
+            });
+
+            // --- ৪. ৫টি স্ট্যাটাস ভিত্তিক ডাইনামিক লাইভ ট্র্যাকিং লজিক ---
             window.trackOrder = function(orderId, status) {
                 const trackingPanel = document.getElementById('tracking-panel');
-                document.getElementById('track-order-id').innerText = `#${orderId}`;
+                const trackOrderIdSpan = document.getElementById('track-order-id');
                 trackingPanel.classList.remove('hidden');
 
                 // স্টেপস সিলেক্টর
                 const stepPending = document.getElementById('step-pending').querySelector('div');
-                const stepShipping = document.getElementById('step-shipping').querySelector('div');
+                const stepAccepted = document.getElementById('step-accepted').querySelector('div');
+                const stepShipped = document.getElementById('step-shipped').querySelector('div');
                 const stepDelivered = document.getElementById('step-delivered').querySelector('div');
 
-                // স্টেপ স্টাইল রিসেট
-                [stepPending, stepShipping, stepDelivered].forEach(step => {
-                    step.className = "w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all";
+                // রিসেট অল স্টেপস
+                [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => {
+                    step.className = "w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all";
                 });
 
-                // স্ট্যাটাস অনুযায়ী লাইভ হাইলাইট কালার পরিবর্তন
-                if (status === 'pending') {
-                    stepPending.className = "w-11 h-11 bg-amber-500 text-white rounded-full flex items-center justify-center text-lg font-bold animate-pulse shadow-lg shadow-amber-500/30";
-                } else if (status === 'shipping') {
-                    stepPending.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
-                    stepShipping.className = "w-11 h-11 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold animate-pulse shadow-lg shadow-primary/30";
-                } else if (status === 'delivered') {
-                    stepPending.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
-                    stepShipping.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
-                    stepDelivered.className = "w-11 h-11 bg-emerald-600 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg shadow-emerald-600/30";
+                // বাতিলকৃত স্ট্যাটাস চেক
+                if (status === 'cancelled') {
+                    trackOrderIdSpan.innerHTML = `${orderId.substring(0,8)}... <span class="ml-2 px-2.5 py-1 rounded bg-rose-50 text-rose-600 text-[0.65rem] font-bold border border-rose-200">❌ বাতিল করা হয়েছে (Cancelled)</span>`;
+                } else {
+                    trackOrderIdSpan.innerText = `#${orderId.substring(0,8)}...`;
+                    
+                    if (status === 'pending') {
+                        stepPending.className = "w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-amber-400 animate-pulse shadow-lg shadow-amber-500/30";
+                    } else if (status === 'accepted') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                    } else if (status === 'shipped') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepShipped.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                    } else if (status === 'delivered') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepShipped.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepDelivered.className = "w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-emerald-500 shadow-lg shadow-emerald-600/30";
+                    }
                 }
 
-                // স্মুথলি ট্র্যাকিং প্যানেলের দিকে স্ক্রোল হওয়া
                 trackingPanel.scrollIntoView({ behavior: 'smooth' });
             };
 
-            initializeSupabase();
+            // --- ৫. পছন্দের তালিকা (Wishlist) প্রোডাক্ট রেন্ডারিং ---
+            async function loadWishlistData() {
+                const container = document.getElementById('wishlist-container');
+                const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+                if (wishlist.length === 0) {
+                    container.innerHTML = '<p class="col-span-full text-center py-5 text-gray-500">পছন্দের তালিকায় কোনো পণ্য নেই।</p>';
+                    return;
+                }
+
+                if (!window.supabaseClient) return;
+                const client = window.supabaseClient;
+
+                try {
+                    // উইশলিস্টের আইডিগুলোর ওপর ভিত্তি করে প্রোডাক্ট ফেচ করা
+                    const { data: products } = await client
+                        .from('products')
+                        .select('*')
+                        .in('id', wishlist);
+
+                    if (products && products.length > 0) {
+                        container.innerHTML = '';
+                        products.forEach(prod => {
+                            const cardImgUrl = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image_url;
+                            
+                            container.innerHTML += `
+                                <div class="product-card bg-canvas rounded-2xl border border-gray-100 overflow-hidden flex flex-col p-3 relative hover:shadow-md transition-shadow">
+                                    <button onclick="removeWishlistItem('${prod.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center text-red-500 shadow"><i class="fa-solid fa-trash-can"></i></button>
+                                    <a href="/product?id=${prod.id}" class="w-full h-32 flex items-center justify-center overflow-hidden rounded-xl bg-gray-50">
+                                        ${cardImgUrl ? `<img src="${cardImgUrl}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-400 text-2xl"></i>`}
+                                    </a>
+                                    <div class="pt-3 flex flex-col flex-grow">
+                                        <h4 class="font-bold text-xs text-dark line-clamp-1 mb-1">${prod.title}</h4>
+                                        <p class="font-body font-bold text-sm text-primary mb-3">৳${prod.regular_price}</p>
+                                        <a href="/product?id=${prod.id}" class="w-full py-1.5 bg-primary text-white rounded-lg font-semibold text-center text-xs hover:bg-secondary transition-colors"><i class="fa-solid fa-bag-shopping"></i> View Product</a>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<p class="col-span-full text-center py-5 text-gray-500">পছন্দের পণ্যগুলো লোড করা সম্ভব হয়নি।</p>';
+                    }
+                } catch(e) {
+                    console.error("Wishlist products fetch failure", e);
+                }
+            }
+
+            // উইশলিস্ট থেকে ইনস্ট্যান্ট প্রোডাক্ট রিমুভ
+            window.removeWishlistItem = function(productId) {
+                let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                const index = wishlist.indexOf(productId);
+                if (index > -1) {
+                    wishlist.splice(index, 1);
+                    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
+                    loadWishlistData(); // রি-রেন্ডার উইশলিস্ট
+                    alert("প্রোডাক্টটি পছন্দের তালিকা থেকে সফলভাবে রিমুভ করা হয়েছে।");
+                }
+            };
+
+            // সেশন ডাটাবেজ প্রসেস স্টার্ট
+            loadUserProfileAndData();
         });
     </script>
 </body>
-  </html>
+</html>
