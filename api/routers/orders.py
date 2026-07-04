@@ -1,12 +1,13 @@
-# api/routers/orders.py (সম্পূর্ণ ও চূড়ান্ত কোড)
+# api/routers/orders.py
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
+from typing import List, Dict, Any, Optional
 from api.database import supabase
 from api.routers.auth import get_current_user
 
 router = APIRouter()
 
-# --- ১. Pydantic ডেটা ভ্যালিডেশন স্কিমাস ---
+# --- ১. Pydantic ডেটা ভ্যালিডেশন স্কিমাস (সুপার-কম্প্যাটিবল টাইপিং) ---
 
 class OrderItemSchema(BaseModel):
     product_id: str
@@ -19,12 +20,12 @@ class OrderCreateSchema(BaseModel):
     customer_phone: str
     delivery_address: str
     payment_method: str = "COD"
-    payment_details: dict = None          # {"sender_number": "...", "trx_id": "..."}
-    order_note: str = None
-    items: list[OrderItemSchema]          # কার্টের সমস্ত প্রোডাক্টের তালিকা
-    collectable_amount: float             # কাস্টমার থেকে টোটাল কালেকশন (Discounts সহ)
+    payment_details: Optional[Dict[str, Any]] = None
+    order_note: Optional[str] = None
+    items: List[OrderItemSchema]                    # কার্টের প্রোডাক্ট তালিকা
+    collectable_amount: float
     shipping_cost: float
-    coupon_code: str = None
+    coupon_code: Optional[str] = None
     coupon_discount: float = 0.0
 
 class CouponValidateSchema(BaseModel):
@@ -36,13 +37,22 @@ class CouponValidateSchema(BaseModel):
 @router.post("/validate-coupon")
 def validate_coupon(data: CouponValidateSchema):
     try:
-        query = supabase.table("coupons").select("*").eq("code", data.code.upper()).eq("is_active", True).execute()
+        query = supabase.table("coupons")\
+            .select("*")\
+            .eq("code", data.code.upper())\
+            .eq("is_active", True)\
+            .execute()
+            
         if not query.data:
             raise HTTPException(status_code=404, detail="অবৈধ বা নিষ্ক্রিয় কুপন কোড।")
         
         coupon = query.data[0]
+        
         if data.order_amount < float(coupon['min_order_amount']):
-            raise HTTPException(status_code=400, detail=f"এই কুপনটি ব্যবহার করতে ন্যূনতম ৳{coupon['min_order_amount']} অর্ডারের প্রয়োজন।")
+            raise HTTPException(
+                status_code=400, 
+                detail=f"এই কুপনটি ব্যবহার করতে ন্যূনতম ৳{coupon['min_order_amount']} অর্ডারের প্রয়োজন।"
+            )
         
         discount = 0.0
         if coupon['discount_type'] == 'percentage':
@@ -81,13 +91,11 @@ def place_order(order: OrderCreateSchema):
         # গ. রিসেলার লাভ নির্ধারণ করা
         reseller_profit = 0.0
         if user_role == 'reseller':
-            # রিসেলারের লাভ = (কালেকশন অ্যামাউন্ট - শিপিং খরচ) - রিসেলার পাইকারি দাম
             reseller_profit = (order.collectable_amount - order.shipping_cost) - total_reseller_cost
             if reseller_profit < 0:
                 reseller_profit = 0.0
 
         # ঘ. ডাটাবেজে অর্ডার ইনসার্ট করা
-        # Pydantic items অবজেক্টকে JSON ফরম্যাটে রূপান্তর
         serialized_items = [item.dict() for item in order.items]
 
         order_payload = {
