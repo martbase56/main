@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Reseller Dashboard</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Hide scrollbars for clean app look */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-3">
+            <!-- Sidebar Drawer Toggle Menu -->
+            <button id="drawer-toggle" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-dark text-lg active:scale-95 transition-transform">
+                <i class="fa-solid fa-bars-staggered"></i>
+            </button>
+            <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD</span>
+        </div>
+
+        <!-- 💸 bKash-style Tap to Reveal Wallet Balance Pill -->
+        <div onclick="toggleBalance()" class="bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer select-none active:scale-95 transition-transform" id="balance-pill">
+            <span class="text-xs font-bold text-primary" id="balance-label">ব্যালেন্স দেখুন</span>
+            <span class="text-sm font-bold text-primary font-body hidden" id="balance-amount">৳--</span>
+            <i class="fa-solid fa-wallet text-primary text-xs"></i>
+        </div>
+    </header>
+
+    <!-- 📁 Off-Canvas App Drawer Menu (Toggle Menu) -->
+    <div id="app-drawer" class="fixed inset-y-0 left-0 w-[280px] bg-dark text-gray-300 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
+        <!-- Drawer Header with Reseller Username and ID -->
+        <div class="p-6 bg-gradient-to-r from-primary to-secondary text-white flex flex-col items-center text-center">
+            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold mb-3 border-2 border-white/30">
+                <i class="fa-solid fa-user-tie"></i>
+            </div>
+            <h4 class="font-bold text-base leading-tight" id="drawer-fullname">লোডিং...</h4>
+            <span class="text-xs font-bold bg-black/20 px-3 py-1 rounded-full mt-2 font-body" id="drawer-id">আইডি: ----</span>
+        </div>
+
+        <!-- Drawer Body Links -->
+        <div class="flex-grow p-4 space-y-2 overflow-y-auto">
+            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-house"></i> হোম পেজ</a>
+            <a href="#orders-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-box-open"></i> আমার অর্ডারসমূহ</a>
+            <a href="#withdraw-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-wallet"></i> উইথড্র প্যানেল</a>
+            <a href="#referrals-section" onclick="closeDrawer()" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-gift"></i> রেফারেল সেন্টার</a>
+            <a href="/profile" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-user-gear"></i> প্রোফাইল সেটিংস</a>
+        </div>
+
+        <div class="p-4 border-t border-white/5">
+            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-semibold text-sm">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট করুন
+            </button>
+        </div>
+    </div>
+    <!-- Drawer Overlay Back -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-30 hidden" onclick="toggleSidebarMenu()"></div>
+
+    <!-- Main Container -->
+    <div class="max-w-[1200px] mx-auto px-5 pt-5 space-y-6">
+
+        <!-- 📢 ১. ডাইনামিক নোটিশবোর্ড -->
+        <div class="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-center gap-3">
+            <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"><i class="fa-solid fa-bullhorn text-sm animate-bounce"></i></span>
+            <marquee class="text-xs font-bold text-dark" id="ticker-text">সিস্টেম নোটিশ লোড হচ্ছে...</marquee>
+        </div>
+
+        <!-- 📸 স্লাইডার ব্যানার -->
+        <div class="w-full aspect-[3/1] max-sm:aspect-[2.2/1] rounded-2xl overflow-hidden shadow-sm border border-primary/5">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover">
+        </div>
+
+        <!-- 💸 ২. Earning Zone (ওয়ালেট ও রেফারেল কুইক স্ট্যাটস) -->
+        <section class="grid grid-cols-2 gap-4">
+            <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow flex items-center gap-4">
+                <div class="w-10 h-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-wallet"></i></div>
+                <div>
+                    <span class="text-[0.65rem] text-muted font-bold block">আমার ওয়ালেট</span>
+                    <h3 class="text-base font-extrabold text-dark font-body" id="wallet-val">৳--</h3>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow flex items-center gap-4">
+                <div class="w-10 h-10 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-lg"><i class="fa-solid fa-gift"></i></div>
+                <div>
+                    <span class="text-[0.65rem] text-muted font-bold block">মোট রেফারেল</span>
+                    <h3 class="text-base font-extrabold text-dark font-body" id="referrals-count">0</h3>
+                </div>
+            </div>
+        </section>
+
+        <!-- 📞 ৩. সাপোর্ট সেন্টার (2x2 Small Grid) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
+            <h4 class="text-sm font-bold text-dark"><i class="fa-solid fa-headset text-primary"></i> রিসেলার সাপোর্ট হেল্পলাইন</h4>
+            <div class="grid grid-cols-2 gap-3">
+                <a href="https://wa.me/yourno" class="flex items-center gap-2 p-3 bg-green-50 border border-green-200 rounded-xl text-xs font-bold text-green-700"><i class="fa-brands fa-whatsapp text-lg"></i> WhatsApp Support</a>
+                <a href="https://t.me/yourno" class="flex items-center gap-2 p-3 bg-sky-50 border border-sky-200 rounded-xl text-xs font-bold text-sky-700"><i class="fa-brands fa-telegram text-lg"></i> Telegram Support</a>
+                <a href="https://t.me/channel" class="flex items-center gap-2 p-3 bg-indigo-50 border border-sky-200 rounded-xl text-xs font-bold text-indigo-700"><i class="fa-solid fa-bullhorn text-base"></i> Telegram Channel</a>
+                <a href="https://facebook.com/page" class="flex items-center gap-2 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs font-bold text-blue-700"><i class="fa-brands fa-facebook-f text-base"></i> Facebook Page</a>
+            </div>
+        </section>
+
+        <!-- 🌟 ৪. Highlighted Sections (Horizontal Scroll List) -->
+        
+        <!-- ক. অফার প্রোডাক্টস (Offers) -->
+        <section class="space-y-3">
+            <h4 class="text-sm font-bold text-dark flex items-center justify-between">
+                <span>🔥 ধামাকা অফার প্রোডাক্টস</span>
+                <a href="#all-products" class="text-xs text-primary font-bold">সব দেখুন</a>
+            </h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="offers-products-scroll">
+                <p class="text-xs text-muted">অফার লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- খ. ডাইনামিক ক্যাটাগরি তালিকা (Categories) -->
+        <section class="space-y-3">
+            <h4 class="text-sm font-bold text-dark">🏷️ ক্যাটাগরি সমূহ</h4>
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="categories-scroll">
+                <!-- ডাইনামিক ক্যাটাগরি পিল লোড হবে -->
+            </div>
+        </section>
+
+        <!-- গ. ভেরিফাইড প্রোডাক্টস (Verified Products) -->
+        <section class="space-y-3">
+            <h4 class="text-sm font-bold text-dark">✨ ভেরিফাইড প্রোডাক্ট কালেকশন</h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="verified-products-scroll">
+                <p class="text-xs text-muted">লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- ঘ. পছন্দের প্রোডাক্টস (Wishlist Products) -->
+        <section class="space-y-3">
+            <h4 class="text-sm font-bold text-dark flex items-center justify-between">
+                <span>❤️ আমার পছন্দের তালিকা</span>
+                <a href="/profile?tab=wishlist" class="text-xs text-primary font-bold">ম্যানেজ করুন</a>
+            </h4>
+            <div class="flex gap-4 overflow-x-auto no-scrollbar py-2" id="wishlist-products-scroll">
+                <p class="text-xs text-muted">পছন্দের তালিকায় পণ্য নেই।</p>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 📱 ৫. App Style Sticky Bottom Navigation Bar (Bottom Nav) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="#orders-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="#withdraw-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let resellerUserId = null;
+        let isBalanceVisible = false;
+        let walletBalanceAmount = 0.0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সাইডবার ড্রয়ার টগল লজিক ---
+            const drawerToggle = document.getElementById('drawer-toggle');
+            const appDrawer = document.getElementById('app-drawer');
+            const drawerOverlay = document.getElementById('drawer-overlay');
+
+            function toggleSidebarMenu() {
+                appDrawer.classList.toggle('-translate-x-full');
+                drawerOverlay.classList.toggle('hidden');
+            }
+
+            drawerToggle.addEventListener('click', toggleSidebarMenu);
+            drawerOverlay.addEventListener('click', toggleSidebarMenu);
+            window.closeDrawer = toggleSidebarMenu;
+
+            // --- খ. বিকাশ-স্টাইল ট্যাপ টু ব্যালেন্স লজিক ---
+            window.toggleBalance = function() {
+                const label = document.getElementById('balance-label');
+                const amount = document.getElementById('balance-amount');
+                
+                isBalanceVisible = !isBalanceVisible;
+                
+                if (isBalanceVisible) {
+                    label.classList.add('hidden');
+                    amount.innerText = `৳${walletBalanceAmount.toFixed(2)}`;
+                    amount.classList.remove('hidden');
+                    
+                    // ৪ সেকেন্ড পর ব্যালেন্স আবার অটো-হাইড হবে
+                    setTimeout(() => {
+                        isBalanceVisible = false;
+                        amount.classList.add('hidden');
+                        label.classList.remove('hidden');
+                    }, 4000);
+                } else {
+                    amount.classList.add('hidden');
+                    label.classList.remove('hidden');
+                }
+            };
+
+            // --- গ. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        verifyResellerAndLoad();
+                    }
+                } catch (err) {
+                    console.error("Supabase load fail", err);
+                }
+            }
+
+            // --- ঘ. রিসেলার ভেরিফিকেশন ও লাইভ ডাটা কল ---
+            async function verifyResellerAndLoad() {
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert("অনুগ্রহ করে আগে লগইন সম্পন্ন করুন!");
+                        window.location.href = "/login";
+                        return;
+                    }
+                    resellerUserId = session.user.id;
+
+                    // প্রোফাইল চেক
+                    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', resellerUserId).single();
+                    if (!profile || profile.role !== 'reseller') {
+                        alert("দুঃখিত, শুধুমাত্র রিসেলাররাই ড্যাশবোর্ড অ্যাক্সেস করতে পারবেন।");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    // ইউজার ডাটা ড্যাশবোর্ড ড্রয়ারে সেট করা
+                    document.getElementById('drawer-fullname').innerText = profile.full_name || "Reseller User";
+                    document.getElementById('drawer-id').innerText = `রিসেলার আইডি: ${profile.refer_code}`;
+                    
+                    walletBalanceAmount = float(profile.wallet_balance || 0);
+                    document.getElementById('wallet-val').innerText = `৳${walletBalanceAmount}`;
+
+                    // ড্যাশবোর্ডে প্রবেশের সাথে সাথে সচলতা (Activity) আপডেট করা (রেফারেলের জন্য)
+                    fetch(`/api/auth/update-activity/${resellerUserId}`, { method: 'POST' });
+
+                    // লাইভ ডাটা লোড
+                    loadNotice();
+                    loadReferralsCount();
+                    loadHighlightedProducts();
+                    loadCategoriesScroll();
+
+                } catch (e) {
+                    console.error("Reseller check error", e);
+                }
+            }
+
+            // --- ঙ. ডাইনামিক লাইভ নোটিশ লোড ---
+            async function loadNotice() {
+                try {
+                    const { data: setting } = await supabaseClient.from('system_settings').select('value').eq('key', 'dashboard_notice').single();
+                    if (setting) {
+                        document.getElementById('ticker-text').innerText = setting.value;
+                    }
+                } catch(e) {}
+            }
+
+            // --- চ. রেফারেল কাউন্ট লোড ---
+            async function loadReferralsCount() {
+                try {
+                    const response = await fetch(`/api/auth/referrals/${resellerUserId}`);
+                    if (response.ok) {
+                        const referrals = await response.json();
+                        document.getElementById('referrals-count').innerText = referrals ? referrals.length : 0;
+                    }
+                } catch(e) {}
+            }
+
+            // --- ছ. ডাইনামিক প্রোডাক্ট ও ক্যাটাগরি স্ক্রোল লোড ---
+            async function loadCategoriesScroll() {
+                const scrollContainer = document.getElementById('categories-scroll');
+                try {
+                    const { data: categories } = await supabaseClient.from('categories').select('*');
+                    if (categories && categories.length > 0) {
+                        scrollContainer.innerHTML = '';
+                        categories.forEach(cat => {
+                            scrollContainer.innerHTML += `
+                                <a href="/category/${cat.slug}" class="bg-white border border-gray-150 rounded-full px-4 py-2 text-xs font-bold text-dark flex items-center gap-2 shrink-0 hover:border-primary transition-all">
+                                    <i class="fa-solid ${cat.icon} text-primary"></i> ${cat.name}
+                                </a>
+                            `;
+                        });
+                    }
+                } catch(e) {}
+            }
+
+            async function loadHighlightedProducts() {
+                const offersScroll = document.getElementById('offers-products-scroll');
+                const verifiedScroll = document.getElementById('verified-products-scroll');
+                const wishlistScroll = document.getElementById('wishlist-products-scroll');
+
+                try {
+                    // ১. অফার প্রোডাক্ট লোড
+                    const { data: offers } = await supabaseClient.from('products').select('*').not('customer_offer_price', 'is', null).limit(10);
+                    if (offers && offers.length > 0) {
+                        offersScroll.innerHTML = '';
+                        offers.forEach(prod => {
+                            const img = prod.images && prod.images.length > 0 ? prod.images[0] : "";
+                            offersScroll.innerHTML += `
+                                <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
+                                    <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
+                                        ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
+                                    </a>
+                                    <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
+                                    <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.customer_offer_price}</p>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        offersScroll.innerHTML = '<p class="text-[0.65rem] text-muted">কোনো অফার পণ্য নেই।</p>';
+                    }
+
+                    // ২. ভেরিফাইড প্রোডাক্ট লোড
+                    const { data: verified } = await supabaseClient.from('products').select('*').limit(10);
+                    if (verified && verified.length > 0) {
+                        verifiedScroll.innerHTML = '';
+                        verified.forEach(prod => {
+                            const img = prod.images && prod.images.length > 0 ? prod.images[0] : "";
+                            verifiedScroll.innerHTML += `
+                                <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
+                                    <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
+                                        ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
+                                    </a>
+                                    <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
+                                    <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.regular_price}</p>
+                                </div>
+                            `;
+                        });
+                    }
+
+                    // ৩. উইশলিস্ট প্রোডাক্ট লোড
+                    const wishlistIds = JSON.parse(localStorage.getItem('wishlist')) || [];
+                    if (wishlistIds.length > 0) {
+                        const { data: wishlistProds } = await supabaseClient.from('products').select('*').in('id', wishlistIds).limit(10);
+                        if (wishlistProds && wishlistProds.length > 0) {
+                            wishlistScroll.innerHTML = '';
+                            wishlistProds.forEach(prod => {
+                                const img = prod.images && prod.images.length > 0 ? prod.images[0] : "";
+                                wishlistScroll.innerHTML += `
+                                    <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
+                                        <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
+                                            ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
+                                        </a>
+                                        <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
+                                        <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.regular_price}</p>
+                                    </div>
+                                `;
+                            });
+                        }
+                    }
+
+                } catch(e) {}
+            }
+
+            // লগআউট লজিক
+            window.handleLogout = async function() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                    window.location.href = "/login";
+                }
+            };
+
+            // প্রসেস শুরু করুন
+            initializeSupabase();
+        });
+    </script>
+</body>
+  </html>
