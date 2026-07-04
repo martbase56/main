@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MartBaseBD - Add New Product</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen">
+
+    <div class="max-w-[800px] mx-auto p-6 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
+            <div>
+                <h2 class="text-2xl font-extrabold text-dark flex items-center gap-2">
+                    <i class="fa-solid fa-square-plus text-primary"></i> নতুন পণ্য যোগ করুন
+                </h2>
+                <p class="text-sm text-muted">প্রোডাক্টের বিবরণ ও ইমেজ আপলোড করুন</p>
+            </div>
+            <a href="/dashboard/admin" class="text-sm font-semibold text-primary hover:underline"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ডে ফিরে যান</a>
+        </div>
+
+        <form id="add-product-form" class="space-y-6">
+            
+            <!-- ১. নাম এবং প্রোডাক্ট কোড -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div>
+                    <label class="block font-semibold text-sm mb-1">প্রোডাক্টের নাম</label>
+                    <input type="text" id="product_name" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="যেমন: প্রিমিয়াম ম্যাপেল কফি মগ" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">প্রোডাক্ট কোড (SKU)</label>
+                    <input type="text" id="product_code" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="যেমন: MB-MUG-102" required>
+                </div>
+            </div>
+
+            <!-- ২. বিবরণ -->
+            <div>
+                <label class="block font-semibold text-sm mb-1">বিস্তারিত বিবরণ (Description)</label>
+                <textarea id="description" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all h-28 resize-none" placeholder="পণ্যটির গুণাবলী এবং বিবরণ লিখুন..." required></textarea>
+            </div>
+
+            <!-- ৩. প্রাইসিং প্যানেল (কাস্টমার, রিসেলার এবং বোনাস) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 bg-primary/5 p-4 rounded-2xl border border-primary/10">
+                <div>
+                    <label class="block font-semibold text-xs mb-1 text-primary">সাধারণ খুচরা মূল্য (Price)</label>
+                    <input type="number" id="regular_price" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary bg-white" placeholder="৳" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-xs mb-1 text-primary">কাস্টমার অফার প্রাইস (ঐচ্ছিক)</label>
+                    <input type="number" id="offer_price" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary bg-white" placeholder="৳">
+                </div>
+                <div>
+                    <label class="block font-semibold text-xs mb-1 text-primary">রিসেলার ক্রয় মূল্য</label>
+                    <input type="number" id="reseller_price" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary bg-white" placeholder="৳" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-xs mb-1 text-primary">হোল্ড ব্যালেন্স বোনাস</label>
+                    <input type="number" id="hold_bonus" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary bg-white" placeholder="৳" value="0">
+                </div>
+            </div>
+
+            <!-- ৪. ক্যাটাগরি, সাব-ক্যাটাগরি এবং স্টক -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div>
+                    <label class="block font-semibold text-sm mb-1">প্রধান ক্যাটাগরি</label>
+                    <select id="category_id" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary" required>
+                        <option value="">নির্বাচন করুন</option>
+                        <!-- ডাইনামিক ক্যাটাগরি লোড হবে -->
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">সাব-ক্যাটাগরি (ঐচ্ছিক)</label>
+                    <input type="text" id="subcategory" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary transition-all" placeholder="যেমন: কিচেনওয়্যার">
+                </div>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">স্টক পরিমাণ (Stock)</label>
+                    <input type="number" id="stock" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary transition-all" placeholder="যেমন: ৫০" required>
+                </div>
+            </div>
+
+            <!-- ৫. সাইজ, কালার এবং ওয়ারেন্টি -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+                <div>
+                    <label class="block font-semibold text-sm mb-1">উপলব্ধ সাইজ (Sizes - কমা দিয়ে লিখুন)</label>
+                    <input type="text" id="sizes" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="S, M, L, XL">
+                </div>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">উপলব্ধ রঙ (Colors - কমা দিয়ে লিখুন)</label>
+                    <input type="text" id="colors" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary" placeholder="Red, Blue, Black">
+                </div>
+                <div>
+                    <label class="block font-semibold text-sm mb-1">ওয়ারেন্টি পলিসি</label>
+                    <div class="flex gap-4 items-center h-[46px]">
+                        <label class="flex items-center gap-1.5 cursor-pointer">
+                            <input type="radio" name="warranty" value="no" checked class="accent-primary" onclick="toggleWarranty(false)"> No
+                        </label>
+                        <label class="flex items-center gap-1.5 cursor-pointer">
+                            <input type="radio" name="warranty" value="yes" class="accent-primary" onclick="toggleWarranty(true)"> Yes
+                        </label>
+                        <input type="number" id="warranty_days" class="hidden w-24 px-3 py-1.5 border border-gray-200 rounded-lg font-body outline-none focus:border-primary" placeholder="দিন সংখ্যা">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 📸 ৬. ৪টি ইমেজ আপলোডার (ImgBB API Driven with Auto-preview) -->
+            <div>
+                <label class="block font-semibold text-sm mb-2"><i class="fa-solid fa-images text-primary"></i> প্রোডাক্ট ইমেজ (সর্বোচ্চ ৪টি ছবি আপলোড করুন)</label>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4" id="images-uploader-container">
+                    <!-- ৪টি পৃথক ফাইল আপলোডার স্লট -->
+                    <div class="image-slot relative border-2 border-dashed border-gray-200 rounded-2xl h-28 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors overflow-hidden">
+                        <input type="file" class="image-input absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="uploadImageSlot(this, 0)">
+                        <div class="slot-placeholder flex flex-col items-center justify-center text-gray-400">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            <span class="text-[0.65rem] font-bold mt-1">Image 1</span>
+                        </div>
+                    </div>
+                    <div class="image-slot relative border-2 border-dashed border-gray-200 rounded-2xl h-28 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors overflow-hidden">
+                        <input type="file" class="image-input absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="uploadImageSlot(this, 1)">
+                        <div class="slot-placeholder flex flex-col items-center justify-center text-gray-400">
+                            <i class="fa-cloud-arrow-up fa-solid text-xl"></i>
+                            <span class="text-[0.65rem] font-bold mt-1">Image 2</span>
+                        </div>
+                    </div>
+                    <div class="image-slot relative border-2 border-dashed border-gray-200 rounded-2xl h-28 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors overflow-hidden">
+                        <input type="file" class="image-input absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="uploadImageSlot(this, 2)">
+                        <div class="slot-placeholder flex flex-col items-center justify-center text-gray-400">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            <span class="text-[0.65rem] font-bold mt-1">Image 3</span>
+                        </div>
+                    </div>
+                    <div class="image-slot relative border-2 border-dashed border-gray-200 rounded-2xl h-28 flex flex-col items-center justify-center cursor-pointer hover:border-primary transition-colors overflow-hidden">
+                        <input type="file" class="image-input absolute inset-0 opacity-0 cursor-pointer" accept="image/*" onchange="uploadImageSlot(this, 3)">
+                        <div class="slot-placeholder flex flex-col items-center justify-center text-gray-400">
+                            <i class="fa-solid fa-cloud-arrow-up text-xl"></i>
+                            <span class="text-[0.65rem] font-bold mt-1">Image 4</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" id="btn-submit" class="w-full py-4 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/10 flex items-center justify-center gap-2 text-lg">
+                <i class="fa-solid fa-circle-check"></i> পণ্যটি ডাটাবেজে যুক্ত করুন
+            </button>
+
+        </form>
+    </div>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // সংগৃহীত ইমেজ লিংকগুলো এই গ্লোবাল অ্যারেতে স্টোর হবে
+        const uploadedImages = ["", "", "", ""];
+        let supabase = null;
+
+        // --- ক. সুপাবেস এবং ক্যাটাগরি লোডিং মেকানিজম ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            const supabaseUrl = 'YOUR_SUPABASE_URL';
+            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+            
+            try {
+                if (supabaseUrl && supabaseUrl !== 'YOUR_SUPABASE_URL') {
+                    supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
+                    loadCategories();
+                } else {
+                    console.warn("সুপাবেস কনফিগ ডেমো মোডে চলছে।");
+                    loadMockCategories();
+                }
+            } catch (err) {
+                console.error("Supabase load error", err);
+            }
+        });
+
+        // ক্যাটাগরি অপশনস লোড করা
+        async function loadCategories() {
+            try {
+                const { data: categories } = await supabase.from('categories').select('*');
+                const catDropdown = document.getElementById('category_id');
+                if (categories) {
+                    categories.forEach(cat => {
+                        catDropdown.innerHTML += `<option value="${cat.id}">${cat.name}</option>`;
+                    });
+                }
+            } catch(e) {
+                console.error("Categories fetch error", e);
+            }
+        }
+
+        function loadMockCategories() {
+            const catDropdown = document.getElementById('category_id');
+            catDropdown.innerHTML += `<option value="demo_id">ম্যান্স ফ্যাশন (ডেমো)</option>`;
+        }
+
+        // --- খ. ইন্টারেক্টিভ ওয়ারেন্টি টগল ---
+        function toggleWarranty(status) {
+            const warrantyInput = document.getElementById('warranty_days');
+            if (status) {
+                warrantyInput.classList.remove('hidden');
+                warrantyInput.required = true;
+            } else {
+                warrantyInput.classList.add('hidden');
+                warrantyInput.required = false;
+                warrantyInput.value = '';
+            }
+        }
+
+        // --- গ. ডাইনামিক সিকিউর ইমেজ আপলোডার (ImgBB Gateway) ---
+        async function uploadImageSlot(input, slotIndex) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const slot = input.parentElement;
+            const placeholder = slot.querySelector('.slot-placeholder');
+
+            // ১. লোডিং এনিমেশন স্টার্ট করা
+            placeholder.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-primary text-xl"></i><span class="text-[0.65rem] font-bold mt-1">Uploading...</span>`;
+
+            // ২. ফর্মডাটা তৈরি করা
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                // ব্যাকএন্ডের সিকিউর ইমেইল গেটওয়েতে রিকোয়েস্ট পাঠানো
+                const response = await fetch('/api/products/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                if (response.ok && result.url) {
+                    // ৩. রিয়েল ইমেজ ইউআরএল গ্লোবাল অ্যারেতে স্টোর করা
+                    uploadedImages[slotIndex] = result.url;
+                    
+                    // ৪. আপলোডের পর ইনস্ট্যান্ট ইমেজ প্রিভিউ সেট করা
+                    slot.style.backgroundImage = `url('${result.url}')`;
+                    slot.style.backgroundSize = 'cover';
+                    slot.style.backgroundPosition = 'center';
+                    placeholder.style.display = 'none'; // প্লেসহোল্ডার হাইড করা
+                } else {
+                    alert("আপলোড ব্যর্থ হয়েছে: " + result.detail);
+                    resetSlot(slot, placeholder, slotIndex);
+                }
+            } catch (err) {
+                alert("সার্ভার কানেকশনে সমস্যা হয়েছে।");
+                resetSlot(slot, placeholder, slotIndex);
+            }
+        }
+
+        function resetSlot(slot, placeholder, index) {
+            slot.style.backgroundImage = 'none';
+            placeholder.style.display = 'flex';
+            placeholder.innerHTML = `<i class="fa-solid fa-cloud-arrow-up text-xl text-gray-400"></i><span class="text-[0.65rem] font-bold mt-1">Image ${index+1}</span>`;
+        }
+
+        // --- ঘ. প্রোডাক্ট সাবমিশন হ্যান্ডলিং ---
+        document.getElementById('add-product-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            // ইমেজ ফিল্টারিং (খালি বা অন-আপলোডেড স্লটগুলো বাদ দেওয়া)
+            const finalImages = uploadedImages.filter(url => url !== "");
+            if (finalImages.length === 0) {
+                alert("অনুগ্রহ করে কমপক্ষে ১টি প্রোডাক্ট ইমেজ আপলোড করুন।");
+                return;
+            }
+
+            const sessionData = await supabase.auth.getSession();
+            const token = sessionData.data.session ? sessionData.data.session.access_token : null;
+
+            if(!token) {
+                alert("আপনার এডমিন সেশন শেষ হয়েছে বা আপনি লগইন অবস্থায় নেই।");
+                return;
+            }
+
+            const payload = {
+                name: document.getElementById('product_name').value,
+                product_code: document.getElementById('product_code').value,
+                description: document.getElementById('description').value,
+                price: parseFloat(document.getElementById('regular_price').value),
+                customer_offer_price: document.getElementById('offer_price').value ? parseFloat(document.getElementById('offer_price').value) : null,
+                reseller_price: parseFloat(document.getElementById('reseller_price').value),
+                reseller_hold_bonus: parseFloat(document.getElementById('hold_bonus').value) || 0.0,
+                category_id: document.getElementById('category_id').value,
+                subcategory: document.getElementById('subcategory').value || null,
+                stock: parseInt(document.getElementById('stock').value),
+                sizes: document.getElementById('sizes').value || null,
+                colors: document.getElementById('colors').value || null,
+                warranty_type: document.querySelector('input[name="warranty"]:checked').value,
+                warranty_days: parseInt(document.getElementById('warranty_days').value) || 0,
+                images: finalImages
+            };
+
+            const submitBtn = document.getElementById('btn-submit');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-xl"></i> পণ্যটি প্রসেসিং হচ্ছে...`;
+
+            try {
+                // FastAPI-র সিকিউর /api/products/add রাউটে পোস্ট করা হচ্ছে
+                const response = await fetch('/api/products/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+                if (response.ok) {
+                    alert("সাফল্য! পণ্যটি ডাটাবেজে সফলভাবে যোগ করা হয়েছে।");
+                    window.location.href = "/dashboard/admin";
+                } else {
+                    alert("পণ্য যোগ করতে সমস্যা হয়েছে: " + result.detail);
+                }
+            } catch (err) {
+                alert("সার্ভার বা নেটওয়ার্ক কানেকশন ফেইলড।");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> পণ্যটি ডাটাবেজে যুক্ত করুন`;
+            }
+        });
+    </script>
+</body>
+                              </html>
