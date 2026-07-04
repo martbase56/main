@@ -46,12 +46,10 @@
         </div>
 
         <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
-            <!-- ড্যাশবোর্ড লিঙ্কে রিডাইরেক্ট করবে -->
             <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
                 <i class="fa-solid fa-chart-line text-lg"></i>
                 <span>ড্যাশবোর্ড ওভারভিউ</span>
             </a>
-            <!-- ইউজার লিস্ট একটিভ পেজ -->
             <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
                 <i class="fa-solid fa-users text-lg"></i>
                 <span>ইউজার লিস্ট</span>
@@ -99,7 +97,7 @@
                 <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
                     <i class="fa-solid fa-magnifying-glass"></i>
                 </span>
-                <input type="text" id="user-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-semibold text-dark" placeholder="নাম, ইমেইল, আইডি (UID) বা মোবাইল দিয়ে খুঁজুন...">
+                <input type="text" id="user-search-input" class="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-xs font-semibold text-dark" placeholder="নাম, ইমেইল, রেফার আইডি বা মোবাইল দিয়ে খুঁজুন...">
             </div>
 
             <!-- Filters Dropdowns -->
@@ -124,7 +122,8 @@
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
-                            <th class="py-3 px-4">UID (ID)</th>
+                            <!-- UID এর জায়গায় রেফার আইডি জেনারেট করা হয়েছে -->
+                            <th class="py-3 px-4">রেফার আইডি (ID)</th>
                             <th class="py-3 px-4">নাম</th>
                             <th class="py-3 px-4">ইমেইল ঠিকানা</th>
                             <th class="py-3 px-4">মোবাইল নম্বর</th>
@@ -150,7 +149,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // মোবাইল সাইডবার মেনু টগল লজিক
+            // মোবাইল সাইডবার মেনু টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -162,9 +161,8 @@
 
             let supabaseClient = null;
             let currentToken = null;
-            let allUsersList = []; // রিয়েল-টাইম ক্লায়েন্ট ফিল্টারের জন্য গ্লোবাল এরে
 
-            // --- ক. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
+            // --- ক. সুপাবেস এবং এডমিন অথেন্টিক ইনিশিয়ালাইজেশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -182,7 +180,6 @@
 
             initializeSupabase();
 
-            // --- খ. এডমিন সিকিউর সেশন ভেরিফিকেশন ---
             async function verifyAdminAndLoad() {
                 if (!supabaseClient) return;
                 try {
@@ -193,7 +190,6 @@
                         return;
                     }
 
-                    // এডমিন রোল চেক করা
                     const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('role')
@@ -207,8 +203,6 @@
                     }
 
                     currentToken = session.access_token;
-                    
-                    // সাকসেসফুল চেক হলে এপিআই থেকে সরাসরি রিয়েল ইউজার ডাটা ফেচ হবে
                     loadAdminUsersList(currentToken);
 
                 } catch (e) {
@@ -216,7 +210,7 @@
                 }
             }
 
-            // --- গ. এপিআই এর মাধ্যমে ব্যবহারকারীদের রিয়েল ডাটা লোড ---
+            // --- খ. ব্যবহারকারীদের রিয়েল ডাটা লোড ---
             async function loadAdminUsersList(token) {
                 const usersContainer = document.getElementById('admin-users-list');
                 try {
@@ -245,7 +239,8 @@
 
                         usersContainer.innerHTML += `
                             <tr class="hover:bg-gray-50/50 transition-colors" id="user-row-${user.id}">
-                                <td class="py-4 px-4 font-mono text-xs text-gray-400 font-bold" title="${user.id}">${user.id.substring(0,8)}...</td>
+                                <!-- (গুরুত্বপূর্ণ ফিক্স) UUID এর পরিবর্তে ৬৭৬৫+ রেফার আইডি কলামে রেন্ডার করা হয়েছে -->
+                                <td class="py-4 px-4 font-mono text-sm text-primary font-bold">${user.refer_code || 'N/A'}</td>
                                 <td class="py-4 px-4 font-bold text-dark">${user.full_name || 'N/A'}</td>
                                 <td class="py-4 px-4 font-body text-xs text-muted">${user.email}</td>
                                 <td class="py-4 px-4 font-body">${user.phone_number || 'N/A'}</td>
@@ -266,7 +261,7 @@
                 }
             }
 
-            // --- ঘ. ডাইনামিক লাইভ ইউজার সার্চ ও ফিল্টারিং লজিক ---
+            // --- গ. ডাইনামিক ইউজার সার্চ ও ফিল্টারিং লজিক ---
             window.applyUserFilters = function() {
                 const keyword = document.getElementById('user-search-input').value.toLowerCase().trim();
                 const roleFilter = document.getElementById('filter-user-role').value;
@@ -274,7 +269,7 @@
 
                 let filtered = allUsersList;
 
-                // ১. রোল ফিল্টার (customer / reseller)
+                // ১. রোল ফিল্টার
                 if (roleFilter !== 'all') {
                     filtered = filtered.filter(u => u.role === roleFilter);
                 }
@@ -295,7 +290,7 @@
                     filtered = filtered.filter(u => 
                         (u.full_name && u.full_name.toLowerCase().includes(keyword)) ||
                         u.email.toLowerCase().includes(keyword) ||
-                        u.id.toLowerCase().includes(keyword) ||
+                        (u.refer_code && u.refer_code.toString().includes(keyword)) || // রেফার আইডি সার্চ সাপোর্ট
                         (u.phone_number && u.phone_number.includes(keyword))
                     );
                 }
@@ -303,10 +298,9 @@
                 renderUsersTable(filtered);
             };
 
-            // সার্চ বক্সে টাইপ করার সাথে সাথে ফিল্টারিং কল হবে [1.1.1]
             document.getElementById('user-search-input').addEventListener('input', applyUserFilters);
 
-            // --- ঙ. ব্যান, আনব্যান এবং অ্যাকাউন্ট ডিলিট এডমিন একশনস ---
+            // --- ঘ. ব্যান, আনব্যান এবং অ্যাকাউন্ট ডিলিট এডমিন একশনস ---
             window.banUser = async function(userId) {
                 if (!confirm("আপনি কি নিশ্চিতভাবে এই ব্যবহারকারীকে সাময়িক নিষিদ্ধ বা ব্যান করতে চান?")) return;
                 try {
