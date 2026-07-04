@@ -9,6 +9,14 @@
     {
       "source": "/signup/reseller",
       "destination": "/signup-reseller.html"
+    },
+    {
+      "source": "/signup/resseler",
+      "destination": "/signup-reseller.html"
+    },
+    {
+      "source": "/signupressler",
+      "destination": "/signup-reseller.html"
     }
   ]
 }
