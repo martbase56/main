@@ -60,7 +60,7 @@
                 <span>অর্ডার ম্যানেজমেন্ট</span>
             </a>
             <a href="/dashboard/add-product" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all">
-                <i class="fa-solid fa-plus-minus text-lg"></i>
+                <i class="fa-solid fa-plus text-lg"></i>
                 <span>পণ্য যোগ করুন</span>
             </a>
             <a href="#settings" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 hover:text-white transition-all">
@@ -179,7 +179,7 @@
                 });
             }
 
-            let supabase = null;
+            let supabaseClient = null;
 
             // --- ক. ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন ---
             async function initializeSupabase() {
@@ -189,7 +189,7 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        supabase = supabaseJS.createClient(config.supabase_url, config.supabase_anon_key);
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         verifyAdminAndLoad();
                     } else {
                         console.warn("Credentials not received. Checking fallbacks.");
@@ -203,8 +203,9 @@
 
             // --- খ. এডমিন এক্সেস যাচাই ও ডেটা কল ---
             async function verifyAdminAndLoad() {
+                if (!supabaseClient) return;
                 try {
-                    const { data: { session } } = await supabase.auth.getSession();
+                    const { data: { session } } = await supabaseClient.auth.getSession();
                     if (!session) {
                         alert("অনুগ্রহ করে প্রথমে লগইন করুন!");
                         window.location.href = "/login";
@@ -212,7 +213,7 @@
                     }
 
                     // এডমিন রোল চেক করা
-                    const { data: profile } = await supabase
+                    const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('role')
                         .eq('id', session.user.id)
@@ -301,7 +302,7 @@
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
                 
                 try {
-                    const sessionData = await supabase.auth.getSession();
+                    const sessionData = await supabaseClient.auth.getSession();
                     const token = sessionData.data.session.access_token;
 
                     const response = await fetch(`/api/admin/approve-activation/${requestId}`, {
@@ -328,7 +329,7 @@
                 if(!confirm("আপনি কি এই পেমেন্ট রিকোয়েস্টটি বাতিল করতে চান?")) return;
 
                 try {
-                    const sessionData = await supabase.auth.getSession();
+                    const sessionData = await supabaseClient.auth.getSession();
                     const token = sessionData.data.session.access_token;
 
                     const response = await fetch(`/api/admin/reject-activation/${requestId}`, {
@@ -351,12 +352,12 @@
             };
 
             window.handleLogout = async function() {
-                if (supabase) {
-                    await supabase.auth.signOut();
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
                     window.location.href = "/login";
                 }
             };
         });
     </script>
 </body>
-                  </html>
+</html>
