@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MartBaseBD - Shop & Earn Platform</title>
+    <title>MartBaseBD - Premium Shop & Earn Platform</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,14 +14,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* CSS variables based on Theme Details */
         :root {
             --primary-color: #FF6B00;       /* ভাইব্রেন্ট অরেঞ্জ */
             --secondary-color: #FF8C33;     /* লাইট অরেঞ্জ */
-            --bg-canvas: #F4F6F9;           /* লাইট গ্রে */
+            --bg-canvas: #FAF6F4;           /* লাইট ওয়ার্ম অফ-হোয়াইট */
             --card-bg: #FFFFFF;             /* হোয়াইট */
-            --text-dark: #2D3748;
-            --text-muted: #718096;
+            --text-dark: #111827;           /* চারকোল ব্ল্যাক */
+            --text-muted: #4B5563;          /* গ্রে টেক্সট */
+            --glow-color: rgba(255, 107, 0, 0.15);
             
             --font-headings: 'Bricolage Grotesque', sans-serif;
             --font-body: 'Rubik', sans-serif;
@@ -41,7 +41,6 @@
             line-height: 1.6;
         }
 
-        /* Utility Classes */
         .container {
             width: 100%;
             max-width: 1200px;
@@ -49,39 +48,25 @@
             padding: 0 20px;
         }
 
-        .section-title {
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 800;
-            margin: 40px 0 20px 0;
-            position: relative;
-            font-family: var(--font-bangla);
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 4px;
-            background-color: var(--primary-color);
-            margin: 8px auto 0 auto;
-            border-radius: 2px;
-        }
-
-        /* Header Navigation */
+        /* 🌐 Sticky Header */
         header {
-            background-color: var(--card-bg);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            background-color: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
             position: sticky;
             top: 0;
             z-index: 1000;
-            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 107, 0, 0.08);
         }
 
         .nav-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 15px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .logo {
@@ -91,52 +76,95 @@
             color: var(--primary-color);
             text-decoration: none;
             letter-spacing: -1px;
+            transition: transform 0.2s;
         }
 
-        .nav-buttons {
+        .logo:hover {
+            transform: scale(1.02);
+        }
+
+        /* Hamburger Menu */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .nav-menu {
             display: flex;
-            gap: 15px;
             align-items: center;
+            list-style: none;
+            gap: 20px;
         }
 
-        .btn-nav {
-            padding: 8px 18px;
-            border-radius: 8px;
-            font-weight: 600;
+        .nav-link {
             text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 600;
             font-size: 0.95rem;
+            transition: color 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .btn-nav-auth {
+            background-color: var(--primary-color);
+            color: #FFF !important;
+            padding: 8px 20px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px var(--glow-color);
             transition: all 0.2s;
         }
 
-        .btn-login {
-            color: var(--text-dark);
-            border: 1px solid #E2E8F0;
-        }
-
-        .btn-join-reseller {
-            background-color: var(--primary-color);
-            color: #FFF;
-        }
-
-        .btn-join-reseller:hover {
+        .btn-nav-auth:hover {
             background-color: var(--secondary-color);
+            transform: translateY(-1px);
         }
 
-        /* 1. Hero Section */
+        /* 🚀 SaaS Style Modern Hero Section */
         .hero {
-            background: linear-gradient(135deg, #FFF 0%, #FFEFE6 100%);
             padding: 80px 0;
-            text-align: center;
-            border-bottom: 1px solid #FFE0D1;
+            background: radial-gradient(circle at 80% 20%, rgba(255, 107, 0, 0.08) 0%, rgba(255, 255, 255, 0) 50%);
+            border-bottom: 1px solid rgba(255, 107, 0, 0.04);
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: rgba(255, 107, 0, 0.08);
+            color: var(--primary-color);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 107, 0, 0.12);
         }
 
         .hero-title {
-            font-family: var(--font-headings);
-            font-size: 3rem;
+            font-family: var(--font-bangla);
+            font-size: 2.8rem;
             font-weight: 800;
             color: var(--text-dark);
-            line-height: 1.2;
-            margin-bottom: 15px;
+            line-height: 1.25;
+            margin-bottom: 20px;
         }
 
         .hero-title span {
@@ -144,26 +172,27 @@
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
+            font-size: 1.15rem;
             color: var(--text-muted);
-            max-width: 700px;
-            margin: 0 auto 35px auto;
+            margin-bottom: 35px;
+            max-width: 600px;
         }
 
         .hero-ctas {
             display: flex;
-            justify-content: center;
-            gap: 20px;
+            gap: 15px;
         }
 
         .btn-cta {
-            padding: 15px 35px;
-            border-radius: 30px;
-            font-size: 1.1rem;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
             font-weight: 700;
             text-decoration: none;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .btn-cta-buy {
@@ -171,95 +200,207 @@
             color: #FFF;
         }
 
+        .btn-cta-buy:hover {
+            background-color: #000;
+            transform: translateY(-2px);
+        }
+
         .btn-cta-earn {
             background-color: var(--primary-color);
             color: #FFF;
+            box-shadow: 0 4px 15px var(--glow-color);
         }
 
-        .btn-cta:hover {
+        .btn-cta-earn:hover {
+            background-color: var(--secondary-color);
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.2);
+            box-shadow: 0 6px 20px rgba(255, 107, 0, 0.25);
         }
 
-        /* 2. Promotional Banner Slider */
+        /* 📱 Elegant Phone Mockup (Replacing Stats Widget) */
+        .phone-mockup-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            width: 270px;
+            height: 540px;
+            background: #000;
+            border-radius: 40px;
+            border: 12px solid #1F2937;
+            box-shadow: 0 25px 60px -15px rgba(255, 107, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .phone-mockup:hover {
+            transform: translateY(-8px) rotate(1deg);
+        }
+
+        .phone-notch {
+            width: 110px;
+            height: 25px;
+            background: #1F2937;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 10;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-canvas);
+            display: flex;
+            flex-direction: column;
+            padding: 35px 15px 15px 15px;
+            font-family: var(--font-bangla);
+        }
+
+        .phone-header {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            border-bottom: 2px solid rgba(255, 107, 0, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .phone-card {
+            background: #FFF;
+            border-radius: 12px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(0,0,0,0.02);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+
+        .phone-card-title {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+        }
+
+        .phone-card-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-family: var(--font-body);
+        }
+
+        /* 📸 Responsive Banner Slider Wrapper */
         .slider-section {
-            margin: 30px 0;
+            margin: 40px 0;
+            position: relative;
         }
 
         .slider-container {
             width: 100%;
-            height: 250px;
-            background-color: var(--primary-color);
-            border-radius: 16px;
+            aspect-ratio: 3 / 1;
+            border-radius: 20px;
             overflow: hidden;
             position: relative;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 107, 0, 0.05);
         }
 
         .slide {
             width: 100%;
             height: 100%;
             display: none;
-            justify-content: center;
-            align-items: center;
-            color: #FFF;
-            text-align: center;
-            font-size: 1.8rem;
-            font-weight: 700;
-            background-size: cover;
-            background-position: center;
+            transition: opacity 0.5s ease-in-out;
         }
 
         .slide.active {
+            display: block;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Indicator Dots Below Slider */
+        .slider-dots {
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .slide-subtitle {
-            font-size: 1.1rem;
-            margin-top: 10px;
-            font-weight: 400;
-            opacity: 0.9;
+        .dot {
+            width: 25px;
+            height: 6px;
+            background-color: #D1D5DB; /* Unselected Dot */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        /* 3. 20 Categories Grid */
+        .dot.active {
+            background-color: var(--text-dark); /* Selected Dot */
+            width: 35px;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin: 45px 0 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        /* Categories Section */
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             gap: 15px;
-            margin-bottom: 40px;
+            margin-bottom: 45px;
         }
 
         .category-card {
             background-color: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px 10px;
+            border-radius: 16px;
+            padding: 18px 10px;
             text-align: center;
             text-decoration: none;
             color: var(--text-dark);
-            border: 1px solid rgba(0,0,0,0.03);
-            transition: all 0.2s;
+            border: 1px solid rgba(0,0,0,0.01);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.01);
         }
 
         .category-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary-color);
-            box-shadow: 0 5px 15px rgba(255, 107, 0, 0.08);
+            transform: translateY(-4px);
+            border-color: rgba(255, 107, 0, 0.3);
+            box-shadow: 0 8px 24px rgba(255, 107, 0, 0.12);
         }
 
         .category-card i {
-            font-size: 1.6rem;
+            font-size: 1.7rem;
             color: var(--primary-color);
             margin-bottom: 8px;
         }
 
         .category-name {
             font-size: 0.8rem;
-            font-weight: 600;
-            line-height: 1.2;
-            word-wrap: break-word;
+            font-weight: 700;
+            line-height: 1.3;
         }
 
-        /* 4. 30 Products Grid */
+        /* Products Showcase Section */
         .products-grid {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -269,28 +410,42 @@
 
         .product-card {
             background-color: var(--card-bg);
-            border-radius: 14px;
-            border: 1px solid rgba(0,0,0,0.03);
+            border-radius: 18px;
+            border: 1px solid rgba(0,0,0,0.02);
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.01);
         }
 
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+            border-color: rgba(255, 107, 0, 0.15);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.04);
         }
 
-        .product-img {
+        .product-img-box {
             width: 100%;
-            height: 180px;
-            background-color: #E2E8F0;
+            height: 190px;
+            background-color: #EDF2F7;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-muted);
+            overflow: hidden;
+        }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-img-box i {
             font-size: 2.5rem;
+            color: var(--text-muted);
         }
 
         .product-info {
@@ -304,7 +459,7 @@
             font-size: 0.95rem;
             font-weight: 700;
             color: var(--text-dark);
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             height: 40px;
             overflow: hidden;
             display: -webkit-box;
@@ -312,271 +467,606 @@
             -webkit-box-orient: vertical;
         }
 
-        .product-price-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .product-price {
+            font-family: var(--font-body);
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--primary-color);
             margin-top: auto;
             margin-bottom: 12px;
         }
 
-        .price-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-        }
-
-        .price-value {
-            font-family: var(--font-body);
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
-
-        .btn-buy-product {
+        .btn-buy {
             width: 100%;
-            padding: 10px;
+            padding: 11px;
             background-color: var(--primary-color);
             color: #FFF;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             text-align: center;
-            text-decoration: none;
             font-size: 0.9rem;
             transition: background-color 0.2s;
         }
 
-        .btn-buy-product:hover {
+        .btn-buy:hover {
             background-color: var(--secondary-color);
         }
 
-        /* 5. Features Section */
-        .features {
-            background-color: var(--card-bg);
-            padding: 50px 0;
-            border-top: 1px solid #E2E8F0;
-            border-bottom: 1px solid #E2E8F0;
-            margin-bottom: 40px;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 30px;
+        /* 📢 Modern Bottom CTA Section */
+        .bottom-cta-section {
+            background: radial-gradient(circle at 10% 20%, #FF8C33 0%, #FF6B00 100%);
+            border-radius: 24px;
+            padding: 60px 40px;
+            color: #FFF;
             text-align: center;
+            margin: 60px 0;
+            box-shadow: 0 15px 35px var(--glow-color);
+            position: relative;
+            overflow: hidden;
         }
 
-        .feature-item i {
+        .cta-content h2 {
             font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 15px;
+            font-family: var(--font-bangla);
+        }
+
+        .cta-content p {
+            font-size: 1.1rem;
+            margin-bottom: 35px;
+            opacity: 0.95;
+            max-width: 750px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.6;
+        }
+
+        .btn-cta-bottom {
+            background-color: var(--text-dark);
+            color: #FFF;
+            padding: 16px 45px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .btn-cta-bottom:hover {
+            transform: translateY(-3px);
+            background-color: #000;
+            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+        }
+
+        /* 🌐 Rich Premium Footer Layout */
+        footer {
+            background-color: #0B0F19; /* গভীর লাক্সারি চারকোল */
+            color: #9CA3AF;
+            padding: 80px 0 30px 0;
+            border-top: 1px solid rgba(255, 107, 0, 0.08);
+            font-family: var(--font-bangla);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.3fr 0.8fr 0.8fr 1.1fr;
+            gap: 50px;
+            margin-bottom: 60px;
+        }
+
+        .footer-logo {
+            font-family: var(--font-headings);
+            font-weight: 800;
+            font-size: 2rem;
             color: var(--primary-color);
+            text-decoration: none;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
+
+        .footer-desc {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            color: #9CA3AF;
+            margin-bottom: 25px;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-icon {
+            width: 38px;
+            height: 38px;
+            background-color: rgba(255, 255, 255, 0.04);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #CBD5E1;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .social-icon:hover {
+            background-color: var(--primary-color);
+            color: #FFF;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px var(--glow-color);
+        }
+
+        .footer-col h4 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #FFF;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .footer-col h4::after {
+            content: '';
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--primary-color);
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 14px;
+        }
+
+        .footer-links a {
+            color: #9CA3AF;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            transform: translateX(4px);
+        }
+
+        /* Payment Methods Section */
+        .payment-methods-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #FFF;
             margin-bottom: 15px;
         }
 
-        .feature-item h4 {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 8px;
+        .payment-gateways {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .feature-item p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        /* Footer */
-        footer {
-            background-color: var(--text-dark);
+        .gateway-badge {
+            background-color: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
             color: #FFF;
-            padding: 30px 0;
-            text-align: center;
-            font-size: 0.9rem;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            font-family: var(--font-body);
         }
 
-        /* Responsive Design */
-        @media (max-width: 1024px) {
+        .copyright-bar {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 0.88rem;
+            color: #6B7280;
+        }
+
+        .copyright-bar a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Responsive Layouts */
+        @media (max-width: 992px) {
+            .menu-toggle { display: block; }
+            .nav-menu {
+                position: absolute;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 70px);
+                background-color: var(--card-bg);
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 30px;
+                gap: 25px;
+                transition: left 0.3s ease;
+                box-shadow: 0 10px 15px rgba(0,0,0,0.05);
+                overflow-y: auto;
+            }
+            .nav-menu.active { left: 0; }
+            .nav-link {
+                font-size: 1.1rem;
+                width: 100%;
+                padding-bottom: 10px;
+                border-bottom: 1px solid #EDF2F7;
+            }
+            .btn-nav-auth { text-align: center; border-bottom: none; width: 100%; }
+
+            .hero-grid { grid-template-columns: 1fr; gap: 30px; text-align: center; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-subtitle { margin: 0 auto 30px auto; }
+            .hero-ctas { justify-content: center; }
+            .phone-mockup-wrapper { margin-top: 15px; }
+
             .categories-grid { grid-template-columns: repeat(5, 1fr); }
             .products-grid { grid-template-columns: repeat(3, 1fr); }
-            .features-grid { grid-template-columns: repeat(2, 1fr); }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+        }
+
+        @media (max-width: 768px) {
+            .slider-container { aspect-ratio: 2 / 1; }
         }
 
         @media (max-width: 600px) {
             .categories-grid { grid-template-columns: repeat(4, 1fr); }
             .products-grid { grid-template-columns: repeat(2, 1fr); }
-            .features-grid { grid-template-columns: 1fr; }
-            .hero-title { font-size: 2.2rem; }
-            .hero-ctas { flex-direction: column; gap: 10px; }
+            .footer-grid { grid-template-columns: 1fr; }
+            .hero-ctas { flex-direction: column; gap: 12px; }
+            .btn-cta { width: 100%; justify-content: center; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Header -->
+    <!-- Header Navigation -->
     <header>
-        <div class="container nav-container">
+        <div class="nav-container">
             <a href="/" class="logo">MartBaseBD</a>
-            <div class="nav-buttons">
-                <a href="/login" class="btn-nav btn-login"><i class="fa-solid fa-right-to-bracket"></i> লগইন</a>
-                <a href="/signup/reseller" class="btn-nav btn-join-reseller"><i class="fa-solid fa-briefcase"></i> রিসেলার জয়েন</a>
-            </div>
+            
+            <button class="menu-toggle" id="menu-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <ul class="nav-menu" id="nav-menu">
+                <li><a href="/" class="nav-link"><i class="fa-solid fa-house"></i> হোম</a></li>
+                <li><a href="#products-section" class="nav-link"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
+                <li><a href="#offers-section" class="nav-link"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
+                <li><a href="/earning" class="nav-link"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
+                <li><a href="/digital-services" class="nav-link"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
+                
+                <!-- ডাইনামিক রুটসমূহ (ইউজার স্ট্যাটাস অনুযায়ী জেএস দিয়ে পরিবর্তন হবে) -->
+                <li id="dynamic-nav"><a href="/login" class="nav-link btn-nav-auth">লগইন / রেজিস্টার</a></li>
+            </ul>
         </div>
     </header>
 
-    <!-- Hero Section -->
+    <!-- 🚀 SaaS Style Modern Hero Section -->
     <section class="hero">
-        <div class="container">
-            <h1 class="hero-title">সহজে কেনাকাটা করুন,<br>নিজের ঘরে বসে <span>উপার্জন</span> করুন!</h1>
-            <p class="hero-subtitle">MartBaseBD বাংলাদেশের প্রিমিয়াম ওয়ার্ক অ্যান্ড আর্ন প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কিনুন অথবা রিসেলার হিসেবে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।</p>
-            <div class="hero-ctas">
-                <a href="#products-section" class="btn-cta btn-cta-buy"><i class="fa-solid fa-cart-shopping"></i> কেনাকাটা করুন</a>
-                <a href="/signup/reseller" class="btn-cta btn-cta-earn"><i class="fa-solid fa-money-bill-trend-up"></i> রিসেলার হয়ে আয় করুন</a>
+        <div class="container hero-grid">
+            <div class="hero-left">
+                <div class="hero-badge">
+                    <i class="fa-solid fa-fire-flame-curved"></i> শূন্য পুঁজিতে ক্যারিয়ার গড়ুন
+                </div>
+                <h1 class="hero-title">সহজে কেনাকাটা করুন,<br>আজই শুরু করুন <span>উপার্জন</span>!</h1>
+                <p class="hero-subtitle">MartBaseBD বাংলাদেশের প্রিমিয়াম রিসেলিং ও ড্রপশিপিং প্ল্যাটফর্ম। সাধারণ কাস্টমার হিসেবে সুলভ মূল্যে কেনাকাটা করুন অথবা রিসেলার হয়ে কোনো ইনভেস্টমেন্ট ছাড়াই ব্যবসা শুরু করুন।</p>
+                <div class="hero-ctas">
+                    <a href="#products-section" class="btn-cta btn-cta-buy"><i class="fa-solid fa-bag-shopping"></i> কেনাকাটা করুন</a>
+                    <a href="/signup/reseller" class="btn-cta btn-cta-earn"><i class="fa-solid fa-arrow-up-right-dots"></i> রিসেলার হিসেবে আয় করুন</a>
+                </div>
+            </div>
+            
+            <!-- 📱 Modern Phone Mockup Illustration (Stats Section Removed) -->
+            <div class="phone-mockup-wrapper">
+                <div class="phone-mockup">
+                    <div class="phone-notch"></div>
+                    <div class="phone-screen">
+                        <div class="phone-header">MartBaseBD Mobile</div>
+                        <div class="phone-card">
+                            <span class="phone-card-title">প্রোডাক্ট কালেকশন</span>
+                            <div class="phone-card-value">১,৫০০+ টি</div>
+                        </div>
+                        <div class="phone-card">
+                            <span class="phone-card-title">লাইভ ড্রপশিপিং কুরিয়ার</span>
+                            <div class="phone-card-value">২৪/৭ এক্টিভ</div>
+                        </div>
+                        <div class="phone-card" style="background-color: rgba(255, 107, 0, 0.05); border-color: rgba(255, 107, 0, 0.2);">
+                            <span class="phone-card-title" style="color: var(--primary-color);">রিসেলার ওয়ালেট</span>
+                            <div class="phone-card-value" style="color: var(--primary-color);">৳ রেডি উইথড্র</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <main class="container">
 
-        <!-- Banner Slider Section -->
+        <!-- 📸 Banner Slider (Web Banner Size, 4 Slides, Indicator Dots below) -->
         <section class="slider-section">
             <div class="slider-container">
-                <div class="slide active" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1472851294608-062f824d296e?q=80&w=1200&auto=format&fit=crop'); background-size: cover; background-position: center;">
-                    <h2>ঈদ ধামাকা অফার!</h2>
-                    <p class="slide-subtitle">রিসেলারদের জন্য বিশেষ প্রোডাক্টে ৫০% পর্যন্ত আকর্ষণীয় ছাড়।</p>
-                </div>
-                <div class="slide" style="background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop'); background-size: cover; background-position: center;">
-                    <h2>বিনা পুঁজিতে শুরু করুন ব্যবসা</h2>
-                    <p class="slide-subtitle">প্রোডাক্ট কাস্টমারের কাছে পৌঁছে দেওয়ার সব দায়িত্ব আমাদের।</p>
-                </div>
+                <!-- Slide 1: Shopping/Offers -->
+                <a href="#products-section" class="slide active">
+                    <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" alt="ঈদ অফার ব্যানার">
+                </a>
+                <!-- Slide 2: Reseller Earning -->
+                <a href="/signup/reseller" class="slide">
+                    <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" alt="রিসেলিং সুবিধা">
+                </a>
+                <!-- Slide 3: Digital Services -->
+                <a href="/digital-services" class="slide">
+                    <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" alt="ডিজিটাল সার্ভিস ব্যানার">
+                </a>
+                <!-- Slide 4: Premium Gadgets -->
+                <a href="#products-section" class="slide">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" alt="প্রিমিয়াম গ্যাজেট সম্ভার">
+                </a>
+            </div>
+
+            <!-- Indicator Dots (Exactly like user image reference) -->
+            <div class="slider-dots" id="slider-dots">
+                <div class="dot active" onclick="setSlide(0)"></div>
+                <div class="dot" onclick="setSlide(1)"></div>
+                <div class="dot" onclick="setSlide(2)"></div>
+                <div class="dot" onclick="setSlide(3)"></div>
             </div>
         </section>
 
-        <!-- 20 Categories Grid Section -->
+        <!-- Category Grid Section -->
         <section>
-            <h3 class="section-title">ক্যাটাগরি সমূহ</h3>
+            <h3 class="section-title"><i class="fa-solid fa-list-ul"></i> ক্যাটাগরি সমূহ</h3>
             <div class="categories-grid" id="categories-container">
-                <!-- JavaScript এর মাধ্যমে ২০টি ক্যাটাগরি লোড হবে, নিচে ফলব্যাক কোড দেওয়া আছে -->
-                <a href="#" class="category-card"><i class="fa-solid fa-shirt"></i><p class="category-name">ম্যান্স ফ্যাশন</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-person-dress"></i><p class="category-name">ওম্যান্স ফ্যাশন</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-mobile-screen-button"></i><p class="category-name">স্মার্টফোন</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-headphones"></i><p class="category-name">গেজেটস</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-blender"></i><p class="category-name">হোম অ্যাপ্লায়েন্স</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-spa"></i><p class="category-name">বিউটি কেয়ার</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-baby-carriage"></i><p class="category-name">কিডস</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-clock"></i><p class="category-name">ঘড়ি ও চশমা</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-suitcase-rolling"></i><p class="category-name">ব্যাগ ও ট্রাভেল</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-shoe-prints"></i><p class="category-name">জুতো কালেকশন</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-keyboard"></i><p class="category-name">কম্পিউটার</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-basket-shopping"></i><p class="category-name">গ্রোসারি</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-dumbbell"></i><p class="category-name">ফিটনেস</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-book-open"></i><p class="category-name">বই ও খাতা</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-screwdriver-wrench"></i><p class="category-name">টুলস আইটেম</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-car-side"></i><p class="category-name">অটোমোবাইল</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-kitchen-set"></i><p class="category-name">রান্নাঘর</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-baseball-bat-ball"></i><p class="category-name">খেলাধুলা</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-gift"></i><p class="category-name">খেলনা ও গিফট</p></a>
-                <a href="#" class="category-card"><i class="fa-solid fa-paperclip"></i><p class="category-name">অফিস সাপ্লাই</p></a>
+                <p>ক্যাটাগরি লোড হচ্ছে...</p>
             </div>
         </section>
 
-        <!-- 30 Products Showcase Section -->
+        <!-- Products Showcase Section -->
         <section id="products-section">
-            <h3 class="section-title">আজকের আকর্ষণীয় প্রোডাক্টস</h3>
+            <h3 class="section-title"><i class="fa-solid fa-bolt-lightning"></i> আজকের আকর্ষণীয় প্রোডাক্টস</h3>
             <div class="products-grid" id="products-container">
-                <!-- নিচে ডাইনামিকালি ৩০টি প্রোডাক্ট রেন্ডার হবে (নিচে ডামি স্ক্রিপ্ট যুক্ত করা আছে) -->
+                <p>প্রোডাক্ট লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+        <!-- 📢 Bottom Ad CTA Section -->
+        <section class="bottom-cta-section">
+            <div class="cta-content">
+                <h2>আজই শুরু করুন সম্পূর্ণ বিনা পুঁজিতে ঘরে বসে ব্যবসা! 💼</h2>
+                <p>MartBaseBD রিসেলার হিসেবে আমাদের কোয়ালিটি সম্পন্ন প্রোডাক্টগুলো নিজের সুবিধামতো মূল্যে বিক্রি করে চমৎকার প্রফিট মার্জিন উপার্জন করুন। ডেলিভারি ও কাস্টমার সাপোর্টের সমস্ত টেনশন আমাদের!</p>
+                <a href="/signup/reseller" class="btn-cta-bottom"><i class="fa-solid fa-user-plus"></i> রিসেলার হিসেবে যুক্ত হোন</a>
             </div>
         </section>
 
     </main>
 
-    <!-- 5. Features Section (Benefits) -->
-    <section class="features">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-item">
-                    <i class="fa-solid fa-truck-fast"></i>
-                    <h4>সুপার ফাস্ট ডেলিভারি</h4>
-                    <p>সারা বাংলাদেশে কাস্টমারের ঠিকানায় দ্রুততম সময়ে ক্যাশ অন ডেলিভারি নিশ্চিত করি।</p>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-wallet"></i>
-                    <h4>নিশ্চিত উইথড্রাল</h4>
-                    <p>সহজেই আপনার উপার্জিত টাকা বিকাশ অথবা রকেটের মাধ্যমে সরাসরি উইথড্র করুন।</p>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-hand-holding-dollar"></i>
-                    <h4>শূন্য ইনভেস্টমেন্ট</h4>
-                    <p>রিসেলার হিসেবে কোনো রকম মূলধন ছাড়া আজই আপনার ব্যবসা শুরু করে দিন।</p>
-                </div>
-                <div class="feature-item">
-                    <i class="fa-solid fa-headset"></i>
-                    <h4>২৪/৭ ডেডিকেটেড সাপোর্ট</h4>
-                    <p>আপনার যেকোনো প্রশ্ন অথবা পেমেন্ট সংক্রান্ত সমস্যার সমাধানে আমরা সর্বদা প্রস্তুত।</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
+    <!-- 🌐 Premium Modern Footer Section -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. Designed by Ali Hosen. All rights reserved.</p>
+            <div class="footer-grid">
+                <!-- Col 1: Brand Info & Socials -->
+                <div class="footer-col">
+                    <a href="/" class="footer-logo">MartBaseBD</a>
+                    <p class="footer-desc">
+                        বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
+                    </p>
+                    <div class="footer-socials">
+                        <a href="https://facebook.com" class="social-icon" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="https://youtube.com" class="social-icon" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="https://telegram.org" class="social-icon" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                        <a href="https://whatsapp.com" class="social-icon" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2: Useful Links -->
+                <div class="footer-col">
+                    <h4>গুরুত্বপূর্ণ লিংক</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> আমাদের সম্পর্কে</a></li>
+                        <li><a href="/contact"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> যোগাযোগ করুন</a></li>
+                        <li><a href="/privacy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> গোপনীয়তা নীতি</a></li>
+                        <li><a href="/report"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> অভিযোগ ও রিপোর্ট</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Policies -->
+                <div class="footer-col">
+                    <h4>রিসেলার গাইড</h4>
+                    <ul class="footer-links">
+                        <li><a href="/reseller-rules"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিসেলার গাইডলাইন</a></li>
+                        <li><a href="/refund-policy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিফান্ড পলিসি</a></li>
+                        <li><a href="/reseller-policy"><i class="fa-solid fa-chevron-right" style="font-size: 0.7rem; color: var(--primary-color); margin-right: 5px;"></i> রিসেলার পলিসি</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Payments Accepted -->
+                <div class="footer-col">
+                    <h4>পেমেন্ট মেথডস</h4>
+                    <p style="font-size: 0.9rem; color: #9CA3AF; margin-bottom: 15px; line-height: 1.5;">
+                        নিরাপদ পেমেন্ট গেটওয়ের মাধ্যমে পেমেন্ট সম্পন্ন করুন নিশ্চিন্তে।
+                    </p>
+                    <div class="payment-gateways">
+                        <span class="gateway-badge">bKash</span>
+                        <span class="gateway-badge">Nagad</span>
+                        <span class="gateway-badge">Rocket</span>
+                        <span class="gateway-badge">Cards</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="copyright-bar">
+                <p>&copy; 2026 MartBaseBD Premium Work & Earn Platform. All rights reserved. | Developed by <a href="https://github.com/alihosen" target="_blank">Ali Hosen</a></p>
+            </div>
         </div>
     </footer>
 
-    <!-- JavaScript code for Slider and Generating 30 Products -->
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <script>
-        // ১. অটোমেটিক ব্যানার স্লাইডার স্ক্রিপ্ট
+        // ১. Supabase ইনিশিয়ালাইজেশন
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabaseJS.createClient(supabaseUrl, supabaseKey);
+
+        // ২. মোবাইল মেনু টগল লজিক
+        const menuToggle = document.getElementById('menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+
+        menuToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // ৩. ডাইনামিক নেভিগেশন বার আপডেট (Auth Status ভিত্তিক)
+        async function updateNavigation() {
+            const dynamicNav = document.getElementById('dynamic-nav');
+            
+            // বর্তমান সেশন চেক করা
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (session) {
+                const userId = session.user.id;
+                
+                // ইউজার রোল (customer/reseller) চেক করা
+                const { data: profile } = await supabase
+                    .from('profiles')
+                    .select('role')
+                    .eq('id', userId)
+                    .single();
+
+                if (profile) {
+                    if (profile.role === 'reseller') {
+                        // রিসেলার মেনু
+                        dynamicNav.outerHTML = `
+                            <li><a href="/dashboard/reseller" class="nav-link"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
+                            <li><a href="#" onclick="handleLogout()" class="nav-link btn-nav-auth"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                        `;
+                    } else {
+                        // সাধারণ ইউজার মেনু
+                        dynamicNav.outerHTML = `
+                            <li><a href="/my-orders" class="nav-link"><i class="fa-solid fa-box"></i> আমার অর্ডার</a></li>
+                            <li><a href="/profile" class="nav-link"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
+                            <li><a href="/checkout" class="nav-link"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
+                            <li><a href="#" onclick="handleLogout()" class="nav-link btn-nav-auth"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                        `;
+                    }
+                }
+            }
+        }
+
+        // ৪. লগআউট লজিক
+        async function handleLogout() {
+            await supabase.auth.signOut();
+            window.location.reload();
+        }
+
+        // ৫. ব্যানার স্লাইডার ও ডট ইন্ডিকেটর লজিক (৪টি স্লাইড, ক্লিকযোগ্য)
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
+        const dots = document.querySelectorAll('.dot');
         
-        function showSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[index].classList.add('active');
-        }
-
-        setInterval(() => {
-            currentSlide = (currentSlide + 1) % slides.length;
-            showSlide(currentSlide);
-        }, 4000); // প্রতি ৪ সেকেন্ডে স্লাইড পরিবর্তন হবে
-
-        // ২. ৩০টি ডামি প্রোডাক্ট জেনারেট করার স্ক্রিপ্ট (ব্যাকএন্ড কানেক্ট করার আগ পর্যন্ত ডেমো হিসেবে কাজ করবে)
-        const productsContainer = document.getElementById('products-container');
-        
-        const dummyProductTitles = [
-            "প্রিমিয়াম ম্যান্স পোলো শার্ট", "স্মার্ট স্পোর্টস রানিং শু", "স্মার্ট ওয়াচ আল্ট্রা ২", "নয়েজ ক্যানসেলিং হেডফোন",
-            "হ্যান্ডহেল্ড কিচেন ব্লেন্ডার", "গ্লোয়িং স্কিন ফেস সিরাম", "কিডস কিউট কার ডল", "ক্লাসিক ওয়াটারপ্রুফ রিস্ট ওয়াচ",
-            "লেদার লেপটপ ট্রাভেল ব্যাগ", "ফ্যাশনেবল ক্যাজুয়াল স্নিকার্স", "আরজিবি গেমিং কিবোর্ড", "অর্গানিক বাসমতি রাইস",
-            "প্রফেশনাল ব্লুটুথ ট্রাইপড", "স্টাইলিশ সানগ্লাস ফর ওমেন", "সিলিকন স্ট্র ওয়াটার বোতল", "মাল্টিপারপাস ট্রাভেল কিট",
-            "কম্প্যাক্ট কিচেন অর্গানাইজার", "হ্যান্ড ট্রাভেল কেস", "স্পোর্টস রানিং জার্সি", "কিডস লার্নিং ট্যাবলেট",
-            "লেদার মানিব্যাগ ক্ল্যাসিক", "স্মার্ট এলইডি নাইট লাইট", "ইলেকট্রিক হেয়ার ট্রিমার", "ইউএসবি ফার্স্ট চার্জার অ্যাডাপ্টার",
-            "অর্গানিক ড্রাই ফ্রুটস মিক্স", "প্রফেশনাল মেকআপ ব্রাশ সেট", "লেদার বেল্ট ফর মেন", "নন-স্টিক ফ্রাই প্যান",
-            "স্মার্ট ফ্লেক্সিবল ফোন হোল্ডার", "সিলিকন কুকিং ইউটেনসিল সেট"
-        ];
-
-        // ৩০টি প্রোডাক্ট লুপের মাধ্যমে রেন্ডার করা
-        for (let i = 1; i <= 30; i++) {
-            const productTitle = dummyProductTitles[i - 1] || `আকর্ষণীয় প্রোডাক্ট #${i}`;
-            const regularPrice = 450 + (i * 25); // ডামি দাম
+        function setSlide(index) {
+            // পূর্বের একটিভ স্লাইড এবং ডট রিমুভ করা
+            slides[currentSlide].classList.remove('active');
+            dots[currentSlide].classList.remove('active');
             
-            const cardHTML = `
-                <div class="product-card">
-                    <div class="product-img">
-                        <i class="fa-solid fa-image"></i>
-                    </div>
-                    <div class="product-info">
-                        <h4 class="product-title">${productTitle}</h4>
-                        <div class="product-price-box">
-                            <div>
-                                <span class="price-label">মূল্য</span>
-                                <p class="price-value">৳${regularPrice}</p>
-                            </div>
-                        </div>
-                        <a href="/login" class="btn-buy-product"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
-                    </div>
-                </div>
-            `;
-            productsContainer.innerHTML += cardHTML;
+            // নতুন একটিভ স্লাইড এবং ডট সিলেক্ট করা
+            currentSlide = index;
+            slides[currentSlide].classList.add('active');
+            dots[currentSlide].classList.add('active');
         }
+
+        function autoSlide() {
+            let nextSlide = (currentSlide + 1) % slides.length;
+            setSlide(nextSlide);
+        }
+        
+        let slideInterval = setInterval(autoSlide, 5000); // ৫ সেকেন্ড পর পর স্লাইড পরিবর্তন
+
+        // ইউজার কোনো ডটে ক্লিক করলে অটো-স্লাইড ইন্টারভাল রিসেট হবে
+        function userSetSlide(index) {
+            clearInterval(slideInterval);
+            setSlide(index);
+            slideInterval = setInterval(autoSlide, 5000); // আবার নতুন ইন্টারভাল চালু
+        }
+
+        // ৬. ডাটাবেজ থেকে রিয়েল ক্যাটাগরি ও প্রোডাক্ট ডেটা লোড করার ফাংশন
+        async function loadHomePageData() {
+            try {
+                // ক. ক্যাটাগরি লোড করা
+                const { data: categories, error: catError } = await supabase
+                    .from('categories')
+                    .select('*')
+                    .limit(20);
+
+                const catContainer = document.getElementById('categories-container');
+                if (categories && categories.length > 0) {
+                    catContainer.innerHTML = '';
+                    categories.forEach(cat => {
+                        catContainer.innerHTML += `
+                            <a href="/category/${cat.slug}" class="category-card">
+                                <i class="fa-solid ${cat.icon}"></i>
+                                <p class="category-name">${cat.name}</p>
+                            </a>
+                        `;
+                    });
+                } else {
+                    catContainer.innerHTML = '<p>কোনো ক্যাটাগরি পাওয়া যায়নি।</p>';
+                }
+
+                // খ. প্রোডাক্ট লোড করা (সর্বোচ্চ ৩০টি)
+                const { data: products, error: prodError } = await supabase
+                    .from('products')
+                    .select('*')
+                    .limit(30)
+                    .order('created_at', { ascending: false });
+
+                const prodContainer = document.getElementById('products-container');
+                if (products && products.length > 0) {
+                    prodContainer.innerHTML = '';
+                    products.forEach(prod => {
+                        prodContainer.innerHTML += `
+                            <div class="product-card">
+                                <a href="/product/${prod.id}" class="product-img-box">
+                                    ${prod.image_url ? `<img src="${prod.image_url}" alt="${prod.title}">` : `<i class="fa-solid fa-image"></i>`}
+                                </a>
+                                <div class="product-info">
+                                    <h4 class="product-title">${prod.title}</h4>
+                                    <p class="product-price">৳${prod.regular_price}</p>
+                                    <a href="/product/${prod.id}" class="btn-buy"><i class="fa-solid fa-bag-shopping"></i> Buy Now</a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    prodContainer.innerHTML = '<p>কোনো প্রোডাক্ট পাওয়া যায়নি।</p>';
+                }
+
+            } catch (err) {
+                console.error("ডেটা লোডে সমস্যা হয়েছে:", err);
+            }
+        }
+
+        // পেজ লোড হওয়ার সাথে সাথে ফাংশন রান হওয়া
+        window.addEventListener('DOMContentLoaded', () => {
+            updateNavigation();
+            loadHomePageData();
+        });
     </script>
 </body>
 </html>
