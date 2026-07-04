@@ -1,7 +1,9 @@
 # api/routers/auth.py
+import os
 from fastapi import APIRouter, HTTPException, Header, Depends
 from pydantic import BaseModel
 from api.database import supabase
+from api.config import settings
 
 router = APIRouter()
 
@@ -18,8 +20,7 @@ class ProfileUpdateSchema(BaseModel):
     phone_number: str
 
 
-# --- ২. টোকেন ভেরিফিকেশন ডিপেনডেন্সি (FastAPI JWT Dependency) ---
-# এই ফাংশনটি যেকোনো সিকিউর রাউটের নিরাপত্তা নিশ্চিত করতে ব্যবহার করা যাবে
+# --- ২. সিকিউর টোকেন ভেরিফিকেশন ডিপেনডেন্সি (FastAPI JWT Dependency) ---
 
 async def get_current_user(authorization: str = Header(None)):
     if not authorization:
@@ -39,7 +40,19 @@ async def get_current_user(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="অবৈধ Authorization ফরম্যাট। 'Bearer <Token>' ব্যবহার করুন।")
 
 
-# --- ৩. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
+# --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট ---
+# এটি Vercel থেকে পাবলিক ক্রেডেনশিয়াল রিড করে ফ্রন্টএন্ডে সেফলি সাপ্লাই করবে
+
+@router.get("/config")
+def get_supabase_config():
+    # Vercel Environment Variables থেকে মান নিয়ে ফ্রন্টএন্ডে পাঠানো
+    return {
+        "supabase_url": settings.SUPABASE_URL,
+        "supabase_anon_key": settings.SUPABASE_ANON_KEY
+    }
+
+
+# --- ৪. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
 
 @router.get("/profile/{user_id}")
 def get_user_profile(user_id: str):
@@ -52,11 +65,10 @@ def get_user_profile(user_id: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: প্রোফাইল তথ্য আপডেট করা ---
+# --- ৫. এন্ডপয়েন্ট: প্রোফাইল তথ্য আপডেট করা ---
 
 @router.put("/profile/{user_id}")
 def update_user_profile(user_id: str, data: ProfileUpdateSchema, current_user: dict = Depends(get_current_user)):
-    # সিকিউরিটি চেক: ইউজার যেন কেবল তার নিজের প্রোফাইলই পরিবর্তন করতে পারে
     if current_user.id != user_id:
         raise HTTPException(status_code=403, detail="আপনি অন্যের প্রোফাইল পরিবর্তন করতে পারবেন না।")
 
@@ -71,7 +83,7 @@ def update_user_profile(user_id: str, data: ProfileUpdateSchema, current_user: d
         raise HTTPException(status_code=400, detail=str(e))
 
 
-# --- ৫. এন্ডপয়েন্ট: অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট ---
+# --- ৬. এন্ডপয়েন্ট: অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট সাবমিট ---
 
 @router.post("/request-activation")
 def request_activation(data: ActivationRequestSchema):
@@ -91,7 +103,7 @@ def request_activation(data: ActivationRequestSchema):
 
         # ফি যদি ০-এর বেশি হয়, তবে পেমেন্ট ডিটেইলস ভ্যালিডেশন
         if not data.payment_method or not data.sender_number or not data.trx_id:
-            raise HTTPException(status_code=400, detail="পেমেন্ট গেটওয়ে, সেন্ডার নম্বর এবং Trx ID প্রদান করা বাধ্যতামূলক।")
+            raise HTTPException(status_code=400, detail="পেমেন্ট গেটওয়ে, sender নম্বর এবং Trx ID প্রদান করা বাধ্যতামূলক।")
 
         # অ্যাক্টিভেশন রিকোয়েস্ট ডাটাবেজে রেকর্ড করা
         request_payload = {
@@ -114,11 +126,11 @@ def request_activation(data: ActivationRequestSchema):
         raise HTTPException(status_code=400, detail="এই Trx ID টি ইতিপূর্বে ব্যবহৃত হয়েছে অথবা ভুল ডেটা দেওয়া হয়েছে।")
 
 
-# --- ৬. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট অ্যাপ্রুভ (অনুমোদন) করা ---
+# --- ৭. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট অ্যাপ্রুভ (অনুমোদন) করা ---
 
 @router.post("/admin/approve-activation/{request_id}")
 def approve_activation(request_id: str, admin_user: dict = Depends(get_current_user)):
-    # সিকিউরিটি চেক: রিকোয়েস্টকারী ব্যক্তিটি নিজে অ্যাডমিন কিনা তা পরীক্ষা করা
+    # সিকিউরিটি চেক: অ্যাডমিন ভ্যালিডেশন
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
     if not admin_check.data or admin_check.data['role'] != 'admin':
         raise HTTPException(status_code=403, detail="দুঃখিত, শুধুমাত্র অ্যাডমিনরাই এই অপারেশন করতে পারবেন।")
@@ -142,7 +154,7 @@ def approve_activation(request_id: str, admin_user: dict = Depends(get_current_u
     return {"status": "success", "message": "ইউজার অ্যাকাউন্টটি সফলভাবে সক্রিয় করা হয়েছে।"}
 
 
-# --- ৭. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট রিজেক্ট (বাতিল) করা ---
+# --- ৮. অ্যাডমিন এন্ডপয়েন্ট: পেন্ডিং রিকোয়েস্ট রিজেক্ট (বাতিল) করা ---
 
 @router.post("/admin/reject-activation/{request_id}")
 def reject_activation(request_id: str, admin_user: dict = Depends(get_current_user)):
