@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MartBaseBD - My Profile & Order Tracking</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
+
+    <!-- Header Navigation -->
+    <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm mb-8">
+        <div class="max-w-[1200px] mx-auto px-5 py-4 flex justify-between items-center">
+            <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MartBaseBD</a>
+            <a href="/" class="font-semibold text-sm hover:text-primary"><i class="fa-solid fa-house"></i> হোম পেজ</a>
+        </div>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- 👤 Left Column: User Profile Info -->
+        <div class="lg:col-span-4 bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md h-fit">
+            <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-user-gear"></i> প্রোফাইল তথ্য</h3>
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-user"></i></div>
+                    <div>
+                        <h4 class="font-bold text-dark" id="user-fullname">লোড হচ্ছে...</h4>
+                        <p class="text-xs text-muted" id="user-role">...</p>
+                    </div>
+                </div>
+                <div class="space-y-2 text-sm pt-4 border-t border-gray-50">
+                    <p class="text-muted"><i class="fa-solid fa-envelope w-5"></i> <span id="user-email">...</span></p>
+                    <p class="text-muted"><i class="fa-solid fa-phone w-5"></i> <span id="user-phone">...</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📦 Right Column: Orders History & Live Tracking -->
+        <div class="lg:col-span-8 space-y-6">
+            
+            <!-- Live Tracking Panel (Shown when an order is selected or active) -->
+            <div id="tracking-panel" class="bg-white rounded-2xl border border-primary/15 p-6 shadow-md hidden bg-gradient-to-br from-white to-primary/[0.01]">
+                <h3 class="text-lg font-bold text-dark mb-4 flex items-center gap-2"><i class="fa-solid fa-truck-fast text-primary"></i> লাইভ অর্ডার ট্র্যাকিং</h3>
+                <p class="text-xs text-muted mb-6">অর্ডার আইডি: <span class="font-mono" id="track-order-id">#--</span></p>
+                
+                <!-- Tracking Timeline (Visualizer) -->
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative">
+                    <!-- Progress Line (Desktop Only) -->
+                    <div class="hidden sm:block absolute top-[22px] left-[40px] right-[40px] h-[3px] bg-gray-200 -z-10"></div>
+                    
+                    <!-- Step 1: Pending -->
+                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-pending">
+                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-receipt"></i></div>
+                        <span class="text-xs font-semibold">অর্ডার পেন্ডিং</span>
+                    </div>
+                    <!-- Step 2: Shipping -->
+                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-shipping">
+                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-truck-ramp-box"></i></div>
+                        <span class="text-xs font-semibold">কুরিয়ারে পাঠানো হয়েছে</span>
+                    </div>
+                    <!-- Step 3: Delivered -->
+                    <div class="flex sm:flex-col items-center gap-3 text-center" id="step-delivered">
+                        <div class="w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all"><i class="fa-solid fa-box-open"></i></div>
+                        <span class="text-xs font-semibold">ডেলিভারি সফল!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders List (History) -->
+            <div class="bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md">
+                <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-box-archive"></i> আমার অর্ডার হিস্ট্রি</h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                                <th class="py-3 px-4">অর্ডার আইডি</th>
+                                <th class="py-3 px-4">কাস্টমার</th>
+                                <th class="py-3 px-4">পরিমাণ (৳)</th>
+                                <th class="py-3 px-4">স্ট্যাটাস</th>
+                                <th class="py-3 px-4 text-center">ট্র্যাক করুন</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list-container" class="divide-y divide-gray-100">
+                            <tr>
+                                <td colspan="5" class="py-6 text-center text-gray-500">আপনার অর্ডারগুলো লোড করা হচ্ছে...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let supabaseClient = null;
+
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            const supabaseUrl = 'YOUR_SUPABASE_URL';
+            const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config error");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        loadUserProfileAndOrders();
+                    } else {
+                        console.warn("কনফিগ পাওয়া যায়নি।");
+                    }
+                } catch (err) {
+                    console.error("Supabase failed", err);
+                }
+            }
+
+            // --- খ. প্রোফাইল ও অর্ডার হিস্ট্রি ডাটা লোড ---
+            async function loadUserProfileAndOrders() {
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        alert("অনুগ্রহ করে আগে লগইন সম্পন্ন করুন।");
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const userId = session.user.id;
+
+                    // ১. প্রোফাইল লোড
+                    const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
+                    if (profile) {
+                        document.getElementById('user-fullname').innerText = profile.full_name;
+                        document.getElementById('user-role').innerText = profile.role === 'reseller' ? '💼 রেজিস্টার্ড রিসেলার' : '👤 সাধারণ ক্রেতা';
+                        document.getElementById('user-email').innerText = profile.email;
+                        document.getElementById('user-phone').innerText = profile.phone_number;
+                    }
+
+                    // ২. অর্ডার হিস্ট্রি লোড
+                    const { data: orders } = await supabaseClient
+                        .from('orders')
+                        .select('*')
+                        .eq('placed_by', userId)
+                        .order('created_at', { ascending: false });
+
+                    const listContainer = document.getElementById('orders-list-container');
+                    if (orders && orders.length > 0) {
+                        listContainer.innerHTML = '';
+                        orders.forEach(order => {
+                            const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50' : (order.status === 'shipping' ? 'text-amber-600 bg-amber-50' : 'text-gray-500 bg-gray-50');
+                            
+                            listContainer.innerHTML += `
+                                <tr class="hover:bg-gray-50/50 transition-colors">
+                                    <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${order.id.substring(0,8)}...</td>
+                                    <td class="py-4 px-4 font-semibold text-dark">${order.customer_name}</td>
+                                    <td class="py-4 px-4 font-body font-bold">৳${order.collectable_amount}</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 rounded-md text-xs font-bold ${statusColor}">${order.status}</span></td>
+                                    <td class="py-4 px-4 text-center">
+                                        <button onclick="trackOrder('${order.id}', '${order.status}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md shadow-primary/10 transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো অর্ডার পাওয়া যায়নি।</td></tr>';
+                    }
+
+                } catch (e) {
+                    console.error("Profile/Orders loading error", e);
+                }
+            }
+
+            // --- গ. ডাইনামিক লাইভ ট্র্যাকিং লজিক ---
+            window.trackOrder = function(orderId, status) {
+                const trackingPanel = document.getElementById('tracking-panel');
+                document.getElementById('track-order-id').innerText = `#${orderId}`;
+                trackingPanel.classList.remove('hidden');
+
+                // স্টেপস সিলেক্টর
+                const stepPending = document.getElementById('step-pending').querySelector('div');
+                const stepShipping = document.getElementById('step-shipping').querySelector('div');
+                const stepDelivered = document.getElementById('step-delivered').querySelector('div');
+
+                // স্টেপ স্টাইল রিসেট
+                [stepPending, stepShipping, stepDelivered].forEach(step => {
+                    step.className = "w-11 h-11 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center text-lg font-bold transition-all";
+                });
+
+                // স্ট্যাটাস অনুযায়ী লাইভ হাইলাইট কালার পরিবর্তন
+                if (status === 'pending') {
+                    stepPending.className = "w-11 h-11 bg-amber-500 text-white rounded-full flex items-center justify-center text-lg font-bold animate-pulse shadow-lg shadow-amber-500/30";
+                } else if (status === 'shipping') {
+                    stepPending.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
+                    stepShipping.className = "w-11 h-11 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold animate-pulse shadow-lg shadow-primary/30";
+                } else if (status === 'delivered') {
+                    stepPending.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
+                    stepShipping.className = "w-11 h-11 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold";
+                    stepDelivered.className = "w-11 h-11 bg-emerald-600 text-white rounded-full flex items-center justify-center text-lg font-bold shadow-lg shadow-emerald-600/30";
+                }
+
+                // স্মুথলি ট্র্যাকিং প্যানেলের দিকে স্ক্রোল হওয়া
+                trackingPanel.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            initializeSupabase();
+        });
+    </script>
+</body>
+  </html>
