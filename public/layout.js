@@ -1,13 +1,56 @@
 // public/layout.js
-// এই ফাইলটি আপনার ওয়েবসাইটের সমস্ত পেজের হেডার, ফুটার, কার্ট ও সুপাবেস কানেকশন কন্ট্রোল করবে।
+// MerketBaseBD - Global Layout Engine & Security Blocker
 
-document.addEventListener('DOMContentLoaded', async () => {
-    // ১. পেজে হেডার এবং ফুটার প্লেসহোল্ডার থাকলে স্বয়ংক্রিয়ভাবে ইনজেক্ট করা
-    injectHeaderAndFooter();
+// ==================== 🔐 ১. গ্লোবাল সিকিউর লক স্ক্রিন (Development Paused Blocker) ====================
+// এই সেলফ-এক্সিকিউটিং ফাংশনটি লোড হওয়ার সাথে সাথে পেজের ব্যাকগ্রাউন্ডে সব স্ক্রল লক করে ফুল-স্ক্রিন নোটিশ শো করবে।
+(function lockWebsite() {
+    const lockScreen = document.createElement('div');
+    lockScreen.id = 'wecode-lock-screen';
+    lockScreen.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 99999999;';
+
+    // আল্ট্রা-মডার্ন ডার্ক গ্লাস-মরফিজম ইন্টারফেস উইজেট [1.1]
+    lockScreen.className = 'fixed inset-0 bg-[#070B13]/98 backdrop-blur-xl z-[99999999] flex items-center justify-center text-center p-6 text-white';
+
+    lockScreen.innerHTML = `
+        <div class="max-w-[500px] w-full space-y-6 p-8 md:p-10 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md shadow-2xl relative font-sans">
+            <!-- Glowing Red/Orange Blur Orbs -->
+            <div class="absolute -top-16 -left-16 w-36 h-36 bg-red-500/10 rounded-full blur-3xl"></div>
+            <div class="absolute -bottom-16 -right-16 w-36 h-36 bg-primary/10 rounded-full blur-3xl"></div>
+            
+            <!-- Warning Pulse Icon -->
+            <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg shadow-red-500/5 border border-red-500/20">
+                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
+            </div>
+            
+            <!-- Notice Status Tag & Header -->
+            <div class="space-y-3">
+                <span class="inline-block text-[0.65rem] font-black bg-red-500/15 text-red-400 px-3.5 py-1.5 rounded-full uppercase tracking-widest">Paused</span>
+                <h2 class="text-xl sm:text-2xl font-black text-white leading-snug font-headings tracking-tight">Development Paused due to Payment Correction</h2>
+            </div>
+            
+            <!-- Message Details -->
+            <p class="text-gray-300 text-sm sm:text-base leading-relaxed font-body">
+                We Are Sorry,<br>
+                Plz contact Admin of WeCode: <strong class="text-primary">Ali Hosen</strong>: <span class="font-body font-bold text-primary">01781146747</span>
+            </p>
+            
+            <!-- Developer Signature -->
+            <div class="border-t border-white/10 pt-5 mt-4 text-center space-y-1">
+                <p class="text-xs text-gray-400">Noticed by - <strong class="text-white">Hujaifa Sultana</strong></p>
+                <p class="text-[0.6rem] text-gray-500 font-extrabold uppercase tracking-widest">Junior Developer - WeCode</p>
+            </div>
+        </div>
+    `;
     
-    // ২. ডাইনামিক সুপাবেস কানেকশন ও মেম্বার সেশন চেক
-    await initLayoutSupabase();
-});
+    // পেজ লোড হওয়ার সাথে সাথে বডি লক করে স্ক্রিন ইনজেক্ট করা
+    document.addEventListener('DOMContentLoaded', () => {
+        document.body.style.overflow = 'hidden'; // পেজ স্ক্রলিং বন্ধ করা
+        document.body.appendChild(lockScreen);
+    });
+})();
+
+// ==================== 🌐 ২. গ্লোবাল লেআউট কনফিগ ও সুপাবেস কোড (সংরক্ষিত) ====================
+// (ভবিষ্যতে ডেভলপমেন্ট আনলক করার সময় ওপরের ১ নম্বর ফাংশনটি মুছে দিলেই এই এপিআইগুলো আবার যথানিয়মে কাজ করা শুরু করবে)
 
 let supabaseClient = null;
 
@@ -18,42 +61,32 @@ async function initLayoutSupabase() {
         const config = await response.json();
         
         if (config.supabase_url && config.supabase_anon_key) {
-            // সুপাবেস ক্লায়েন্ট ইনিশিয়ালাইজেশন
             supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
             console.log("Supabase Client initialized globally inside layout.js");
             
-            // অন্যান্য পেজে ব্যবহারের সুবিধার জন্য এটিকে গ্লোবালি এক্সপোজ করা হলো
             window.supabaseClient = supabaseClient;
-            
-            // লগইন স্ট্যাটাস অনুযায়ী নেভিগেশন বার ও হিরো সেকশন কন্ট্রোল
             await updateLayoutNavigation();
         }
     } catch (err) {
         console.error("Supabase failed to initialize in layout.js:", err);
     }
     
-    // কার্ট এবং উইশলিস্ট কাউন্টার আপডেট করা
     updateLayoutBadges();
 }
 
-// ৩. ডাইনামিক হেডার ও ফুটার HTML ইনজেকশন ফাংশন
+// হেডার-ফুটার ইনজেকশন লজিক
 function injectHeaderAndFooter() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
 
-    // ক. ইউনিফাইড রেসপন্সিভ হেডার রেন্ডারিং (ডেস্কটপ ও মোবাইলের জন্য ফুল-অপ্টিমাইজড)
     if (headerPlaceholder) {
         headerPlaceholder.innerHTML = `
             <header class="bg-white/85 backdrop-blur-md sticky top-0 z-50 border-b border-primary/10 shadow-sm">
                 <div class="max-w-[1200px] mx-auto px-5 py-4 flex justify-between items-center w-full">
                     <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight hover:scale-[1.02] transition-transform">MerketBaseBD</a>
-                    
-                    <!-- Hamburger button for mobile devices -->
                     <button class="menu-toggle lg:hidden text-2xl text-dark focus:outline-none" id="menu-toggle">
                         <i class="fa-solid fa-bars" id="menu-icon"></i>
                     </button>
-
-                    <!-- Nav menu beautifully spaced for desktop wide monitors -->
                     <ul class="hidden lg:flex items-center gap-8 list-none lg:static absolute top-[70px] left-0 w-full lg:w-auto bg-white lg:bg-transparent px-6 py-6 lg:p-0 flex-col lg:flex-row gap-4 shadow-lg lg:shadow-none z-50 border-t border-gray-100 lg:border-none" id="nav-menu">
                         <li><a href="/" class="nav-link font-bold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-house"></i> হোম</a></li>
                         <li><a href="/#products-section" class="nav-link font-bold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
@@ -62,7 +95,6 @@ function injectHeaderAndFooter() {
                         <li><a href="/digital-services" class="nav-link font-bold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
                         <li><a href="/checkout" class="nav-link font-bold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-cart-shopping text-primary"></i> কার্ট (<span id="cart-count">0</span>)</a></li>
                         <li><a href="/profile?tab=wishlist" class="nav-link font-bold text-[0.95rem] hover:text-primary flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-heart text-red-500"></i> পছন্দের তালিকা (<span id="fav-count">0</span>)</a></li>
-                        
                         <li id="dynamic-nav" class="w-full lg:w-auto">
                             <a href="/login" class="block text-center font-bold text-[0.95rem] bg-primary text-white py-2.5 px-6 rounded-full hover:bg-secondary transition-all shadow-md shadow-primary/10">লগইন</a>
                         </li>
@@ -71,7 +103,6 @@ function injectHeaderAndFooter() {
             </header>
         `;
 
-        // মোবাইল হ্যামবার্গার মেনু টগল অটো-বাইন্ডিং লজিক
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
         const menuIcon = document.getElementById('menu-icon');
@@ -90,7 +121,6 @@ function injectHeaderAndFooter() {
         }
     }
 
-    // খ. লাক্সারি ডার্ক থিম ফুটার রেন্ডারিং (পেমেন্ট কার্ড বাতিল ও ডেক্সটপ রেসপন্সিভ গ্রিড)
     if (footerPlaceholder) {
         footerPlaceholder.innerHTML = `
             <footer class="bg-[#090D16] text-gray-400 py-16 border-t border-white/5 font-bangla w-full">
@@ -128,7 +158,6 @@ function injectHeaderAndFooter() {
                             <li><a href="/report" class="hover:text-primary hover:translate-x-1.5 transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-primary mr-1"></i> অভিযোগ ও রিপোর্ট</a></li>
                         </ul>
                     </div>
-                    <!-- accepted payment methods widget (without cards) -->
                     <div class="footer-col space-y-4">
                         <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-primary after:rounded-full">পেমেন্ট মেথডস</h4>
                         <p class="text-sm leading-relaxed mb-4 text-gray-400">নিরাপদ ও নির্ভরযোগ্য মোবাইল ব্যাংকিং গেটওয়ের মাধ্যমে আপনার পেমেন্ট সম্পন্ন করুন নিশ্চিন্তে।</p>
@@ -147,7 +176,6 @@ function injectHeaderAndFooter() {
     }
 }
 
-// ৪. ডাইনামিক সেশন ভেরিফিকেশন ও নেভিগেশন লিংক আপডেট
 async function updateLayoutNavigation() {
     const dynamicNav = document.getElementById('dynamic-nav');
     if (!supabaseClient || !dynamicNav) return;
@@ -155,7 +183,6 @@ async function updateLayoutNavigation() {
     try {
         const { data: { session } } = await supabaseClient.auth.getSession();
         if (session) {
-            // কাস্টমার লগইন থাকলে স্বয়ংক্রিয়ভাবে হিরো সেকশন হাইড হবে
             const heroSection = document.getElementById('hero-section');
             if (heroSection) heroSection.classList.add('hidden');
 
@@ -187,7 +214,6 @@ async function updateLayoutNavigation() {
     }
 }
 
-// ৫. গ্লোবাল লগআউট অ্যাকশন
 window.handleLayoutLogout = async function() {
     if (supabaseClient) {
         await supabaseClient.auth.signOut();
@@ -195,7 +221,6 @@ window.handleLayoutLogout = async function() {
     }
 }
 
-// ৬. গ্লোবাল কার্ট ও উইশলিস্ট ব্যাজ আপডেট লজিক
 window.updateLayoutBadges = function() {
     const cart = JSON.parse(localStorage.getItem('cart')) || [];
     const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
