@@ -1,56 +1,80 @@
 // public/layout.js
-// MerketBaseBD - Global Layout Engine & Security Blocker
+// MerketBaseBD - Global Layout Engine & Crash Blocker
 
-// ==================== 🔐 ১. গ্লোবাল সিকিউর লক স্ক্রিন (Development Paused Blocker) ====================
+// ==================== 🔐 ১. গ্লোবাল সিস্টেম ক্র্যাশ নোটিশ (System Crash Blocker) ====================
 // এই সেলফ-এক্সিকিউটিং ফাংশনটি লোড হওয়ার সাথে সাথে পেজের ব্যাকগ্রাউন্ডে সব স্ক্রল লক করে ফুল-স্ক্রিন নোটিশ শো করবে।
 (function lockWebsite() {
     const lockScreen = document.createElement('div');
     lockScreen.id = 'wecode-lock-screen';
-    lockScreen.style.cssText = 'position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 99999999;';
+    
+    // ব্রাউজারের কোনো ক্লাস বা সিএসএস ফাইল ফেইল করলেও যেন এই স্টাইলটি শতভাগ কাজ করে
+    // এজন্য পিওর ইনলাইন সিএসএস (Inline CSS) ব্যবহার করা হয়েছে [1.1]
+    lockScreen.style.cssText = `
+        position: fixed; 
+        top: 0; 
+        left: 0; 
+        width: 100vw; 
+        height: 100vh; 
+        background-color: #090B11; 
+        color: #E5E7EB; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        z-index: 9999999999; 
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace; 
+        overflow: hidden;
+        padding: 24px;
+        box-sizing: border-box;
+    `;
 
-    // আল্ট্রা-মডার্ন ডার্ক গ্লাস-মরফিজম ইন্টারফেস উইজেট [1.1]
-    lockScreen.className = 'fixed inset-0 bg-[#070B13]/98 backdrop-blur-xl z-[99999999] flex items-center justify-center text-center p-6 text-white';
-
+    // একদম ক্লিন এবং সরাসরি মেসেজ (নো ব্লার, নো শ্যাডো) [1.1]
     lockScreen.innerHTML = `
-        <div class="max-w-[500px] w-full space-y-6 p-8 md:p-10 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-md shadow-2xl relative font-sans">
-            <!-- Glowing Red/Orange Blur Orbs -->
-            <div class="absolute -top-16 -left-16 w-36 h-36 bg-red-500/10 rounded-full blur-3xl"></div>
-            <div class="absolute -bottom-16 -right-16 w-36 h-36 bg-primary/10 rounded-full blur-3xl"></div>
+        <div style="max-width: 580px; width: 100%; text-align: left; line-height: 1.6; box-sizing: border-box;">
             
-            <!-- Warning Pulse Icon -->
-            <div class="w-16 h-16 bg-red-500/10 text-red-500 rounded-full flex items-center justify-center text-3xl mx-auto shadow-lg shadow-red-500/5 border border-red-500/20">
-                <i class="fa-solid fa-triangle-exclamation animate-pulse"></i>
-            </div>
-            
-            <!-- Notice Status Tag & Header -->
-            <div class="space-y-3">
-                <span class="inline-block text-[0.65rem] font-black bg-red-500/15 text-red-400 px-3.5 py-1.5 rounded-full uppercase tracking-widest">Paused</span>
-                <h2 class="text-xl sm:text-2xl font-black text-white leading-snug font-headings tracking-tight">Development Paused due to Payment Correction</h2>
-            </div>
-            
-            <!-- Message Details -->
-            <p class="text-gray-300 text-sm sm:text-base leading-relaxed font-body">
-                We Are Sorry,<br>
-                Plz contact Admin of WeCode: <strong class="text-primary">Ali Hosen</strong>: <span class="font-body font-bold text-primary">01781146747</span>
+            <p style="color: #EF4444; font-weight: bold; font-size: 1.15rem; margin-bottom: 20px; letter-spacing: 0.5px;">
+                [FATAL ERROR] INTERNAL_SYSTEM_CRASH
             </p>
             
-            <!-- Developer Signature -->
-            <div class="border-t border-white/10 pt-5 mt-4 text-center space-y-1">
-                <p class="text-xs text-gray-400">Noticed by - <strong class="text-white">Hujaifa Sultana</strong></p>
-                <p class="text-[0.6rem] text-gray-500 font-extrabold uppercase tracking-widest">Junior Developer - WeCode</p>
+            <p style="margin: 0 0 10px 0; font-size: 0.9rem;">
+                <span style="color: #9CA3AF;">Status:</span> Root folder not found
+            </p>
+            
+            <p style="margin: 0 0 25px 0; font-size: 0.9rem;">
+                <span style="color: #9CA3AF;">Directory Map:</span> D:/web/production/root/null_pointer
+            </p>
+            
+            <hr style="border: 0; border-top: 1px solid #2D3748; margin-bottom: 25px;">
+            
+            <p style="margin: 0 0 15px 0; color: #D1D5DB; font-size: 0.92rem;">
+                We are deeply sorry. A critical system failure has occurred and the application root files could not be located on this server. All directory mount points have been automatically disconnected to protect the system.
+            </p>
+            
+            <p style="margin: 0 0 35px 0; color: #9CA3AF; font-size: 0.88rem;">
+                The source files may have been lost or moved. Please contact the administrator immediately to re-verify the directory structure and restore backups.
+            </p>
+            
+            <div style="background-color: #1F2937; padding: 16px 20px; border-radius: 8px; border-left: 4px solid #EF4444; margin-bottom: 35px; font-size: 0.85rem; color: #F3F4F6;">
+                <strong style="color: #FFFFFF; display: block; margin-bottom: 6px;">WeCode Support Control:</strong>
+                Admin: Ali Hosen<br>
+                Phone: 01781146747
+            </div>
+            
+            <div style="color: #6B7280; font-size: 0.75rem; border-top: 1px solid #1F2937; pt-4; margin-top: 20px; padding-top: 15px;">
+                Noticed by - Hujaifa Sultana<br>
+                Junior Developer - WeCode
             </div>
         </div>
     `;
     
-    // পেজ লোড হওয়ার সাথে সাথে বডি লক করে স্ক্রিন ইনজেক্ট করা
+    // ডোমে স্ক্রিন পুশ করা ও স্ক্রলিং বন্ধ করা
     document.addEventListener('DOMContentLoaded', () => {
-        document.body.style.overflow = 'hidden'; // পেজ স্ক্রলিং বন্ধ করা
+        document.body.style.overflow = 'hidden';
         document.body.appendChild(lockScreen);
     });
 })();
 
 // ==================== 🌐 ২. গ্লোবাল লেআউট কনফিগ ও সুপাবেস কোড (সংরক্ষিত) ====================
-// (ভবিষ্যতে ডেভলপমেন্ট আনলক করার সময় ওপরের ১ নম্বর ফাংশনটি মুছে দিলেই এই এপিআইগুলো আবার যথানিয়মে কাজ করা শুরু করবে)
+// (ভবিষ্যতে আনলক করার সময় ওপরের ১ নম্বর ফাংশনটি মুছে দিলেই এই এপিআইগুলো আবার যথানিয়মে কাজ করা শুরু করবে)
 
 let supabaseClient = null;
 
@@ -74,7 +98,6 @@ async function initLayoutSupabase() {
     updateLayoutBadges();
 }
 
-// হেডার-ফুটার ইনজেকশন লজিক
 function injectHeaderAndFooter() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
