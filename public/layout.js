@@ -31,12 +31,12 @@ async function initLayoutSupabase() {
     updateLayoutBadges();
 }
 
-// ৩. ডাইনামিক হেডার ও ফুটার HTML ইনজেকশন ফাংশন (কমলা ব্যাকগ্রাউন্ড ও হোয়াইট থিম)
+// ৩. ডাইনামিক হেডার ও ফুটার HTML ইনজেকশন ফাংশন (মোবাইল মেনু একপাশে এলাইন্ড)
 function injectHeaderAndFooter() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
 
-    // ক. প্রিমিয়াম অরেঞ্জ হেডার (মেনু লিংকগুলো একদম ডান পাশে অপ্টিমাইজড)
+    // ক. প্রিমিয়াম অরেঞ্জ হেডার (ডেক্সটপে ডানপাশে এবং মোবাইলে বামপাশে সুবিন্যস্ত)
     if (headerPlaceholder) {
         headerPlaceholder.innerHTML = `
             <header class="bg-gradient-to-r from-[#FF6B00] to-[#FF8C33] sticky top-0 z-50 shadow-md shadow-primary/10 border-b border-white/10">
@@ -49,26 +49,25 @@ function injectHeaderAndFooter() {
                         <i class="fa-solid fa-bars" id="menu-icon"></i>
                     </button>
 
-                    <!-- Nav menu aligned to the far RIGHT with 'ml-auto' -->
-                    <ul class="hidden lg:flex items-center gap-6 list-none ml-auto" id="nav-menu">
-                        <li><a href="/" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-house"></i> হোম</a></li>
-                        <li><a href="/#products-section" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
-                        <li><a href="/#offers-section" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
-                        <li><a href="/earning" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
-                        <li><a href="/digital-services" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
-                        <li><a href="/checkout" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-cart-shopping"></i> কার্ট (<span id="cart-count">0</span>)</a></li>
-                        <li><a href="/profile?tab=wishlist" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-heart"></i> পছন্দের তালিকা (<span id="fav-count">0</span>)</a></li>
+                    <!-- (সংশোধিত) Nav menu: lg ডেক্সটপে ডানে এবং মোবাইলে বামপাশে (items-start) এলাইন্ড থাকবে -->
+                    <ul class="hidden lg:flex lg:flex-row lg:items-center lg:gap-6 lg:static absolute top-[70px] left-0 w-full bg-gradient-to-b from-[#FF6B00] to-[#FF8C33] lg:bg-transparent px-6 py-6 lg:p-0 flex-col items-start lg:items-center gap-5 shadow-lg lg:shadow-none z-50 border-t border-white/10 lg:border-none list-none ml-auto text-left" id="nav-menu">
+                        <li class="w-full"><a href="/" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-house"></i> হোম</a></li>
+                        <li class="w-full"><a href="/#products-section" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
+                        <li class="w-full"><a href="/#offers-section" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-tag"></i> অফারসমূহ</a></li>
+                        <li class="w-full"><a href="/earning" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
+                        <li class="w-full"><a href="/digital-services" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
+                        <li class="w-full"><a href="/checkout" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-cart-shopping"></i> কার্ট (<span id="cart-count">0</span>)</a></li>
+                        <li class="w-full"><a href="/profile?tab=wishlist" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-heart"></i> পছন্দের তালিকা (<span id="fav-count">0</span>)</a></li>
                         
-                        <!-- White solid button with orange text for high-fidelity luxury contrast -->
-                        <li id="dynamic-nav" class="w-full lg:w-auto">
-                            <a href="/login" class="block text-center font-bold text-[0.95rem] bg-white text-[#FF6B00] py-2 px-6 rounded-full hover:bg-white/90 transition-all shadow-md">লগইন</a>
+                        <li id="dynamic-nav" class="w-full lg:w-auto mt-2 lg:mt-0">
+                            <a href="/login" class="block text-center font-bold text-[0.95rem] bg-white text-[#FF6B00] py-2.5 px-6 rounded-full hover:bg-white/90 transition-all shadow-md">লগইন</a>
                         </li>
                     </ul>
                 </div>
             </header>
         `;
 
-        // মোবাইল হ্যামবার্গার টগল বাইন্ডিং
+        // মোবাইল হ্যামবার্গার টগল বাইন্ডিং (Tailwind ফেইল-সেফ টগল মেথড)
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
         const menuIcon = document.getElementById('menu-icon');
@@ -76,10 +75,7 @@ function injectHeaderAndFooter() {
         if (menuToggle && navMenu) {
             menuToggle.addEventListener('click', (e) => {
                 e.preventDefault();
-                // মোবাইল ড্রয়ারের ব্যাকগ্রাউন্ডও অরেঞ্জ থিম পাবে
-                navMenu.className = navMenu.classList.contains('hidden') 
-                    ? "flex lg:flex items-center gap-6 list-none absolute top-[70px] left-0 w-full bg-gradient-to-b from-[#FF6B00] to-[#FF8C33] px-6 py-6 flex-col shadow-lg z-50 border-t border-white/10" 
-                    : "hidden lg:flex items-center gap-6 list-none ml-auto";
+                navMenu.classList.toggle('hidden');
                 
                 if (navMenu.classList.contains('hidden')) {
                     menuIcon.className = "fa-solid fa-bars text-white";
@@ -100,7 +96,6 @@ function injectHeaderAndFooter() {
                         <p class="text-[0.92rem] leading-relaxed text-white/90">
                             বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
                         </p>
-                        <!-- Social Icons in White and Glass Hover -->
                         <div class="footer-socials flex gap-3 pt-2">
                             <a href="https://facebook.com" class="w-10 h-10 bg-white/10 border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-[#FF6B00] hover:scale-110 transition-all" target="_blank"><i class="fa-brands fa-facebook-f text-sm"></i></a>
                             <a href="https://youtube.com" class="w-10 h-10 bg-white/10 border border-white/10 rounded-full flex items-center justify-center text-white hover:bg-white hover:text-[#FF6B00] hover:scale-110 transition-all" target="_blank"><i class="fa-brands fa-youtube text-sm"></i></a>
@@ -129,7 +124,6 @@ function injectHeaderAndFooter() {
                             <li><a href="/report" class="hover:translate-x-1.5 text-white/80 hover:text-white transition-all inline-block"><i class="fa-solid fa-chevron-right text-[0.7rem] text-white mr-1"></i> অভিযোগ ও রিপোর্ট</a></li>
                         </ul>
                     </div>
-                    <!-- Cards পেমেন্ট মেথড বাতিল করা হয়েছে এবং বাকি ৩টি বাটন প্রিমিয়াম সাদা ব্যাজ করা হয়েছে -->
                     <div class="footer-col space-y-4">
                         <h4 class="text-white text-[1.15rem] font-bold mb-6 relative pb-2 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-6 after:h-[3px] after:bg-white after:rounded-full">পেমেন্ট মেথডস</h4>
                         <p class="text-sm leading-relaxed mb-4 text-white/90">নিরাপদ ও নির্ভরযোগ্য মোবাইল ব্যাংকিং গেটওয়ের মাধ্যমে আপনার পেমেন্ট সম্পন্ন করুন নিশ্চিন্তে।</p>
@@ -162,22 +156,22 @@ async function updateLayoutNavigation() {
             const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', userId).single();
             
             if (profile) {
-                // সেশনের ওপর ভিত্তি করে গ্লসি গ্লাস সাদা বাটন হাইলাইট জেনারেশন
+                // (সংশোধিত) মোবাইল ড্রয়ারের স্টাইলও একই গ্লোবাল এলাইনমেন্ট চেইন অনুসরণ করবে
                 if (profile.role === 'reseller') {
                     dynamicNav.outerHTML = `
-                        <li><a href="/dashboard/reseller" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
-                        <li class="w-full lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                        <li class="w-full"><a href="/dashboard/reseller" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
+                        <li class="w-full mt-2 lg:mt-0 lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
                     `;
                 } else if (profile.role === 'admin') {
                     dynamicNav.outerHTML = `
-                        <li><a href="/dashboard/admin" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-chart-line"></i> এডমিন প্যানেল</a></li>
-                        <li class="w-full lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                        <li class="w-full"><a href="/dashboard/admin" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-chart-line"></i> এডমিন প্যানেল</a></li>
+                        <li class="w-full mt-2 lg:mt-0 lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
                     `;
                 } else {
                     dynamicNav.outerHTML = `
-                        <li><a href="/profile" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
-                        <li><a href="/checkout" class="nav-link font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
-                        <li class="w-full lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
+                        <li class="w-full"><a href="/profile" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-user-gear"></i> প্রোফাইল</a></li>
+                        <li class="w-full"><a href="/checkout" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-credit-card"></i> চেকআউট</a></li>
+                        <li class="w-full mt-2 lg:mt-0 lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
                     `;
                 }
             }
