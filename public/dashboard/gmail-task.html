@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Gmail Tasks</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Gmail</span>
+        <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main class="max-w-[700px] mx-auto px-4 pt-5 space-y-6">
+
+        <!-- 🚀 ১. সচল ও ডাইনামিক ওপেন জিমেইল ব্যাচ প্যানেল -->
+        <section id="active-batch-panel" class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg relative overflow-hidden flex flex-col items-center text-center">
+            <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center text-2xl mb-4 border border-primary/20 animate-pulse">
+                <i class="fa-solid fa-envelope-open-text"></i>
+            </div>
+            <h3 class="text-lg font-bold text-dark" id="batch-title">সচল ব্যাচ খোঁজা হচ্ছে...</h3>
+            <p class="text-xs text-muted max-w-[400px] mt-1" id="batch-desc">নিচের তথ্যটি পূরণ করে আপনার তৈরি করা জিমেইল এড্রেসটি সাবমিট করুন।</p>
+            
+            <div class="grid grid-cols-2 gap-4 w-full my-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                <div class="text-center">
+                    <span class="text-[0.65rem] text-muted font-bold block">প্রতি মেইলের মূল্য</span>
+                    <h4 class="text-lg font-extrabold text-primary font-body" id="batch-price">৳ --</h4>
+                </div>
+                <div class="text-center">
+                    <span class="text-[0.65rem] text-muted font-bold block">ব্যাচ শেষ হতে বাকি</span>
+                    <h4 class="text-sm font-extrabold text-red-500 font-body" id="batch-countdown">--:--:--</h4>
+                </div>
+            </div>
+
+            <!-- Submission Form (Visible only when batch is open) -->
+            <form id="gmail-submit-form" class="w-full space-y-4 text-left hidden">
+                <div>
+                    <label class="block font-semibold text-xs mb-1.5 text-dark">জিমেইল এড্রেস (Gmail Address)</label>
+                    <input type="email" id="gmail-address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-sm font-body text-dark" placeholder="example@gmail.com" required>
+                </div>
+                <button type="submit" id="btn-submit-gmail" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2 text-sm"><i class="fa-solid fa-paper-plane"></i> জিমেইল এড্রেস সাবমিট করুন</button>
+            </form>
+        </section>
+
+        <!-- 📋 ২. আমার জিমেইল সাবমিশন হিস্ট্রি তালিকা -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
+            <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-history text-primary"></i> আমার জিমেইল সাবমিশন হিস্ট্রি</h4>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">জিমেইল এড্রেস</th>
+                            <th class="py-3 px-4">ব্যাচ নং</th>
+                            <th class="py-3 px-4">রেট (৳)</th>
+                            <th class="py-3 px-4">সাবমিটের সময়</th>
+                            <th class="py-3 px-4 text-center">স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gmail-history-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-500">ডাটা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="#withdraw-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let resellerId = null;
+        let countdownInterval = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                supabaseClient = window.supabaseClient;
+                verifyResellerAndLoad();
+            }
+
+            // --- খ. রিসেলার সেশন ও ডাটা লোড ---
+            async function verifyResellerAndLoad() {
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    resellerId = session.user.id;
+
+                    const { data: profile } = await supabaseClient.from('profiles').select('role, is_active').eq('id', resellerId).single();
+                    if (!profile || profile.role !== 'reseller') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    if (!profile.is_active) {
+                        window.location.href = "/active";
+                        return;
+                    }
+
+                    // লাইভ ডাটা লোড
+                    loadActiveGmailBatch();
+                    loadGmailHistory();
+
+                } catch(e) {
+                    console.error("Auth check failed", e);
+                }
+            }
+
+            // --- গ. লাইভ একটিভ ব্যাচ লোড ও কাউন্টডাউন ---
+            async function loadActiveGmailBatch() {
+                try {
+                    const response = await fetch('/api/gmail/active-batch');
+                    if (response.ok) {
+                        const result = await response.json();
+                        
+                        if (result.status === 'active') {
+                            const batch = result.batch;
+                            document.getElementById('batch-title').innerText = `জিমেইল টাস্ক: ব্যাচ #${batch.batch_num}`;
+                            document.getElementById('batch-price').innerText = `৳${batch.price_per_mail}`;
+                            
+                            // পাসওয়ার্ড ও ইন্সট্রাকশন নোটিশ
+                            document.getElementById('batch-desc').innerHTML = `<strong>ব্যাচ পাসকোড/ইন্সট্রাকশন:</strong> <span class="text-primary font-bold">${batch.passcode}</span>`;
+                            
+                            // ফর্ম আনহাইড
+                            document.getElementById('gmail-submit-form').classList.remove('hidden');
+
+                            // লাইভ কাউন্টডাউন টাইমার স্টার্ট
+                            startCountdown(batch.closing_at);
+                        } else {
+                            document.getElementById('batch-title').innerText = "বর্তমানে কোনো একটিভ জিমেইল ব্যাচ চালু নেই।";
+                            document.getElementById('batch-countdown').innerText = "Closed";
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            // লাইভ কাউন্টডাউন মেকানিজম
+            function startCountdown(closingAt) {
+                const targetTime = new Date(closingAt).getTime();
+                
+                if (countdownInterval) clearInterval(countdownInterval);
+
+                countdownInterval = setInterval(() => {
+                    const now = new Date().getTime();
+                    const diff = targetTime - now;
+
+                    if (diff <= 0) {
+                        clearInterval(countdownInterval);
+                        document.getElementById('batch-countdown').innerText = "00:00:00";
+                        document.getElementById('gmail-submit-form').classList.add('hidden');
+                        document.getElementById('batch-title').innerText = "এই ব্যাচটির ক্লোজিং সময় শেষ হয়েছে!";
+                        return;
+                    }
+
+                    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+                    const pad = num => String(num).padStart(2, '0');
+                    document.getElementById('batch-countdown').innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+                }, 1000);
+            }
+
+            // --- ঘ. জিমেইল সাবমিশন হ্যান্ডলিং ---
+            document.getElementById('gmail-submit-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const gmailInput = document.getElementById('gmail-address').value.trim();
+                const submitBtn = document.getElementById('btn-submit-gmail');
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> সাবমিট হচ্ছে...`;
+
+                try {
+                    const response = await fetch('/api/gmail/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            reseller_id: resellerId,
+                            gmail_address: gmailInput
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById('gmail-address').value = '';
+                        loadGmailHistory(); // ইতিহাস রিফ্রেশ করা
+                    } else {
+                        alert("ব্যর্থ হয়েছে: " + result.detail);
+                    }
+                } catch(err) {
+                    alert("সার্ভার কানেকশন এরর।");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> জিমেইল এড্রেস সাবমিট করুন`;
+                }
+            });
+
+            // --- ঙ. জিমেইল সাবমিশন হিস্ট্রি লোড ---
+            async function loadGmailHistory() {
+                const historyList = document.getElementById('gmail-history-list');
+                try {
+                    const response = await fetch(`/api/gmail/history/${resellerId}`);
+                    if (response.ok) {
+                        const history = await response.json();
+                        if (history && history.length > 0) {
+                            historyList.innerHTML = '';
+                            history.forEach(item => {
+                                const createdDate = new Date(item.created_at).toLocaleString('bn-BD');
+                                const batchNum = item.gmail_batches ? item.gmail_batches.batch_num : 'N/A';
+                                const rate = item.gmail_batches ? item.gmail_batches.price_per_mail : '0';
+                                
+                                let statusStyle = "text-gray-500 bg-gray-50 border-gray-200";
+                                if (item.status === 'approved') {
+                                    statusStyle = "text-green-600 bg-green-50 border-green-200";
+                                } else if (item.status === 'rejected') {
+                                    statusStyle = "text-red-500 bg-red-50 border-red-200";
+                                } else {
+                                    statusStyle = "text-amber-600 bg-amber-50 border-amber-200 animate-pulse";
+                                }
+
+                                historyList.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-3 px-4 font-mono font-bold text-dark">${item.gmail_address}</td>
+                                        <td class="py-3 px-4 font-bold text-primary font-body">#${batchNum}</td>
+                                        <td class="py-3 px-4 font-bold text-gray-700 font-body">৳${rate}</td>
+                                        <td class="py-3 px-4 text-muted">${createdDate}</td>
+                                        <td class="py-3 px-4 text-center">
+                                            <span class="px-2 py-0.5 rounded-md text-[0.65rem] font-bold border ${statusStyle}">${item.status}</span>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            historyList.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো জিমেইল সাবমিশনের রেকর্ড নেই।</td></tr>';
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+  </html>
