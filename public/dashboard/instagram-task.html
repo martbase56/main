@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Instagram Tasks</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Task</span>
+        <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main class="max-w-[700px] mx-auto px-4 pt-5 space-y-6">
+
+        <!-- 🚀 ১. ইনস্টাগ্রাম সাবমিশন প্যানেল কার্ড -->
+        <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg relative overflow-hidden flex flex-col items-center text-center">
+            <div class="w-16 h-16 bg-gradient-to-tr from-purple-500 via-pink-500 to-yellow-500 text-white rounded-full flex items-center justify-center text-3xl mb-4 border-2 border-white shadow-md animate-pulse">
+                <i class="fa-brands fa-instagram"></i>
+            </div>
+            <h3 class="text-lg font-bold text-dark">ইনস্টাগ্রাম অ্যাকাউন্ট সাবমিশন</h3>
+            
+            <div class="w-full my-5 bg-gradient-to-br from-purple-50/50 to-pink-50/50 p-4 rounded-2xl border border-pink-100 flex justify-between items-center text-left">
+                <div>
+                    <span class="text-[0.65rem] text-muted font-bold block uppercase">প্রতিটি অ্যাকাউন্টের পেমেন্ট</span>
+                    <h4 class="text-lg font-extrabold text-purple-600 font-body" id="ig-rate">৳ --</h4>
+                </div>
+                <div class="text-right">
+                    <span class="text-[0.65rem] text-muted font-bold block uppercase">সার্ভিস স্ট্যাটাস</span>
+                    <span class="px-2.5 py-1 rounded-md text-[0.65rem] font-bold bg-green-50 text-green-600 border border-green-200"><i class="fa-solid fa-circle-check"></i> Active</span>
+                </div>
+            </div>
+
+            <!-- Task Instructions notice -->
+            <p class="text-xs text-muted mb-6 bg-gray-50 border border-gray-150 p-3 rounded-xl w-full text-left" id="ig-instruction">লোডিং...</p>
+
+            <form id="ig-submit-form" class="w-full space-y-4 text-left">
+                <div>
+                    <label class="block font-semibold text-xs mb-1.5 text-dark">Instagram Username</label>
+                    <input type="text" id="ig-username" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-sm font-body text-dark" placeholder="যেমন: rovin_islam_32" required>
+                </div>
+                <div>
+                    <label class="block font-semibold text-xs mb-1.5 text-dark">2FA Authentication Key (Two-Factor Key)</label>
+                    <input type="text" id="ig-2fa" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-sm font-body text-dark font-mono uppercase" placeholder="যেমন: JBSWY3DPEHPK3PXP" required>
+                </div>
+                <button type="submit" id="btn-submit-ig" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2 text-sm"><i class="fa-solid fa-cloud-arrow-up"></i> বিবরণ সাবমিট করুন</button>
+            </form>
+        </section>
+
+        <!-- 📋 ২. সাবমিশন হিস্ট্রি তালিকা -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
+            <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-history text-primary"></i> আমার সাবমিশন হিস্ট্রি</h4>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">ইউজারনেম</th>
+                            <th class="py-3 px-4">২এফএ কী (2FA Key)</th>
+                            <th class="py-3 px-4">সাবমিটের সময়</th>
+                            <th class="py-3 px-4 text-center">স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ig-history-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="4" class="py-6 text-center text-gray-500">আপনার সাবমিশন রেকর্ড লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 📱 Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="#withdraw-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK & Global Layout -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let currentUserId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস লেআউট সিঙ্ক লোড ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                verifyResellerAndLoad();
+            }
+
+            async function verifyResellerAndLoad() {
+                const client = window.supabaseClient;
+                try {
+                    const { data: { session } } = await client.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    currentUserId = session.user.id;
+
+                    // ১. সচল ও ভেরিফাইড রিসেলার চেক
+                    const { data: profile } = await client.from('profiles').select('role, is_active').eq('id', currentUserId).single();
+                    if (!profile || profile.role !== 'reseller' || !profile.is_active) {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    // ২. এপিআই সেটিংস এবং হিস্ট্রি লোড
+                    loadIGConfigAndNotice();
+                    loadSubmissionHistory();
+
+                } catch(e) {
+                    console.error("Reseller status check error", e);
+                }
+            }
+
+            // --- খ. সেটিংস নোটিশ ও দাম জেনারেট ---
+            async function loadIGConfigAndNotice() {
+                try {
+                    // আমাদের আপডেটেড /config এন্ডপয়েন্ট থেকে ডাটা রিড করা হচ্ছে
+                    const response = await fetch('/api/auth/config');
+                    if (response.ok) {
+                        const config = await response.json();
+                        document.getElementById('ig-rate').innerText = `৳${config.instagram_price}`;
+                        document.getElementById('ig-instruction').innerHTML = `<strong>টাস্ক গাইডলাইন:</strong> <span class="text-muted">${config.instagram_notice}</span>`;
+                    }
+                } catch(e) {}
+            }
+
+            // --- গ. সাবমিট সাবমিশন ইভেন্ট হ্যান্ডলার ---
+            document.getElementById('ig-submit-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!window.supabaseClient || !currentUserId) return;
+
+                const username = document.getElementById('ig-username').value.trim();
+                const twoFactor = document.getElementById('ig-2fa').value.trim();
+                const submitBtn = document.getElementById('btn-submit-ig');
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> সাবমিট হচ্ছে...`;
+
+                const payload = {
+                    user_id: currentUserId,
+                    username: username,
+                    two_factor_key: twoFactor
+                };
+
+                try {
+                    // ব্যাকএন্ড এপিআই রাউটে পোস্ট করা হচ্ছে
+                    const response = await fetch('/api/instagram/submit', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById('ig-username').value = '';
+                        document.getElementById('ig-2fa').value = '';
+                        loadSubmissionHistory(); // রিফ্রেশ হিস্ট্রি
+                    } else {
+                        alert("ব্যর্থ হয়েছে: " + result.detail);
+                    }
+                } catch (err) {
+                    alert("সার্ভার কানেকশন ফেইলড।");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> বিবরণ সাবমিট করুন`;
+                }
+            });
+
+            // --- ঘ. হিস্ট্রি রেন্ডার করা ---
+            async function loadSubmissionHistory() {
+                const client = window.supabaseClient;
+                const historyList = document.getElementById('ig-history-list');
+                try {
+                    const response = await fetch(`/api/instagram/history/${currentUserId}`);
+                    if (response.ok) {
+                        const history = await response.json();
+                        if (history && history.length > 0) {
+                            historyList.innerHTML = '';
+                            history.forEach(item => {
+                                const createdDate = new Date(item.created_at).toLocaleString('bn-BD');
+                                
+                                let statusStyle = "text-gray-500 bg-gray-50 border-gray-200";
+                                if (item.status === 'approved') {
+                                    statusStyle = "text-green-600 bg-green-50 border-green-200";
+                                } else if (item.status === 'rejected') {
+                                    statusStyle = "text-red-500 bg-red-50 border-red-200";
+                                } else {
+                                    statusStyle = "text-amber-600 bg-amber-50 border-amber-200 animate-pulse";
+                                }
+
+                                historyList.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-3 px-4 font-mono font-bold text-dark">${item.username}</td>
+                                        <td class="py-3 px-4 font-mono text-gray-500 truncate max-w-[120px]" title="${item.two_factor_key}">${item.two_factor_key}</td>
+                                        <td class="py-3 px-4 text-muted">${createdDate}</td>
+                                        <td class="py-3 px-4 text-center">
+                                            <span class="px-2 py-0.5 rounded-md text-[0.65rem] font-bold border ${statusStyle}">${item.status}</span>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            historyList.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-gray-500">আপনার কোনো ইনস্টাগ্রাম সাবমিশনের রেকর্ড নেই।</td></tr>';
+                        }
+                    }
+                } catch(e) {}
+            }
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+</html>
