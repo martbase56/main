@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 # (সংশোধিত) routers ফোল্ডার থেকে সকল ৭টি মডুলার রাউটার ইম্পোর্ট করা হলো (কোনো নেম-এরর এড়াতে)
-from api.routers import auth, products, orders, admin, gmail, instagram, telegram 
+from api.routers import auth, products, orders, admin, gmail, instagram, telegram, facebook
 
 app = FastAPI(
     title="MerketBaseBD Premium API Platform",
@@ -27,7 +27,7 @@ app.include_router(admin.router, prefix="/api/admin", tags=["Admin Panel"])
 app.include_router(gmail.router, prefix="/api/gmail", tags=["Gmail Tasks"])
 app.include_router(instagram.router, prefix="/api/instagram", tags=["Instagram Tasks"])
 app.include_router(telegram.router, prefix="/api/telegram", tags=["Telegram Services"])
-
+app.include_router(facebook.router, prefix="/api/facebook", tags=["Facebook Tasks"])
 
 # এপিআই রুট চেক করার জন্য বেসিক টেস্ট এন্ডপয়েন্ট
 @app.get("/api")
