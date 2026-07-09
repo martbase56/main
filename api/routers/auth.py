@@ -41,23 +41,28 @@ async def get_current_user(authorization: str = Header(None)):
     except Exception:
         raise HTTPException(status_code=401, detail="অবৈধ Authorization ফরম্যাট। 'Bearer <Token>' ব্যবহার করুন।")
 
+# api/routers/auth.py এর ৩ নম্বর এন্ডপয়েন্টটি আপডেট করুন:
 
-# --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট ---
-
-# api/routers/auth.py এর ৩ নম্বর এন্ডপয়েন্টটি পরিবর্তন করে নিন:
-
-# --- ৩. ডাইনামিক এনভায়রনমেন্ট কনফিগ ডেলিভারি এন্ডপয়েন্ট (অ্যাক্টিভেশন ফিসহ) ---
 @router.get("/config")
 def get_supabase_config():
-    # ডাইনামিক অ্যাক্টিভেশন ফি বের করা
+    # ডাইনামিক সেটিংস ডাটা ফেচিং
     fee_query = supabase.table("system_settings").select("value").eq("key", "activation_fee").single().execute()
     activation_fee = float(fee_query.data['value']) if fee_query.data else 0.0
+
+    ig_price_query = supabase.table("system_settings").select("value").eq("key", "instagram_price").single().execute()
+    ig_price = float(ig_price_query.data['value']) if ig_price_query.data else 15.0
+
+    ig_notice_query = supabase.table("system_settings").select("value").eq("key", "instagram_notice").single().execute()
+    ig_notice = ig_notice_query.data['value'] if ig_notice_query.data else "ইনস্টাগ্রাম অ্যাকাউন্ট সাবমিট করুন।"
 
     return {
         "supabase_url": settings.SUPABASE_URL,
         "supabase_anon_key": settings.SUPABASE_ANON_KEY,
-        "activation_fee": activation_fee  # এপিআই রেসপন্সে ফি যুক্ত করা হলো
+        "activation_fee": activation_fee,
+        "instagram_price": ig_price,
+        "instagram_notice": ig_notice
     }
+    
     # --- ৪. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
 
 @router.get("/profile/{user_id}")
