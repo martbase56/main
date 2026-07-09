@@ -160,10 +160,10 @@ def process_batch_review(batch_id: str, data: CSVProcessSchema, admin: dict = De
                     current_bal = float(reseller_profile.data.get('wallet_balance', 0) or 0)
                     current_sells = int(reseller_profile.data.get('gmail_sells', 0) or 0)
 
-                    # টাকা ও সাকসেস টার্গেট আপডেট
+                    # টাকা ও সাকসেস টার্গেট আপডেট (৳৫০০ বোনাস রিলিজ কাউন্ট)
                     supabase.table("profiles").update({
                         "wallet_balance": current_bal + price,
-                        "gmail_sells": current_sells + 1 # ৫00 টাকা লকড বোনাস কাউন্টার ডাইনামিকালি ১ বাড়বে!
+                        "gmail_sells": current_sells + 1
                     }).eq("id", res_id).execute()
 
         # ঘ. ব্যাচটি ক্লোজ/কমপ্লিট করা
