@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Admin Gmail Tasks</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
+
+    <!-- 🗂️ Left Sticky Sidebar -->
+    <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
+            <button class="lg:hidden text-2xl text-white focus:outline-none" id="sidebar-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span>ড্যাশবোর্ড ওভারভিউ</span>
+            </a>
+            <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span>ইউজার লিস্ট</span>
+            </a>
+            <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span>অর্ডার ম্যানেজমেন্ট</span>
+            </a>
+            <!-- জিমেইল টাস্ক একটিভ লিঙ্ক -->
+            <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
+                <i class="fa-solid fa-envelope-open-text text-lg"></i>
+                <span>জিমেইল কন্ট্রোল</span>
+            </a>
+            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-square-plus text-lg"></i>
+                <span>পণ্য যোগ করুন</span>
+            </a>
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-gears text-lg"></i>
+                <span>সিস্টেম সেটিংস</span>
+            </a>
+            
+            <div class="pt-8 mt-auto border-t border-white/5">
+                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                    <span>লগআউট</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 📊 Main Content Area -->
+    <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full space-y-8">
+        
+        <header class="flex justify-between items-center border-b border-gray-200 pb-5">
+            <div>
+                <h2 class="text-2xl font-extrabold text-dark">জিমেইল টাস্ক কন্ট্রোল হাব</h2>
+                <p class="text-sm text-muted">রিসেলারদের জন্য জিমেইল ব্যাচ জেনারেট এবং অটো-রিভিউ টুল</p>
+            </div>
+            <div class="flex items-center gap-3 bg-white p-2 rounded-full border border-gray-100 shadow-sm pr-4">
+                <div class="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">G</div>
+                <span class="text-sm font-semibold text-dark">জিমেইল এডমিন</span>
+            </div>
+        </header>
+
+        <!-- 🚀 ১. নতুন ব্যাচ তৈরি করার ফর্ম -->
+        <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md">
+            <h3 class="text-base font-bold text-dark border-b border-gray-100 pb-2 mb-5 flex items-center gap-2">
+                <i class="fa-solid fa-plus-minus text-primary animate-pulse"></i> নতুন জিমেইল ব্যাচ সচল করুন
+            </h3>
+            
+            <form id="create-batch-form" class="grid grid-cols-1 md:grid-cols-3 gap-5 text-xs font-bold">
+                <div>
+                    <label class="block mb-1 text-dark">ব্যাচ পাসওয়ার্ড / নির্দেশাবলী</label>
+                    <input type="text" id="batch-passcode" class="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary text-dark" placeholder="যেমন: MB-GMAIL-PASS" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-dark">প্রতি জিমেইলের রেট (৳)</label>
+                    <input type="number" id="batch-price" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary text-dark" placeholder="৳" required>
+                </div>
+                <div>
+                    <label class="block mb-1 text-dark">ক্লোজিং সময় (Closing Date & Time)</label>
+                    <input type="datetime-local" id="batch-closing" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary text-dark" required>
+                </div>
+                <button type="submit" id="btn-create-batch" class="md:col-span-3 w-full py-3 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2"><i class="fa-solid fa-envelope-open-text"></i> নতুন ব্যাচ চালু করুন</button>
+            </form>
+        </section>
+
+        <!-- 📦 ২. সকল ব্যাচের লাইভ তালিকা -->
+        <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md">
+            <h3 class="text-base font-bold text-dark border-b border-gray-100 pb-2 mb-5 flex items-center gap-2">
+                <i class="fa-solid fa-layer-group text-primary"></i> সমস্ত জিমেইল ব্যাচ ও সাবমিশন ট্র্যাক
+            </h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-150 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">ব্যাচ নং</th>
+                            <th class="py-3 px-4">পাসকোড/ইন্সট্রাকশন</th>
+                            <th class="py-3 px-4">রেট (৳)</th>
+                            <th class="py-3 px-4">ক্লোজিং সময়</th>
+                            <th class="py-3 px-4">বর্তমান অবস্থা</th>
+                            <th class="py-3 px-4 text-center">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-batches-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-gray-500">ব্যাচ তালিকা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 📝 ৩. CSV ইমেজ/মেইলের আপলোড মডাল (রিজেকশন ভ্যালিডেশনের জন্য) -->
+        <div id="reject-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-white rounded-3xl w-full max-w-[500px] p-6 shadow-2xl relative space-y-6">
+                <button onclick="closeRejectModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-2xl"></i></button>
+                
+                <h3 class="text-base font-bold border-b border-gray-100 pb-3 flex items-center gap-2 text-dark"><i class="fa-solid fa-triangle-exclamation text-primary"></i> রিজেকশন ভেরিফিকেশন প্যানেল</h3>
+                
+                <div class="p-4 bg-gray-50 rounded-2xl border border-gray-100 text-xs text-muted space-y-1">
+                    <p class="font-bold text-dark">কীভাবে আপলোড করবেন?</p>
+                    <p>১. আপনার কুরিয়ার বা ডিলার থেকে বাতিল হওয়া জিমেইল বা ফেইল্ড ইউজারদের একটি টেক্সট/সিএসভি ফাইল আপলোড করুন।</p>
+                    <p>২. ফাইলে থাকা ইমেইল আইডিগুলো স্বয়ংক্রিয়ভাবে ফিল্টার হয়ে যাবে।</p>
+                </div>
+
+                <div class="space-y-4">
+                    <!-- File Input Box -->
+                    <div class="border-2 border-dashed border-gray-200 hover:border-primary rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer transition-colors relative">
+                        <input type="file" id="reject-file-input" class="absolute inset-0 opacity-0 cursor-pointer" accept=".txt,.csv">
+                        <i class="fa-solid fa-file-excel text-gray-400 text-3xl mb-2"></i>
+                        <span class="text-xs font-bold text-dark" id="file-label">পেমেন্ট রিজেক্ট/Failed লিস্ট ফাইল আপলোড করুন</span>
+                    </div>
+
+                    <p id="detected-count" class="text-xs font-bold text-emerald-600 text-center"></p>
+
+                    <button onclick="submitBatchReview()" id="btn-confirm-review" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary flex items-center justify-center gap-2 text-sm" disabled>
+                        <i class="fa-solid fa-circle-check"></i> প্রসেস এবং বাকি সব অ্যাপ্রুভ করুন
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let currentToken = null;
+        let selectedBatchId = null;
+        let parsedRejectedEmails = []; // সিএসভি থেকে ফিল্টার করা ইমেইলের অ্যারে
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // মোবাইল সাইডবার টগল
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            if (sidebarToggle && sidebarMenu) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebarMenu.classList.toggle('hidden');
+                    sidebarMenu.classList.toggle('flex');
+                });
+            }
+
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        verifyAdminAndLoad();
+                    }
+                } catch (err) {
+                    console.error("Supabase fail", err);
+                }
+            }
+
+            initializeSupabase();
+
+            // --- খ. এডমিন এক্সেস যাচাই ---
+            async function verifyAdminAndLoad() {
+                if (!supabaseClient) return;
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
+                    if (!profile || profile.role !== 'admin') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    currentToken = session.access_token;
+                    loadAdminBatches();
+
+                } catch (e) {
+                    console.error("Admin check failed", e);
+                }
+            }
+
+            // --- গ. ডাইনামিক নোটিশ এবং ব্যাচ তৈরি ফর্ম সাবমিশন ---
+            document.getElementById('create-batch-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!currentToken) return;
+
+                const submitBtn = document.getElementById('btn-create-batch');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> নতুন ব্যাচ সক্রিয় হচ্ছে...`;
+
+                const payload = {
+                    passcode: document.getElementById('batch-passcode').value.trim(),
+                    price_per_mail: parseFloat(document.getElementById('batch-price').value),
+                    closing_at: new Date(document.getElementById('batch-closing').value).toISOString()
+                };
+
+                try {
+                    const response = await fetch('/api/gmail/admin/create-batch', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${currentToken}`
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        window.location.reload();
+                    } else {
+                        alert("ত্রুটি: " + result.detail);
+                    }
+                } catch(err) {
+                    alert("সার্ভার কানেকশন ফেইলড।");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-envelope-open-text"></i> নতুন ব্যাচ চালু করুন`;
+                }
+            });
+
+            // --- ঘ. সকল ব্যাচের তালিকা লোড করা ---
+            async function loadAdminBatches() {
+                const listContainer = document.getElementById('admin-batches-list');
+                try {
+                    const response = await fetch('/api/gmail/admin/batches', {
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+
+                    if (response.ok) {
+                        const batches = await response.json();
+                        if (batches && batches.length > 0) {
+                            listContainer.innerHTML = '';
+                            batches.forEach(b => {
+                                const createdDate = new Date(b.closing_at).toLocaleString('bn-BD');
+                                
+                                let statusColor = "text-green-600 bg-green-50 border-green-200";
+                                if (b.status === 'reviewing') statusColor = "text-amber-600 bg-amber-50 border-amber-200";
+                                if (b.status === 'completed') statusColor = "text-gray-500 bg-gray-50 border-gray-200";
+
+                                listContainer.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-4 px-4 font-bold text-dark font-body">#${b.batch_num}</td>
+                                        <td class="py-4 px-4 font-mono font-bold text-gray-500">${b.passcode}</td>
+                                        <td class="py-4 px-4 font-body font-bold text-primary">৳${b.price_per_mail}</td>
+                                        <td class="py-4 px-4 font-body text-xs text-muted">${createdDate}</td>
+                                        <td class="py-4 px-4"><span class="px-2 py-0.5 rounded text-[0.65rem] font-bold border ${statusColor}">${b.status}</span></td>
+                                        <td class="py-4 px-4 text-center">
+                                            <div class="flex gap-2 justify-center">
+                                                <button onclick="exportBatchCSV('${b.id}', '${b.batch_num}')" class="bg-gray-100 hover:bg-gray-200 text-dark text-xs font-bold py-1.5 px-3 rounded-lg flex items-center gap-1"><i class="fa-solid fa-file-csv text-green-600"></i> Export</button>
+                                                
+                                                ${b.status === 'open' ? 
+                                                    `<button onclick="alert('ব্যাচ ক্লোজিং ডেডলাইন শেষ হওয়ার পর রিভিউ শুরু করুন।')" class="bg-gray-300 text-gray-500 text-xs font-bold py-1.5 px-3 rounded-lg cursor-not-allowed" disabled>Open</button>` :
+                                                    (b.status === 'reviewing' ? 
+                                                        `<button onclick="openRejectModal('${b.id}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all"><i class="fa-solid fa-file-import"></i> Upload CSV & Approve</button>` :
+                                                        `<span class="text-xs text-green-600 font-bold py-1.5"><i class="fa-solid fa-circle-check"></i> Verified</span>`
+                                                    )
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            listContainer.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-gray-500">কোনো জিমেইল ব্যাচ রেকর্ড পাওয়া যায়নি।</td></tr>';
+                        }
+                    }
+                } catch(e) {
+                    console.error("Batches fetch failed", e);
+                }
+            }
+
+            // --- ঙ. ১-ক্লিক ডাইনামিক CSV ফাইল এক্সপোর্টার (ব্রাউজার-সাইড জেনারেটর) [2.2.3] ---
+            window.exportBatchCSV = async function(batchId, batchNum) {
+                try {
+                    // জিমেইল সাবমিশন এবং রিসেলারদের ডাইনামিক ডাটা সুপাবেস জয়েন কুয়েরি দিয়ে নিয়ে আসা [1.1.1, 1.2.5]
+                    const { data: submissions, error } = await supabaseClient
+                        .from('gmail_submissions')
+                        .select('gmail_address, profiles!reseller_id(full_name, phone_number)')
+                        .eq('batch_id', batchId)
+                        .eq('status', 'pending');
+
+                    if (error) throw error;
+                    if (!submissions || submissions.length === 0) {
+                        alert("এই ব্যাচে বর্তমানে কোনো পেন্ডিং জিমেইল সাবমিশন নেই বা ডেটা ডাউনলোড করার মতো নেই।");
+                        return;
+                    }
+
+                    // CSV স্ট্রিং ফরম্যাট তৈরি করা [2.2.3]
+                    let csvContent = "data:text/csv;charset=utf-8,";
+                    csvContent += "Gmail Address,Reseller Name,Phone Number\n"; // Column headers
+
+                    submissions.forEach(sub => {
+                        const name = sub.profiles ? sub.profiles.full_name : "N/A";
+                        const phone = sub.profiles ? sub.profiles.phone_number : "N/A";
+                        csvContent += `"${sub.gmail_address}","${name}","${phone}"\n`;
+                    });
+
+                    // ওয়ান-ক্লিক ফাইল ডাউনলোড ইভেন্ট রান করা [2.2.3]
+                    const encodedUri = encodeURI(csvContent);
+                    const link = document.createElement("a");
+                    link.setAttribute("href", encodedUri);
+                    link.setAttribute("download", `MerketBase_Gmail_Batch_${batchNum}.csv`);
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                } catch (err) {
+                    alert("CSV ডাউনলোড করতে সমস্যা হয়েছে: " + err.message);
+                }
+            };
+
+            // --- চ. রিজেক্টেড মেইল আপলোড মডাল কন্ট্রোল এবং ফাইল রিডার ---
+            window.openRejectModal = function(batchId) {
+                selectedBatchId = batchId;
+                document.getElementById('reject-modal').classList.remove('hidden');
+                document.getElementById('detected-count').innerText = '';
+                document.getElementById('file-label').innerText = 'পেমেন্ট রিজেক্ট/Failed লিস্ট ফাইল আপলোড করুন';
+                document.getElementById('btn-confirm-review').disabled = true;
+                parsedRejectedEmails = [];
+            };
+
+            window.closeRejectModal = function() {
+                document.getElementById('reject-modal').classList.add('hidden');
+                selectedBatchId = null;
+            };
+
+            // ফাইল রিডার ইভেন্ট লিসেনার (CSV/Text ফাইল থেকে মেইল এক্সট্র্যাকশন)
+            document.getElementById('reject-file-input').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                document.getElementById('file-label').innerText = file.name;
+
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const text = evt.target.result;
+                    
+                    // পিওর রেগুলার এক্সপ্রেশন (Regex) যা টেক্সটের ভেতর থেকে সমস্ত জিমেইল এড্রেস ডাইনামিকালি ফিল্টার করে নেবে
+                    const emailRegex = /[a-zA-Z0-9._%+-]+@gmail\.com/g;
+                    const matches = text.match(emailRegex) || [];
+                    
+                    // ডুপ্লিকেট রিমুভ করা
+                    parsedRejectedEmails = [...new Set(matches.map(email => email.toLowerCase().trim()))];
+                    
+                    document.getElementById('detected-count').innerText = `সাফল্য! ${parsedRejectedEmails.length} টি জিমেইল রিজেক্ট লিস্টে সনাক্ত করা হয়েছে।`;
+                    document.getElementById('btn-confirm-review').disabled = false;
+                };
+                reader.readAsText(file);
+            });
+
+            // --- ছ. রিভিউ সাবমিট করা এবং ডিস্ট্রিবিউট মানি ---
+            window.submitBatchReview = async function() {
+                if (!selectedBatchId || !currentToken) return;
+
+                if (!confirm(`আপনি কি এই রিজেক্ট ফাইল দিয়ে ব্যাচটি রিভিউ করতে চান? ফাইলে থাকা ${parsedRejectedEmails.length} টি জিমেইল সরাসরি 'Rejected' হবে এবং বাকি সব মেইল 'Approved' হয়ে রিসেলারদের ওয়ালেটে টাকা ও পয়েন্ট সরাসরি যোগ হবে!`)) return;
+
+                const confirmBtn = document.getElementById('btn-confirm-review');
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> ব্যাচ প্রসেস ও ওয়ালেট ডিস্ট্রিবিউশন হচ্ছে...`;
+
+                try {
+                    // ব্যাকএন্ডের ডাইনামিক রিভিউ অ্যান্ড মানি এপিআই রাউট কল করা হচ্ছে
+                    const response = await fetch(`/api/gmail/admin/process-review/${selectedBatchId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${currentToken}`
+                        },
+                        body: JSON.stringify({
+                            rejected_emails: parsedRejectedEmails
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        closeRejectModal();
+                        loadAdminBatches(); // তালিকা রিফ্রেশ করা
+                    } else {
+                        alert("ত্রুটি: " + result.detail);
+                    }
+                } catch(err) {
+                    alert("সার্ভার কানেকশন ফেইলড।");
+                } finally {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = `<i class="fa-solid fa-circle-check"></i> প্রসেস এবং বাকি সব অ্যাপ্রুভ করুন`;
+                }
+            };
+
+            window.handleLogout = async function() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                    window.location.href = "/login";
+                }
+            };
+        });
+    </script>
+</body>
+  </html>
