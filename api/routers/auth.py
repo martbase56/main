@@ -42,25 +42,52 @@ async def get_current_user(authorization: str = Header(None)):
         raise HTTPException(status_code=401, detail="অবৈধ Authorization ফরম্যাট। 'Bearer <Token>' ব্যবহার করুন।")
 
 # api/routers/auth.py এর ৩ নম্বর এন্ডপয়েন্টটি আপডেট করুন:
+# api/routers/auth.py এর ৩ নম্বর এন্ডপয়েন্টটি পরিবর্তন করে নিন:
 
 @router.get("/config")
 def get_supabase_config():
-    # ডাইনামিক সেটিংস ডাটা ফেচিং
-    fee_query = supabase.table("system_settings").select("value").eq("key", "activation_fee").single().execute()
-    activation_fee = float(fee_query.data['value']) if fee_query.data else 0.0
+    # ডিফল্ট নিরাপদ মানসমূহ
+    activation_fee = 100.0
+    ig_price = 15.0
+    ig_notice = "ইনস্টাগ্রাম অ্যাকাউন্ট সাবমিট করুন। ২FA কী সচল থাকতে হবে।"
+    fb_price = 20.0
+    fb_notice = "ফেসবুক অ্যাকাউন্ট এবং কুকিজ সাবমিট করুন।"
 
-    ig_price_query = supabase.table("system_settings").select("value").eq("key", "instagram_price").single().execute()
-    ig_price = float(ig_price_query.data['value']) if ig_price_query.data else 15.0
+    try:
+        # ক. অ্যাক্টিভেশন ফি ভ্যালিডেশন চেক
+        fee_query = supabase.table("system_settings").select("value").eq("key", "activation_fee").execute()
+        if fee_query.data:
+            activation_fee = float(fee_query.data[0]['value'])
 
-    ig_notice_query = supabase.table("system_settings").select("value").eq("key", "instagram_notice").single().execute()
-    ig_notice = ig_notice_query.data['value'] if ig_notice_query.data else "ইনস্টাগ্রাম অ্যাকাউন্ট সাবমিট করুন।"
+        # খ. ইনস্টাগ্রাম প্রাইস ও নোটিশ চেক
+        ig_price_query = supabase.table("system_settings").select("value").eq("key", "instagram_price").execute()
+        if ig_price_query.data:
+            ig_price = float(ig_price_query.data[0]['value'])
+
+        ig_notice_query = supabase.table("system_settings").select("value").eq("key", "instagram_notice").execute()
+        if ig_notice_query.data:
+            ig_notice = ig_notice_query.data[0]['value']
+
+        # গ. ফেসবুক প্রাইস ও নোটিশ চেক (নতুন যুক্ত করা হয়েছে)
+        fb_price_query = supabase.table("system_settings").select("value").eq("key", "facebook_price").execute()
+        if fb_price_query.data:
+            fb_price = float(fb_price_query.data[0]['value'])
+
+        fb_notice_query = supabase.table("system_settings").select("value").eq("key", "facebook_notice").execute()
+        if fb_notice_query.data:
+            fb_notice = fb_notice_query.data[0]['value']
+            
+    except Exception as e:
+        print(f"Settings table error bypassed: {str(e)}")
 
     return {
         "supabase_url": settings.SUPABASE_URL,
         "supabase_anon_key": settings.SUPABASE_ANON_KEY,
         "activation_fee": activation_fee,
         "instagram_price": ig_price,
-        "instagram_notice": ig_notice
+        "instagram_notice": ig_notice,
+        "facebook_price": fb_price,
+        "facebook_notice": fb_notice
     }
     
     # --- ৪. এন্ডপয়েন্ট: ব্যবহারকারীর প্রোফাইল তথ্য দেখা ---
