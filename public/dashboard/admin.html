@@ -36,7 +36,7 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (Admin SPA Menu) -->
+    <!-- 🗂️ Left Sticky Sidebar (Contains All 9+ Standalone Nav Links) -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -45,59 +45,85 @@
             </button>
         </div>
 
-        <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
-            <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10 text-sm">
-                <i class="fa-solid fa-chart-line text-lg"></i>
+        <!-- Navigation Menu -->
+        <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-1.5 overflow-y-auto" id="sidebar-menu">
+            <!-- 1. Dashboard -->
+            <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold transition-all text-xs">
+                <i class="fa-solid fa-chart-line text-base"></i>
                 <span>ড্যাশবোর্ড ওভারভিউ</span>
             </button>
-            <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
-                <i class="fa-solid fa-users text-lg"></i>
+            <!-- 2. Users Management -->
+            <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-users text-base"></i>
                 <span>ইউজার লিস্ট</span>
             </a>
-            <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
-                <i class="fa-solid fa-cart-shopping text-lg"></i>
+            <!-- 3. Orders Management -->
+            <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-cart-shopping text-base"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
             </a>
-            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
-                <i class="fa-solid fa-square-plus text-lg"></i>
-                <span>পণ্য যোগ করুন</span>
+            <!-- 4. Products Management -->
+            <a href="/admin/products" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-box-open text-base"></i>
+                <span>পণ্য তালিকা (Edit)</span>
             </a>
-            <a href="/admin/products" class="w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
-                <i class="fa-solid fa-square-plus text-lg"></i>
-                <span>সব পণ্য</span>
+            <!-- 5. Add Product -->
+            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-square-plus text-base"></i>
+                <span>নতুন পণ্য যোগ</span>
             </a>
-            
-            <button onclick="switchAdminSection('settings-sec')" id="nav-settings-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-3.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-sm">
-                <i class="fa-solid fa-gears text-lg"></i>
+            <!-- 6. Gmail Task -->
+            <a href="/admin/gmail" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-envelope-open-text text-base"></i>
+                <span>জিমেইল কন্ট্রোল</span>
+            </a>
+            <!-- 7. Instagram Task -->
+            <a href="/admin/instagram" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-brands fa-instagram text-base"></i>
+                <span>ইনস্টাগ্রাম কন্ট্রোল</span>
+            </a>
+            <!-- 8. Facebook Task -->
+            <a href="/admin/facebook" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-brands fa-facebook-f text-base"></i>
+                <span>ফেসবুক কন্ট্রোল</span>
+            </a>
+            <!-- 9. Telegram Service -->
+            <a href="/admin/telegram" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-brands fa-telegram text-base"></i>
+                <span>টেলিগ্রাম কন্ট্রোল</span>
+            </a>
+            <!-- 10. System Settings -->
+            <button onclick="switchAdminSection('settings-sec')" id="nav-settings-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
+                <i class="fa-solid fa-gears text-base"></i>
                 <span>সিস্টেম সেটিংস</span>
             </button>
             
-            <div class="pt-8 mt-auto border-t border-white/5">
-                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold text-sm">
-                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+            <div class="pt-6 mt-auto border-t border-white/5">
+                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-2.5 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold text-xs">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-base"></i>
                     <span>লগআউট</span>
                 </a>
             </div>
         </nav>
     </aside>
 
-    <!-- 📊 Main Content SPA Panel -->
+    <!-- 📊 Main Content Area -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
         <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
             <div>
-                <h2 class="text-2xl font-extrabold text-dark">এডমিন প্যানেল</h2>
-                <p class="text-sm text-muted">MerketBaseBD লাইভ ডাটা ও কনফিগারেশন হাব</p>
+                <h2 class="text-2xl font-extrabold text-dark font-headings">Admin Overview</h2>
+                <p class="text-sm text-muted">MerketBaseBD লাইভ ডাটা ও গ্লোবাল কনফিগারেশন হাব</p>
             </div>
             <div class="flex items-center gap-3 bg-white p-2 rounded-full border border-gray-100 shadow-sm pr-4">
                 <div class="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">A</div>
-                <span class="text-sm font-semibold text-dark">এডমিন ওভারভিউ</span>
+                <span class="text-sm font-semibold text-dark">এডমিন প্যানেল</span>
             </div>
         </header>
 
         <!-- ==================== ১. SECTION: DASHBOARD OVERVIEW ==================== -->
         <div id="dashboard-sec" class="admin-tab-content space-y-8">
-            <!-- 🚀 4 Statistics Cards (Premium Design Updated) -->
+            <!-- 🚀 4 Glowing Statistics Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Total Users -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
@@ -134,7 +160,7 @@
             </div>
 
             <!-- Pending Activation Requests Table -->
-            <section class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
+            <section id="activation-requests" class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
                     <i class="fa-solid fa-user-check text-primary animate-pulse"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
                 </h3>
@@ -162,25 +188,25 @@
 
         <!-- ==================== ২. SECTION: SYSTEM SETTINGS ==================== -->
         <div id="settings-sec" class="admin-tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md hidden">
-            <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6"><i class="fa-solid fa-gears text-primary"></i> সিস্টেম গ্লোবাল কনফিগারেশন</h3>
+            <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6 flex items-center gap-2"><i class="fa-solid fa-gears text-primary"></i> সিস্টেম গ্লোবাল কনফিগারেশন সেটিংস</h3>
             
             <form id="system-settings-form" class="space-y-6">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label class="block font-semibold text-sm mb-1.5 text-dark">অ্যাকাউন্ট অ্যাক্টিভেশন ফি (৳)</label>
-                        <input type="number" id="setting-fee" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark" required>
+                        <input type="number" id="setting-fee" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark font-bold" required>
                         <p class="text-[0.7rem] text-muted mt-1.5">অ্যাক্টিভেশন ফি সম্পূর্ণ ফ্রি করতে চাইলে এখানে ০ (শূন্য) বসিয়ে দিন।</p>
                     </div>
                     <div>
                         <label class="block font-semibold text-sm mb-1.5 text-dark">ImgBB API Key (Image Server)</label>
-                        <input type="text" id="setting-imgbb" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark" required>
+                        <input type="text" id="setting-imgbb" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark font-bold" required>
                         <p class="text-[0.7rem] text-muted mt-1.5">প্রোডাক্ট আপলোড ইমেজ হোস্ট করার গ্লোবাল এপিআই কি।</p>
                     </div>
                 </div>
 
                 <div>
                     <label class="block font-semibold text-sm mb-1.5 text-dark">রিসেলার ড্যাশবোর্ড রানিং নোটিশ (Notice Board)</label>
-                    <textarea id="setting-notice" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark h-24 resize-none" required></textarea>
+                    <textarea id="setting-notice" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 text-dark h-24 resize-none font-bold" required></textarea>
                     <p class="text-[0.7rem] text-muted mt-1.5">রিসেলার ড্যাশবোর্ডের ওপরে রানিং নোটিশবোর্ডে এই মেসেজটি স্লাইড করবে।</p>
                 </div>
 
@@ -196,13 +222,14 @@
         </footer>
     </main>
 
-    <!-- Supabase SDK -->
+    <!-- Supabase SDK & Shared Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // মোবাইল সাইডবার টগল
+            // সাইডবার মেনু টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -212,37 +239,29 @@
                 });
             }
 
-            let supabaseClient = null;
             let currentToken = null;
 
-            async function initializeSupabase() {
-                try {
-                    const response = await fetch('/api/auth/config');
-                    if (!response.ok) throw new Error("Config fetch failed");
-                    const config = await response.json();
-                    
-                    if (config.supabase_url && config.supabase_anon_key) {
-                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        verifyAdminAndLoad();
-                    }
-                } catch (err) {
-                    console.error("Supabase fail", err);
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক (layout.js গ্লোবাল ক্লায়েন্ট সিঙ্ক) ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
                 }
+                verifyAdminAndLoad();
             }
 
-            initializeSupabase();
-
+            // --- খ. এডমিন সিকিউর সেশন ভেরিফিকেশন ---
             async function verifyAdminAndLoad() {
-                if (!supabaseClient) return;
+                const client = window.supabaseClient;
                 try {
-                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    const { data: { session } } = await client.auth.getSession();
                     if (!session) {
                         alert("অনুগ্রহ করে প্রথমে লগইন করুন!");
                         window.location.href = "/login";
                         return;
                     }
 
-                    const { data: profile } = await supabaseClient
+                    const { data: profile } = await client
                         .from('profiles')
                         .select('role')
                         .eq('id', session.user.id)
@@ -256,34 +275,32 @@
 
                     currentToken = session.access_token;
                     
-                    // ইনিশিয়াল ডাটা লোড
+                    // সাকসেসফুল ভ্যালিডেশন হলে ডাটা লোড হবে
                     loadAdminStats(currentToken);
                     loadActivationRequests(currentToken);
                     loadSystemSettings(currentToken);
 
                 } catch (e) {
-                    console.error("Admin validation error", e);
+                    console.error("Admin check fail", e);
                 }
             }
 
-            // --- ক. ডাইনামিক ট্যাব সুইচিং লজিক (SPA System) ---
+            // --- গ. ডাইনামিক ট্যাব সুইচিং লজিক (SPA System) ---
             window.switchAdminSection = function(sectionId) {
                 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
                 document.getElementById(sectionId).classList.remove('hidden');
                 
                 document.querySelectorAll('.admin-nav-btn').forEach(btn => {
-                    btn.classList.remove('bg-primary', 'text-white');
-                    btn.classList.add('hover:bg-white/5', 'text-gray-400');
+                    btn.className = "admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs";
                 });
                 
                 const activeBtn = document.getElementById('nav-' + sectionId);
                 if (activeBtn) {
-                    activeBtn.classList.add('bg-primary', 'text-white');
-                    activeBtn.classList.remove('hover:bg-white/5', 'text-gray-400');
+                    activeBtn.className = "admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10 text-xs";
                 }
             };
 
-            // --- খ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড (সংশোধিত এরে-লেন্থ ক্যালকুলেশন) ---
+            // --- ঘ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড ---
             async function loadAdminStats(token) {
                 try {
                     const response = await fetch('/api/admin/stats', {
@@ -302,7 +319,7 @@
                 }
             }
 
-            // --- গ. এপিআই এর মাধ্যমে পেন্ডিং রিকোয়েস্ট লোড (সংশোধিত ফরেন-কি রিলেশন) [1.1.1, 1.2.5] ---
+            // --- ঙ. এপিআই এর মাধ্যমে পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট লোড (ফরেন-কি ফিক্সড) ---
             async function loadActivationRequests(token) {
                 const listContainer = document.getElementById('activation-requests-list');
                 try {
@@ -322,10 +339,10 @@
                                         <td class="py-4 px-4 font-bold text-primary">${req.payment_method}</td>
                                         <td class="py-4 px-4 font-body">${req.sender_number}</td>
                                         <td class="py-4 px-4 font-mono font-bold">${req.trx_id}</td>
-                                        <td class="py-4 px-4 font-body font-bold">৳${req.amount}</td>
+                                        <td class="py-4 px-4 font-body font-bold text-primary">৳${req.amount}</td>
                                         <td class="py-4 px-4 flex justify-center gap-2">
-                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-check"></i> Approve</button>
-                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-xmark"></i> Reject</button>
+                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-check"></i> Approve</button>
+                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                 `;
@@ -339,7 +356,7 @@
                 }
             }
 
-            // --- ঘ. ডাইনামিক সেটিংস লোড ---
+            // --- চ. ডাইনামিক সেটিংস লোড করা ---
             async function loadSystemSettings(token) {
                 try {
                     const response = await fetch('/api/admin/get-settings', {
@@ -356,7 +373,7 @@
                 }
             }
 
-            // --- ঙ. সেটিংস সাবমিট হ্যান্ডলার ---
+            // --- ছ. সেটিংস সাবমিট হ্যান্ডলার (FastAPI /update-settings) ---
             document.getElementById('system-settings-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!currentToken) return;
@@ -395,7 +412,7 @@
                 }
             });
 
-            // --- চ. অ্যাডমিন অ্যাক্টিভেশন একশনস লজিকস ---
+            // --- অনুমোদনের একশন লজিকস ---
             window.approveRequest = async function(requestId) {
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
                 try {
@@ -436,11 +453,14 @@
             };
 
             window.handleLogout = async function() {
-                if (supabaseClient) {
-                    await supabaseClient.auth.signOut();
+                if (window.supabaseClient) {
+                    await window.supabaseClient.auth.signOut();
                     window.location.href = "/login";
                 }
             };
+
+            // প্রসেস রান
+            checkLayoutAndLoad();
         });
     </script>
 </body>
