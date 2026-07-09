@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Admin Facebook Control</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
+
+    <!-- 🗂️ Left Sticky Sidebar -->
+    <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
+        <div class="p-6 border-b border-white/5 flex items-center justify-between">
+            <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
+            <button class="lg:hidden text-2xl text-white focus:outline-none" id="sidebar-toggle">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-2 overflow-y-auto" id="sidebar-menu">
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-chart-line text-lg"></i>
+                <span>ড্যাশবোর্ড ওভারভিউ</span>
+            </a>
+            <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-users text-lg"></i>
+                <span>ইউজার লিস্ট</span>
+            </a>
+            <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-cart-shopping text-lg"></i>
+                <span>অর্ডার ম্যানেজমেন্ট</span>
+            </a>
+            <!-- ফেসবুক কন্ট্রোল মেনু একটিভ লিঙ্ক -->
+            <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
+                <i class="fa-brands fa-facebook-f text-lg"></i>
+                <span>ফেসবুক কন্ট্রোল</span>
+            </a>
+            <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-square-plus text-lg"></i>
+                <span>পণ্য যোগ করুন</span>
+            </a>
+            <a href="/dashboard/admin" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all">
+                <i class="fa-solid fa-gears text-lg"></i>
+                <span>সিস্টেম সেটিংস</span>
+            </a>
+            
+            <div class="pt-8 mt-auto border-t border-white/5">
+                <a href="#" onclick="handleLogout()" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 hover:text-red-300 transition-all font-semibold">
+                    <i class="fa-solid fa-arrow-right-from-bracket text-lg"></i>
+                    <span>লগআউট</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- 📊 Main Content Area -->
+    <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full space-y-8">
+        
+        <header class="flex justify-between items-center border-b border-gray-200 pb-5">
+            <div>
+                <h2 class="text-2xl font-extrabold text-dark">ফেসবুক সাবমিশন রিভিউ সেন্টার</h2>
+                <p class="text-sm text-muted">রিসেলারদের সাবমিট করা ফেসবুক UID এবং কুকিজ (Cookies) লাইভ ভেরিফিকেশন প্যানেল</p>
+            </div>
+            <div class="flex items-center gap-3 bg-white p-2 rounded-full border border-gray-100 shadow-sm pr-4">
+                <div class="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">F</div>
+                <span class="text-sm font-semibold text-dark">ফেসবুক এডমিন</span>
+            </div>
+        </header>
+
+        <!-- 📦 পেন্ডিং ফেসবুক সাবমিশন টেবিল তালিকা -->
+        <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg">
+            <h3 class="text-base font-bold text-dark border-b border-gray-100 pb-3 mb-5 flex items-center gap-2">
+                <i class="fa-solid fa-clipboard-check text-primary"></i> পেন্ডিং ফেসবুক কুকিজ ভেরিফিকেশন
+            </h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="border-b border-gray-150 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">অর্ডারকারী</th>
+                            <th class="py-3 px-4">মোবাইল নম্বর</th>
+                            <th class="py-3 px-4">Facebook UID</th>
+                            <th class="py-3 px-4">Facebook Cookies</th>
+                            <th class="py-3 px-4 text-center">অ্যাকশন</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-fb-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-500">পেন্ডিং সাবমিশন ডাটা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let currentToken = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // মোবাইল সাইডবার টগল
+            const sidebarToggle = document.getElementById('sidebar-toggle');
+            const sidebarMenu = document.getElementById('sidebar-menu');
+            if (sidebarToggle && sidebarMenu) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebarMenu.classList.toggle('hidden');
+                    sidebarMenu.classList.toggle('flex');
+                });
+            }
+
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config fetch failed");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        verifyAdminAndLoad();
+                    }
+                } catch (err) {
+                    console.error("Supabase fail", err);
+                }
+            }
+
+            initializeSupabase();
+
+            // --- খ. এডমিন এক্সেস যাচাই ---
+            async function verifyAdminAndLoad() {
+                if (!supabaseClient) return;
+                try {
+                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', session.user.id).single();
+                    if (!profile || profile.role !== 'admin') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    currentToken = session.access_token;
+                    loadPendingFBSubmissions();
+
+                } catch (e) {
+                    console.error("Admin check fail", e);
+                }
+            }
+
+            // --- গ. পেন্ডিং ফেসবুক ডাটা ফেচ ও রেন্ডার ---
+            async function loadPendingFBSubmissions() {
+                const listContainer = document.getElementById('admin-fb-list');
+                try {
+                    const response = await fetch('/api/facebook/admin/submissions', {
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+
+                    if (response.ok) {
+                        const submissions = await response.json();
+                        if (submissions && submissions.length > 0) {
+                            listContainer.innerHTML = '';
+                            submissions.forEach(sub => {
+                                const userName = sub.profiles ? sub.profiles.full_name : 'N/A';
+                                const userPhone = sub.profiles ? sub.profiles.phone_number : 'N/A';
+
+                                listContainer.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors" id="fb-row-${sub.id}">
+                                        <td class="py-4 px-4 font-bold text-dark">${userName}</td>
+                                        <td class="py-4 px-4 font-body text-gray-500">${userPhone}</td>
+                                        <td class="py-4 px-4 font-mono font-bold text-primary">${sub.fb_uid}</td>
+                                        <td class="py-4 px-4 font-mono text-gray-500 truncate max-w-[150px] select-all" title="${sub.cookies}">${sub.cookies}</td>
+                                        <td class="py-4 px-4 flex justify-center gap-2">
+                                            <button onclick="approveFBAccount('${sub.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-check"></i> Approve</button>
+                                            <button onclick="rejectFBAccount('${sub.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-xmark"></i> Reject</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">বর্তমানে কোনো পেন্ডিং ফেসবুক সাবমিশন রিকোয়েস্ট নেই।</td></tr>';
+                        }
+                    }
+                } catch (e) {
+                    console.error("FB submissions fetch fail", e);
+                }
+            }
+
+            // --- ঘ. ওয়ান-ক্লিক এপিআই পেমেন্ট অ্যাকশন হ্যান্ডলারস ---
+            window.approveFBAccount = async function(submissionId) {
+                if(!confirm("আপনি কি বিবরণ যাচাই করেছেন? অ্যাকাউন্টটি অ্যাপ্রুভ করলে ইউজারের ওয়ালেটে স্বয়ংক্রিয়ভাবে টাকা ক্রেডিট হয়ে যাবে।")) return;
+                
+                try {
+                    const response = await fetch(`/api/facebook/admin/approve/${submissionId}`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById(`fb-row-${submissionId}`).remove();
+                    } else {
+                        alert("অনুমোদন ব্যর্থ: " + result.detail);
+                    }
+                } catch (err) {
+                    alert("সার্ভার বা ডাটাবেজ কানেকশন সমস্যা হয়েছে।");
+                }
+            };
+
+            window.rejectFBAccount = async function(submissionId) {
+                if(!confirm("আপনি কি নিশ্চিতভাবে এই ফেসবুক অ্যাকাউন্ট সাবমিশনটি বাতিল বা রিজেক্ট করতে চান?")) return;
+
+                try {
+                    const response = await fetch(`/api/facebook/admin/reject/${submissionId}`, {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${currentToken}` }
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById(`fb-row-${submissionId}`).remove();
+                    } else {
+                        alert("বাতিল করতে ব্যর্থ: " + result.detail);
+                    }
+                } catch (err) {
+                    alert("সার্ভার বা ডাটাবেজ কানেকশন সমস্যা হয়েছে।");
+                }
+            };
+
+            window.handleLogout = async function() {
+                if (supabaseClient) {
+                    await supabaseClient.auth.signOut();
+                    window.location.href = "/login";
+                }
+            };
+        });
+    </script>
+</body>
+  </html>
