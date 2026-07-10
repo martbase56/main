@@ -1,55 +1,76 @@
 // public/layout.js
-// MerketBaseBD - Global Layout Engine & Premium Orange-White Theme
+// MerketBaseBD - Optimized Global Layout Engine with Hybrid Caching (Zero Latency)
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // ১. ডাইনামিক হেডার এবং ফুটার ইনজেক্ট করা
+    // ১. পেজে হেডার এবং ফুটার প্লেসহোল্ডার থাকলে স্বয়ংক্রিয়ভাবে ইনজেক্ট করা
     injectHeaderAndFooter();
     
-    // ২. সুপাবেস কানেকশন ও সেশন চেক
+    // ২. হাইব্রিড ক্যাশিং ইঞ্জিনের মাধ্যমে জিরো-ল্যাটেন্সি সুপাবেস ইনিশিয়ালাইজেশন
     await initLayoutSupabase();
 });
 
 let supabaseClient = null;
 
 async function initLayoutSupabase() {
+    // ক. প্রথমে ব্রাউজারের লোকাল মেমোরি (Cache) থেকে কনফিগ চেক করা
+    const cachedConfig = localStorage.getItem('supabase_config');
+    if (cachedConfig) {
+        try {
+            const config = JSON.parse(cachedConfig);
+            if (config.supabase_url && config.supabase_anon_key) {
+                // ক্যাশ ডাটা থাকলে সরাসরি ইনস্ট্যান্ট সুপাবেস ক্লায়েন্ট সচল করা (০ মিলি-সেকেন্ড বিলম্ব!)
+                supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                window.supabaseClient = supabaseClient;
+                
+                // ব্যাকগ্রাউন্ডে সাইডবার ও ব্যাজ আপডেট শুরু করা
+                updateLayoutNavigation();
+                updateLayoutBadges();
+                console.log("⚡ Supabase Client initialized instantly from local browser cache.");
+            }
+        } catch (e) {
+            localStorage.removeItem('supabase_config');
+        }
+    }
+
+    // খ. ব্যাকগ্রাউন্ডে (ইউজারের লোডিং স্ক্রিন ব্লক না করে) লেটেস্ট ভেরিয়েবল রিড করা
     try {
         const response = await fetch('/api/auth/config');
-        if (!response.ok) throw new Error("Config fetch failed");
-        const config = await response.json();
-        
-        if (config.supabase_url && config.supabase_anon_key) {
-            supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-            console.log("Supabase Client initialized globally inside layout.js");
-            
-            window.supabaseClient = supabaseClient;
-            await updateLayoutNavigation();
+        if (response.ok) {
+            const config = await response.json();
+            if (config.supabase_url && config.supabase_anon_key) {
+                // পরবর্তী ভিজিটের জন্য ক্যাশ মেমোরি আপডেট করে রাখা
+                localStorage.setItem('supabase_config', JSON.stringify(config));
+                
+                // যদি পূর্বে ক্যাশ না থাকার কারণে ক্লায়েন্ট তৈরি না হয়ে থাকে, তবে এখন ইনিশিয়েট হবে
+                if (!supabaseClient) {
+                    supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                    window.supabaseClient = supabaseClient;
+                    await updateLayoutNavigation();
+                    updateLayoutBadges();
+                    console.log("🔄 Supabase Client initialized from fresh background fetch.");
+                }
+            }
         }
     } catch (err) {
-        console.error("Supabase failed to initialize in layout.js:", err);
+        console.error("Background config fetch failed:", err);
     }
-    
-    updateLayoutBadges();
 }
 
-// ৩. ডাইনামিক হেডার ও ফুটার HTML ইনজেকশন ফাংশন (মোবাইল মেনু একপাশে এলাইন্ড)
+// হেডার-ফুটার ইনজেকশন ফাংশন
 function injectHeaderAndFooter() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
 
-    // ক. প্রিমিয়াম অরেঞ্জ হেডার (ডেক্সটপে ডানপাশে এবং মোবাইলে বামপাশে সুবিন্যস্ত)
     if (headerPlaceholder) {
         headerPlaceholder.innerHTML = `
             <header class="bg-gradient-to-r from-[#FF6B00] to-[#FF8C33] sticky top-0 z-50 shadow-md shadow-primary/10 border-b border-white/10">
                 <div class="max-w-[1200px] mx-auto px-5 py-4 flex justify-between items-center w-full">
-                    <!-- Brand Logo in Crisp White -->
                     <a href="/" class="font-headings font-extrabold text-3xl text-white tracking-tight hover:scale-[1.02] transition-transform">MerketBaseBD</a>
                     
-                    <!-- Mobile Hamburger Menu Button in White -->
                     <button class="menu-toggle lg:hidden text-2xl text-white focus:outline-none" id="menu-toggle">
                         <i class="fa-solid fa-bars" id="menu-icon"></i>
                     </button>
 
-                    <!-- (সংশোধিত) Nav menu: lg ডেক্সটপে ডানে এবং মোবাইলে বামপাশে (items-start) এলাইন্ড থাকবে -->
                     <ul class="hidden lg:flex lg:flex-row lg:items-center lg:gap-6 lg:static absolute top-[70px] left-0 w-full bg-gradient-to-b from-[#FF6B00] to-[#FF8C33] lg:bg-transparent px-6 py-6 lg:p-0 flex-col items-start lg:items-center gap-5 shadow-lg lg:shadow-none z-50 border-t border-white/10 lg:border-none list-none ml-auto text-left" id="nav-menu">
                         <li class="w-full"><a href="/" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-house"></i> হোম</a></li>
                         <li class="w-full"><a href="/#products-section" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-basket-shopping"></i> প্রোডাক্টস</a></li>
@@ -57,17 +78,16 @@ function injectHeaderAndFooter() {
                         <li class="w-full"><a href="/earning" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-coins"></i> আর্ন জোন</a></li>
                         <li class="w-full"><a href="/digital-services" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-laptop-code"></i> ডিজিটাল সার্ভিস</a></li>
                         <li class="w-full"><a href="/checkout" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-cart-shopping"></i> কার্ট (<span id="cart-count">0</span>)</a></li>
-                        <li class="w-full"><a href="/profile?tab=wishlist" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-heart"></i> পছন্দের তালিকা (<span id="fav-count">0</span>)</a></li>
+                        <li class="w-full"><a href="/profile?tab=wishlist" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-heart text-red-500"></i> পছন্দের তালিকা (<span id="fav-count">0</span>)</a></li>
                         
-                        <li id="dynamic-nav" class="w-full lg:w-auto mt-2 lg:mt-0">
-                            <a href="/login" class="block text-center font-bold text-[0.95rem] bg-white text-[#FF6B00] py-2.5 px-6 rounded-full hover:bg-white/90 transition-all shadow-md">লগইন</a>
+                        <li id="dynamic-nav" class="w-full lg:w-auto">
+                            <a href="/login" class="block text-center font-bold text-[0.95rem] bg-primary text-white py-2.5 px-6 rounded-full hover:bg-white/90 transition-all shadow-md">লগইন</a>
                         </li>
                     </ul>
                 </div>
             </header>
         `;
 
-        // মোবাইল হ্যামবার্গার টগল বাইন্ডিং (Tailwind ফেইল-সেফ টগল মেথড)
         const menuToggle = document.getElementById('menu-toggle');
         const navMenu = document.getElementById('nav-menu');
         const menuIcon = document.getElementById('menu-icon');
@@ -86,14 +106,13 @@ function injectHeaderAndFooter() {
         }
     }
 
-    // খ. লাক্সারি অরেঞ্জ থিম ফুটার (সাদা কালার লিংকস এবং লোকাল ৩টি পেমেন্ট ব্যাজ)
     if (footerPlaceholder) {
         footerPlaceholder.innerHTML = `
-            <footer class="bg-gradient-to-br from-[#FF6B00] to-[#FF8C33] text-white py-16 border-t border-white/10 font-bangla w-full">
+            <footer class="bg-[#090D16] text-gray-400 py-16 border-t border-white/5 font-bangla w-full">
                 <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-12">
                     <div class="footer-col space-y-4">
-                        <a href="/" class="font-headings font-extrabold text-3xl text-white mb-3 inline-block transition-transform hover:scale-[1.02]">MerketBaseBD</a>
-                        <p class="text-[0.92rem] leading-relaxed text-white/90">
+                        <a href="/" class="font-headings font-extrabold text-3xl text-primary mb-3 inline-block transition-transform hover:scale-[1.02]">MerketBaseBD</a>
+                        <p class="text-[0.92rem] leading-relaxed text-gray-400">
                             বাংলাদেশের সেরা প্রিমিয়াম রিসেলিং ও ওয়ার্ক প্ল্যাটফর্ম। আধুনিক উপায়ে কেনাকাটা এবং স্বনির্ভরতা অর্জনে আমরা সর্বদা আপনার পাশে আছি।
                         </p>
                         <div class="footer-socials flex gap-3 pt-2">
@@ -156,7 +175,6 @@ async function updateLayoutNavigation() {
             const { data: profile } = await supabaseClient.from('profiles').select('role').eq('id', userId).single();
             
             if (profile) {
-                // (সংশোধিত) মোবাইল ড্রয়ারের স্টাইলও একই গ্লোবাল এলাইনমেন্ট চেইন অনুসরণ করবে
                 if (profile.role === 'reseller') {
                     dynamicNav.outerHTML = `
                         <li class="w-full"><a href="/dashboard/reseller" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
