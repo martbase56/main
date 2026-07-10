@@ -90,7 +90,7 @@
                     </thead>
                     <tbody id="gmail-history-list" class="divide-y divide-gray-100">
                         <tr>
-                            <td colspan="5" class="py-6 text-center text-gray-500">ডাটা লোড হচ্ছে...</td>
+                            <td colspan="5" class="py-6 text-center text-gray-500">আপনার সাবমিশন রেকর্ড লোড হচ্ছে...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -105,7 +105,7 @@
             <i class="fa-solid fa-house text-lg"></i>
             <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
         </a>
-        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-clock-rotate-left text-lg"></i>
             <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
         </a>
@@ -113,7 +113,7 @@
             <i class="fa-solid fa-box-open text-lg"></i>
             <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
         </a>
-        <a href="#withdraw-section" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-wallet text-lg"></i>
             <span class="text-[0.65rem] font-bold">উইথড্র</span>
         </a>
@@ -123,38 +123,39 @@
         </a>
     </nav>
 
-    <!-- Supabase SDK -->
+    <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
-        let supabaseClient = null;
         let resellerId = null;
         let countdownInterval = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
                     return;
                 }
-                supabaseClient = window.supabaseClient;
                 verifyResellerAndLoad();
             }
 
             // --- খ. রিসেলার সেশন ও ডাটা লোড ---
             async function verifyResellerAndLoad() {
+                const client = window.supabaseClient;
+                if (!client) return;
+
                 try {
-                    const { data: { session } } = await supabaseClient.auth.getSession();
+                    const { data: { session } } = await client.auth.getSession();
                     if (!session) {
                         window.location.href = "/login";
                         return;
                     }
                     resellerId = session.user.id;
 
-                    const { data: profile } = await supabaseClient.from('profiles').select('role, is_active').eq('id', resellerId).single();
+                    const { data: profile } = await client.from('profiles').select('role, is_active').eq('id', resellerId).single();
                     if (!profile || profile.role !== 'reseller') {
                         alert("অনুমতি নেই!");
                         window.location.href = "/";
@@ -186,14 +187,10 @@
                             const batch = result.batch;
                             document.getElementById('batch-title').innerText = `জিমেইল টাস্ক: ব্যাচ #${batch.batch_num}`;
                             document.getElementById('batch-price').innerText = `৳${batch.price_per_mail}`;
+                            document.getElementById('batch-desc').innerHTML = `<strong>ব্যাচ পাসকোড/নির্দেশনা:</strong> <span class="text-primary font-bold">${batch.passcode}</span>`;
                             
-                            // পাসওয়ার্ড ও ইন্সট্রাকশন নোটিশ
-                            document.getElementById('batch-desc').innerHTML = `<strong>ব্যাচ পাসকোড/ইন্সট্রাকশন:</strong> <span class="text-primary font-bold">${batch.passcode}</span>`;
-                            
-                            // ফর্ম আনহাইড
                             document.getElementById('gmail-submit-form').classList.remove('hidden');
 
-                            // লাইভ কাউন্টডাউন টাইমার স্টার্ট
                             startCountdown(batch.closing_at);
                         } else {
                             document.getElementById('batch-title').innerText = "বর্তমানে কোনো একটিভ জিমেইল ব্যাচ চালু নেই।";
@@ -203,7 +200,6 @@
                 } catch(e) {}
             }
 
-            // লাইভ কাউন্টডাউন মেকানিজম
             function startCountdown(closingAt) {
                 const targetTime = new Date(closingAt).getTime();
                 
@@ -253,7 +249,7 @@
                     if (response.ok) {
                         alert(result.message);
                         document.getElementById('gmail-address').value = '';
-                        loadGmailHistory(); // ইতিহাস রিফ্রেশ করা
+                        loadGmailHistory(); 
                     } else {
                         alert("ব্যর্থ হয়েছে: " + result.detail);
                     }
@@ -265,7 +261,7 @@
                 }
             });
 
-            // --- ঙ. জিমেইল সাবমিশন হিস্ট্রি লোড ---
+            // --- ঙ. জিমেইল সাবমিশন হিস্ট্রি লোড (রিলেশন এরে-সলভার সহ ফিক্সড) ---
             async function loadGmailHistory() {
                 const historyList = document.getElementById('gmail-history-list');
                 try {
@@ -276,8 +272,11 @@
                             historyList.innerHTML = '';
                             history.forEach(item => {
                                 const createdDate = new Date(item.created_at).toLocaleString('bn-BD');
-                                const batchNum = item.gmail_batches ? item.gmail_batches.batch_num : 'N/A';
-                                const rate = item.gmail_batches ? item.gmail_batches.price_per_mail : '0';
+                                
+                                // (ফিক্সড) রিলেশনাল এরে কনফ্লিক্ট সলভার
+                                const batchInfo = Array.isArray(item.gmail_batches) ? item.gmail_batches[0] : item.gmail_batches;
+                                const batchNum = batchInfo ? batchInfo.batch_num : 'N/A';
+                                const rate = batchInfo ? batchInfo.price_per_mail : '0';
                                 
                                 let statusStyle = "text-gray-500 bg-gray-50 border-gray-200";
                                 if (item.status === 'approved') {
@@ -311,4 +310,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
