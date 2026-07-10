@@ -1,4 +1,4 @@
-# api/routers/gmail.py
+# api/routers/gmail.py (রিলেশনাল জয়েনিং এরর ফিক্সড সম্পূর্ণ কোড)
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
@@ -76,12 +76,13 @@ def submit_gmail(data: GmailSubmitSchema):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: রিসেলারের নিজস্ব সাবমিশন হিস্ট্রি দেখা ---
+# --- ৪. এন্ডপয়েন্ট: রিসেলারের নিজস্ব সাবমিশন হিস্ট্রি দেখা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/history/{reseller_id}")
 def get_reseller_gmail_history(reseller_id: str):
     try:
+        # (গুরুত্বপূর্ণ ফিক্স) batch_id ফরেন-কি স্পষ্ট করে দেওয়া হয়েছে [1.1.1, 1.2.5]
         query = supabase.table("gmail_submissions")\
-            .select("*, gmail_batches(batch_num, price_per_mail)")\
+            .select("*, gmail_batches!batch_id(batch_num, price_per_mail)")\
             .eq("reseller_id", reseller_id)\
             .order("created_at", desc=True)\
             .execute()
@@ -121,7 +122,7 @@ def get_all_batches(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৭. এন্ডপয়েন্ট: CSV/রিজেক্টেড লিস্ট প্রসেস এবং অটো-অ্যাপ্রুভাল ও ব্যালেন্স ডিস্ট্রিবিউশন ---
+# --- ७. এন্ডপয়েন্ট: CSV/রিজেক্টেড লিস্ট প্রসেস এবং অটো-অ্যাপ্রুভাল ও ব্যালেন্স ডিস্ট্রিবিউশন ---
 @router.post("/admin/process-review/{batch_id}")
 def process_batch_review(batch_id: str, data: CSVProcessSchema, admin: dict = Depends(verify_admin)):
     try:
@@ -160,7 +161,7 @@ def process_batch_review(batch_id: str, data: CSVProcessSchema, admin: dict = De
                     current_bal = float(reseller_profile.data.get('wallet_balance', 0) or 0)
                     current_sells = int(reseller_profile.data.get('gmail_sells', 0) or 0)
 
-                    # টাকা ও সাকসেস টার্গেট আপডেট (৳৫০০ বোনাস রিলিজ কাউন্ট)
+                    # টাকা ও সাকসেস টার্গেট আপডেট
                     supabase.table("profiles").update({
                         "wallet_balance": current_bal + price,
                         "gmail_sells": current_sells + 1
