@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - All Products</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-canvas font-bangla text-dark leading-relaxed min-h-screen">
+
+    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
+    <div id="header-placeholder"></div>
+
+    <main class="max-w-[1200px] mx-auto px-5 py-8 space-y-8">
+        
+        <!-- 🔍 ২. রিয়েল-টাইম সার্চ সেকশন (গ্লোয়িং বর্ডার) -->
+        <section class="max-w-[700px] mx-auto">
+            <div class="relative flex items-center bg-white rounded-full border border-primary/20 shadow-xl focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden p-1.5">
+                <div class="flex items-center pl-4 pr-2 text-primary">
+                    <i class="fa-solid fa-magnifying-glass text-xl animate-pulse"></i>
+                </div>
+                <input type="text" id="search-input" class="w-full py-3 outline-none font-bangla text-dark bg-transparent text-base placeholder-gray-400 font-medium" placeholder="পছন্দের পণ্যের নাম বা কোড দিয়ে অনুসন্ধান করুন...">
+                <button class="bg-primary hover:bg-secondary text-white font-bold py-3 px-8 rounded-full text-xs transition-all shadow-md shrink-0"><i class="fa-solid fa-filter"></i> খুঁজুন</button>
+            </div>
+        </section>
+
+        <!-- 🏷️ ৩. ডাইনামিক ক্যাটাগরি স্ক্রোল লিস্ট -->
+        <section class="space-y-3">
+            <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="categories-scroll">
+                <button onclick="selectCategory('all')" id="cat-btn-all" class="cat-pill bg-primary text-white border border-primary/20 rounded-full px-5 py-2 text-xs font-bold shrink-0 hover:border-primary transition-all">
+                    <i class="fa-solid fa-list-ul mr-1.5"></i> সকল ক্যাটাগরি
+                </button>
+                <!-- ক্যাটাগরি বাটনগুলো এখানে ডাইনামিকালি লোড হবে -->
+            </div>
+        </section>
+
+        <!-- 📦 ৪. Products Grid Layout (১ম বার ৪০টি করে রেন্ডার হবে) -->
+        <section class="space-y-6">
+            <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-primary animate-pulse"></i> আমাদের ইনভেন্টরি প্রোডাক্টস</h3>
+            <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="products-container">
+                <!-- প্রোডাক্ট কার্ডগুলো এখানে স্ক্রল ভিত্তিক ডাইনামিক লোড হবে -->
+            </div>
+
+            <!-- 🔄 ৫. লোডিং স্পিনার ও নো-মোর প্রোডাক্টস এলার্ট -->
+            <div id="loading-spinner" class="py-10 text-center flex flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-spinner animate-spin text-primary text-3xl"></i>
+                <span class="text-xs font-bold text-muted">পরবর্তী প্রোডাক্ট লোড হচ্ছে...</span>
+            </div>
+
+            <div id="no-more-products" class="py-10 text-center hidden flex-col items-center justify-center gap-2">
+                <i class="fa-solid fa-circle-check text-green-500 text-3xl"></i>
+                <span class="text-sm font-bold text-muted">আপাতত আর কোনো নতুন প্রোডাক্ট নেই!</span>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Supabase SDK & Shared Layout Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let supabaseClient = null;
+        let currentPage = 1;
+        const pageSize = 40; // আপনার রিকোয়ারমেন্ট অনুযায়ী প্রতি স্ক্রলে ৪০টি করে প্রোডাক্ট লোড হবে [cite: 1.1]
+        let isLoading = false;
+        let hasMore = true;
+        let selectedCategoryId = 'all';
+        let searchQuery = '';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ডাইনামিক ইনিশিয়ালাইজেশন চেক ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                supabaseClient = window.supabaseClient;
+                
+                // ক্যাটাগরি পিলস ও প্রথম ৪০টি প্রোডাক্ট লোড করা
+                loadCategoriesPills();
+                loadProducts(true); // true মানে ফাস্ট পেজ লোড
+            }
+
+            // --- খ. ডাইনামিক ক্যাটাগরি তালিকা পিলস লোড ---
+            async function loadCategoriesPills() {
+                try {
+                    const { data: categories } = await supabaseClient.from('categories').select('*').limit(20);
+                    const scrollContainer = document.getElementById('categories-scroll');
+                    
+                    if (categories && categories.length > 0) {
+                        categories.forEach(cat => {
+                            scrollContainer.innerHTML += `
+                                <button onclick="selectCategory('${cat.id}')" id="cat-btn-${cat.id}" class="cat-pill bg-white border border-gray-200 rounded-full px-5 py-2 text-xs font-bold text-dark flex items-center gap-2 shrink-0 hover:border-primary transition-all">
+                                    <i class="fa-solid ${cat.icon} text-primary"></i> ${cat.name}
+                                </button>
+                            `;
+                        });
+                    }
+                } catch(e) {}
+            }
+
+            // ক্যাটাগরি ফিল্টার চেইঞ্জ লজিক
+            window.selectCategory = function(catId) {
+                selectedCategoryId = catId;
+                currentPage = 1;
+                hasMore = true;
+                
+                // বাটন অ্যাক্টিভ ক্লাস রেন্ডার
+                document.querySelectorAll('.cat-pill').forEach(btn => {
+                    btn.className = "cat-pill bg-white border border-gray-200 rounded-full px-5 py-2 text-xs font-bold text-dark flex items-center gap-2 shrink-0 hover:border-primary transition-all";
+                });
+                const activeBtn = document.getElementById('cat-btn-' + catId);
+                if (activeBtn) {
+                    activeBtn.className = "cat-pill bg-primary text-white border border-primary/20 rounded-full px-5 py-2 text-xs font-bold shrink-0 hover:border-primary transition-all";
+                }
+
+                loadProducts(true); // নতুন ক্যাটাগরির ১ম পেজ লোড
+            };
+
+            // --- গ. ডাইনামিক প্রোডাক্ট পেজিনেশন ও ইনফিনিট স্ক্রল লোডার ---
+            async function loadProducts(isFirstPage = false) {
+                if (isLoading) return;
+                isLoading = true;
+
+                const prodContainer = document.getElementById('products-container');
+                const spinner = document.getElementById('loading-spinner');
+                const noMoreAlert = document.getElementById('no-more-products');
+
+                spinner.classList.remove('hidden');
+                noMoreAlert.classList.add('hidden');
+
+                if (isFirstPage) {
+                    prodContainer.innerHTML = '';
+                    currentPage = 1;
+                }
+
+                // রেঞ্জ সীমা নির্ধারণ (যেমন: ১ম পেজে ০-৩৯, ২য় পেজে ৪০-৭৯ ইত্যাদি)
+                const startIndex = (currentPage - 1) * pageSize;
+                const endIndex = startIndex + pageSize - 1;
+
+                try {
+                    let query = supabaseClient.from('products').select('*');
+
+                    // ক্যাটাগরি ফিল্টার যুক্ত করা
+                    if (selectedCategoryId !== 'all') {
+                        query = query.eq('category_id', selectedCategoryId);
+                    }
+
+                    // সার্চ ফিল্টার যুক্ত করা
+                    if (searchQuery !== '') {
+                        query = query.or(`title.ilike.%${searchQuery}%,product_code.ilike.%${searchQuery}%`);
+                    }
+
+                    // সর্বোচ্চ ৪০টি প্রোডাক্ট সঠিক সর্টিং রেঞ্জ অনুযায়ী ফেচ করা
+                    const { data: products, error } = await query
+                        .range(startIndex, endIndex)
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+
+                    if (products && products.length > 0) {
+                        products.forEach(prod => {
+                            const cardImgUrl = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image_url;
+                            let discountBadge = "";
+                            let finalPrice = prod.regular_price;
+                            if (prod.customer_offer_price) {
+                                finalPrice = prod.customer_offer_price;
+                                const savings = prod.regular_price - prod.customer_offer_price;
+                                discountBadge = `
+                                    <span class="absolute top-3 left-3 bg-red-500 text-white text-[0.65rem] font-black px-2.5 py-1 rounded-lg z-10 shadow-sm flex items-center gap-1">
+                                        <i class="fa-solid fa-fire text-yellow-300 animate-pulse"></i> ৳${savings} ছাড়
+                                    </span>`;
+                            }
+
+                            const ratingVal = (4.5 + (Math.random() * 0.5)).toFixed(1); 
+                            const ratingStars = `
+                                <span class="inline-flex items-center gap-1 text-[0.7rem] font-bold text-amber-500 bg-amber-50 px-2 py-0.5 rounded-md">
+                                    <i class="fa-solid fa-star"></i> ${ratingVal}
+                                </span>`;
+
+                            prodContainer.innerHTML += `
+                                <div class="product-card group bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:translate-y-[-5px] hover:border-primary/20 hover:shadow-xl transition-all duration-300 relative shadow-sm">
+                                    ${discountBadge}
+                                    
+                                    <button onclick="toggleFavorite('${prod.id}')" class="absolute top-3 right-3 w-8 h-8 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-red-500 shadow-sm hover:scale-110 active:scale-95 transition-transform z-10"><i class="fa-solid fa-heart"></i></button>
+                                    
+                                    <a href="/product?id=${prod.id}" class="w-full h-44 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                        ${cardImgUrl ? `<img src="${cardImgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="${prod.title}">` : `<i class="fa-solid fa-image text-3xl text-gray-400"></i>`}
+                                    </a>
+                                    
+                                    <div class="product-info p-4 flex flex-col flex-grow">
+                                        <div class="flex justify-between items-center mb-1.5">
+                                            <span class="text-[0.65rem] font-bold text-primary uppercase tracking-wider">আজকের অফার</span>
+                                            ${ratingStars}
+                                        </div>
+                                        
+                                        <h4 class="product-title font-bold text-sm text-dark line-clamp-2 h-10 mb-3 group-hover:text-primary transition-colors leading-snug">${prod.title}</h4>
+                                        
+                                        <div class="flex items-baseline gap-2 mb-4 mt-auto">
+                                            <span class="font-body font-bold text-lg text-primary">৳${finalPrice}</span>
+                                            ${prod.customer_offer_price ? `<span class="text-xs text-gray-400 line-through font-body">৳${prod.regular_price}</span>` : ''}
+                                        </div>
+                                        
+                                        <div class="grid grid-cols-2 gap-2 mt-auto">
+                                            <button onclick="addToCart('${prod.id}', '${prod.title}', '${finalPrice}', '${cardImgUrl || ""}')" class="py-2.5 bg-gray-100 text-dark rounded-xl font-bold text-xs hover:bg-gray-200 transition-all flex items-center justify-center gap-1.5"><i class="fa-solid fa-cart-plus text-primary"></i> Cart</button>
+                                            <button onclick="buyNow('${prod.id}', '${prod.title}', '${finalPrice}', '${cardImgUrl || ""}')" class="py-2.5 bg-primary text-white rounded-xl font-bold text-xs hover:bg-secondary hover:shadow-md hover:shadow-primary/15 transition-all flex items-center justify-center gap-1.5"><i class="fa-solid fa-bag-shopping"></i> Buy Now</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        // যদি ফেরত আসা প্রোডাক্টের সংখ্যা ৪০টি থেকে কম হয়, তবে বুঝবেন আর কোনো প্রোডাক্ট নেই
+                        if (products.length < pageSize) {
+                            hasMore = false;
+                            noMoreAlert.classList.remove('hidden');
+                            spinner.classList.add('hidden');
+                        } else {
+                            currentPage++; // পরবর্তী স্ক্রলের জন্য পেজ নম্বর বাড়িয়ে দেওয়া
+                        }
+                    } else {
+                        hasMore = false;
+                        if (isFirstPage) {
+                            prodContainer.innerHTML = '<p class="col-span-full text-center py-10 font-bold text-muted">দুঃখিত, কোনো প্রোডাক্ট পাওয়া যায়নি!</p>';
+                        } else {
+                            noMoreAlert.classList.remove('hidden');
+                        }
+                        spinner.classList.add('hidden');
+                    }
+
+                } catch (err) {
+                    console.error("Failed to load products list:", err);
+                    spinner.classList.add('hidden');
+                } finally {
+                    isLoading = false;
+                }
+            }
+
+            // --- ঘ. মাউস স্ক্রল ডিটেকশন (Infinite Scroll Trigger) ---
+            window.addEventListener('scroll', () => {
+                // ইউজার স্ক্রল করে পেজের শেষ প্রান্তে (৫০০ পিক্সেল ব্যবধানে) পৌঁছালে ট্রিগার হবে
+                if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
+                    if (!isLoading && hasMore) {
+                        loadProducts(false); // false মানে নতুন পেজ অ্যাপেন্ড হবে
+                    }
+                }
+            });
+
+            // --- ঙ. সার্চ বক্স ইন্টিগ্রেশন ---
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', (e) => {
+                    searchQuery = e.target.value.toLowerCase().trim();
+                    hasMore = true;
+                    // সার্চ করার সময় প্রথম পেজ থেকে রি-রেন্ডার হবে
+                    loadProducts(true); 
+                });
+            }
+
+            // --- চ. লেআউট শেয়ার্ড কার্ট ও ফেভারিট অ্যাকশনস ---
+            window.updateLocalBadges = function() {
+                if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
+            };
+
+            window.addToCart = function(productId, title, price, imageUrl) {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const existingItem = cart.find(item => item.product_id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ product_id: productId, title: title, price: parseFloat(price), image_url: imageUrl, quantity: 1 });
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateLocalBadges();
+                alert("সাফল্য! প্রোডাক্টটি কার্টে যোগ করা হয়েছে।");
+            };
+
+            window.buyNow = function(productId, title, price, imageUrl) {
+                const tempCart = [{ product_id: productId, title: title, price: parseFloat(price), image_url: imageUrl, quantity: 1 }];
+                localStorage.setItem('cart', JSON.stringify(tempCart));
+                window.location.href = `/checkout?id=${productId}&qty=1`;
+            };
+
+            window.toggleFavorite = function(productId) {
+                let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                const index = wishlist.indexOf(productId);
+                if (index > -1) {
+                    wishlist.splice(index, 1);
+                    alert("পছন্দের তালিকা থেকে বাদ দেওয়া হয়েছে।");
+                } else {
+                    wishlist.push(productId);
+                    alert("পছন্দের তালিকায় যোগ করা হয়েছে।");
+                }
+                localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                updateLocalBadges();
+            };
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+  </html>
