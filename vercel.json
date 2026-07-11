@@ -17,6 +17,10 @@
     {
       "source": "/dashboard/reseller-profile",
       "destination": "/public/dashboard/reseller-profile.html"
+    },
+    {
+      "source": "/category/:slug",
+      "destination": "/category.html?slug=:slug"
     }
   ]
 }
