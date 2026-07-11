@@ -5,10 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - All Products</title>
     
-    <!-- Google Fonts & Icons -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS Play CDN -->
@@ -18,11 +20,11 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B00',
-                        secondary: '#FF8C33',
-                        canvas: '#FAF6F4',
-                        dark: '#111827',
-                        muted: '#4B5563',
+                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
+                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
+                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
+                        dark: '#111827',          /* চারকোল ব্ল্যাক */
+                        muted: '#4B5563',         /* গ্রে টেক্সট */
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
@@ -95,9 +97,10 @@
     <script src="/layout.js"></script>
     
     <script>
-        let supabaseClient = null;
+        // (গুরুত্বপূর্ণ ফিক্স) conflicts এড়াতে ভেরিয়েবলের নাম supabaseClientInstance রাখা হয়েছে
+        let supabaseClientInstance = null;
         let currentPage = 1;
-        const pageSize = 40; // আপনার রিকোয়ারমেন্ট অনুযায়ী প্রতি স্ক্রলে ৪০টি করে প্রোডাক্ট লোড হবে [cite: 1.1]
+        const pageSize = 40; 
         let isLoading = false;
         let hasMore = true;
         let selectedCategoryId = 'all';
@@ -105,23 +108,23 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ডাইনামিক ইনিশিয়ালাইজেশন চেক ---
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক (layout.js গ্লোবাল ক্লায়েন্ট সিঙ্ক) ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
                     return;
                 }
-                supabaseClient = window.supabaseClient;
+                supabaseClientInstance = window.supabaseClient;
                 
                 // ক্যাটাগরি পিলস ও প্রথম ৪০টি প্রোডাক্ট লোড করা
                 loadCategoriesPills();
-                loadProducts(true); // true মানে ফাস্ট পেজ লোড
+                loadProducts(true); 
             }
 
             // --- খ. ডাইনামিক ক্যাটাগরি তালিকা পিলস লোড ---
             async function loadCategoriesPills() {
                 try {
-                    const { data: categories } = await supabaseClient.from('categories').select('*').limit(20);
+                    const { data: categories } = await supabaseClientInstance.from('categories').select('*').limit(20);
                     const scrollContainer = document.getElementById('categories-scroll');
                     
                     if (categories && categories.length > 0) {
@@ -151,7 +154,7 @@
                     activeBtn.className = "cat-pill bg-primary text-white border border-primary/20 rounded-full px-5 py-2 text-xs font-bold shrink-0 hover:border-primary transition-all";
                 }
 
-                loadProducts(true); // নতুন ক্যাটাগরির ১ম পেজ লোড
+                loadProducts(true); 
             };
 
             // --- গ. ডাইনামিক প্রোডাক্ট পেজিনেশন ও ইনফিনিট স্ক্রল লোডার ---
@@ -176,7 +179,7 @@
                 const endIndex = startIndex + pageSize - 1;
 
                 try {
-                    let query = supabaseClient.from('products').select('*');
+                    let query = supabaseClientInstance.from('products').select('*');
 
                     // ক্যাটাগরি ফিল্টার যুক্ত করা
                     if (selectedCategoryId !== 'all') {
@@ -247,13 +250,12 @@
                             `;
                         });
 
-                        // যদি ফেরত আসা প্রোডাক্টের সংখ্যা ৪০টি থেকে কম হয়, তবে বুঝবেন আর কোনো প্রোডাক্ট নেই
                         if (products.length < pageSize) {
                             hasMore = false;
                             noMoreAlert.classList.remove('hidden');
                             spinner.classList.add('hidden');
                         } else {
-                            currentPage++; // পরবর্তী স্ক্রলের জন্য পেজ নম্বর বাড়িয়ে দেওয়া
+                            currentPage++; 
                         }
                     } else {
                         hasMore = false;
@@ -275,10 +277,9 @@
 
             // --- ঘ. মাউস স্ক্রল ডিটেকশন (Infinite Scroll Trigger) ---
             window.addEventListener('scroll', () => {
-                // ইউজার স্ক্রল করে পেজের শেষ প্রান্তে (৫০০ পিক্সেল ব্যবধানে) পৌঁছালে ট্রিগার হবে
                 if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
                     if (!isLoading && hasMore) {
-                        loadProducts(false); // false মানে নতুন পেজ অ্যাপেন্ড হবে
+                        loadProducts(false); 
                     }
                 }
             });
@@ -289,7 +290,6 @@
                 searchInput.addEventListener('input', (e) => {
                     searchQuery = e.target.value.toLowerCase().trim();
                     hasMore = true;
-                    // সার্চ করার সময় প্রথম পেজ থেকে রি-রেন্ডার হবে
                     loadProducts(true); 
                 });
             }
@@ -336,4 +336,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
