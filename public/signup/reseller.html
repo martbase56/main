@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MerketBaseBD - রিসেলার রেজিস্ট্রেশন</title>
+    <title>MerketBaseBD - ওয়ার্কার রেজিস্ট্রেশন</title>
     
     <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS Play CDN -->
@@ -20,89 +20,182 @@
                     colors: {
                         primary: '#FF6B00',
                         secondary: '#FF8C33',
-                        canvas: '#FAF6F4',
-                        dark: '#111827',
-                        muted: '#4B5563',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        accent: '#FFF7ED',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
                         headings: ['"Bricolage Grotesque"', 'sans-serif'],
-                        body: ['"Rubik"', 'sans-serif'],
+                        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '55%': { transform: 'translate(30px, -40px) scale(1.05)' },
+                        }
                     }
                 }
             }
         }
     </script>
+    <style>
+        .bg-grid-pattern {
+            background-size: 30px 30px;
+            background-image: linear-gradient(to right, rgba(241, 245, 249, 0.6) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(241, 245, 249, 0.6) 1px, transparent 1px);
+        }
+    </style>
 </head>
-<body class="bg-canvas font-bangla text-dark min-h-screen flex items-center justify-center p-5">
+<body class="bg-[#FAF9F6] bg-grid-pattern font-bangla text-dark min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
 
-    <div class="w-full max-w-[550px] bg-white rounded-2xl border border-black/[0.02] p-8 md:p-10 shadow-xl shadow-primary/5">
-        <div class="text-center mb-6">
-            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MerketBaseBD</a>
-            <p class="text-sm text-muted mt-1">Premium Work & Earn Platform</p>
+    <!-- Decorative Animated Glowing Blobs -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-orange-200/40 rounded-full blur-3xl filter animate-blob"></div>
+    <div class="absolute bottom-10 right-10 w-90 h-90 bg-yellow-100/50 rounded-full blur-3xl filter animate-blob" style="animation-delay: 4s;"></div>
+
+    <!-- Main Container -->
+    <div class="w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-[32px] border border-gray-100 p-6 md:p-10 shadow-[0_20px_50px_rgba(255,107,0,0.06)] relative overflow-hidden transition-all duration-300">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight block hover:scale-102 transition-all">MerketBaseBD</a>
+            <p class="text-[11px] text-muted mt-1.5 uppercase tracking-wider font-bold bg-primary/5 py-1 px-3 rounded-full inline-block">Premium Work & Earn Platform</p>
+            <h3 class="text-lg md:text-xl font-bold mt-4 text-dark flex items-center justify-center gap-2">
+                <i class="fa-solid fa-briefcase text-primary"></i> ওয়ার্কার অ্যাকাউন্ট রেজিস্ট্রেশন
+            </h3>
         </div>
 
-        <h3 class="text-xl font-bold text-center mb-6 text-dark flex items-center justify-center gap-2"><i class="fa-solid fa-briefcase text-primary"></i> রিসেলার অ্যাকাউন্ট খুলুন</h3>
+        <!-- Multi-Step Progress Tracker -->
+        <div class="flex items-center justify-center gap-3 mb-8 max-w-sm mx-auto">
+            <div id="step-1-indicator" class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20">
+                <span class="w-5 h-5 rounded-full bg-white text-primary flex items-center justify-center text-[10px]">১</span> অ্যাকাউন্ট সেটআপ
+            </div>
+            <div class="h-0.5 w-10 bg-gray-200" id="step-divider"></div>
+            <div id="step-2-indicator" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300">
+                <span class="w-5 h-5 rounded-full bg-gray-200 text-muted flex items-center justify-center text-[10px]">২</span> আপনার তথ্য
+            </div>
+        </div>
 
-        <form id="reseller-signup-form" class="space-y-4">
+        <form id="worker-signup-form" class="space-y-6">
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">সম্পূর্ণ নাম</label>
-                    <input type="text" id="fullname" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: আলী হোসেন" required>
+            <!-- ================= STEP 1: ACCOUNT DETAILS ================= -->
+            <div id="form-step-1" class="space-y-5 transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Name Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-user text-sm"></i>
+                        </span>
+                        <input type="text" id="fullname" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="fullname" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">সম্পূর্ণ নাম</label>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                        </span>
+                        <input type="email" id="email" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="email" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">ইমেইল ঠিকানা</label>
+                    </div>
                 </div>
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">ইমেইল ঠিকানা</label>
-                    <input type="email" id="email" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all" placeholder="name@example.com" required>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Phone Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </span>
+                        <input type="tel" id="phone" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="phone" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">মোবাইল নম্বর</label>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-lock text-sm"></i>
+                        </span>
+                        <input type="password" id="password" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="password" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">পাসওয়ার্ড দিন</label>
+                    </div>
+                </div>
+
+                <!-- Refer Code Input -->
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                        <i class="fa-solid fa-gift text-sm"></i>
+                    </span>
+                    <input type="number" id="referred_by" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                    <label for="referred_by" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">রেফার কোড (ঐচ্ছিক)</label>
+                </div>
+
+                <!-- Next Button -->
+                <button type="button" id="btn-next" class="w-full py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm">
+                    পরবর্তী ধাপ <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- ================= STEP 2: USER ADDITIONAL DATA ================= -->
+            <div id="form-step-2" class="space-y-5 hidden transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">                    <!-- Age Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-calendar text-sm"></i>
+                        </span>
+                        <input type="number" id="age" min="15" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="age" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">বয়স</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- City/District Input (Sorua/Sohor) -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-city text-sm"></i>
+                        </span>
+                        <input type="text" id="city" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="city" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">শহর / জেলা</label>
+                    </div>
+
+                    <!-- Facebook Profile Link -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-brands fa-facebook text-sm"></i>
+                        </span>
+                        <input type="url" id="fb_link" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="fb_link" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">ফেসবুক আইডি লিঙ্ক (ঐচ্ছিক)</label>
+                    </div>
+                </div>
+
+                <!-- Address Textarea -->
+                <div class="relative group">
+                    <span class="absolute top-4 left-4 text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                        <i class="fa-solid fa-map-location-dot text-sm"></i>
+                    </span>
+                    <textarea id="address" placeholder=" " class="peer w-full pl-11 pr-4 pt-3.5 pb-2 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm h-24 resize-none"></textarea>
+                    <label for="address" class="absolute left-11 top-6 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:top-3 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">বর্তমান সম্পূর্ণ ঠিকানা</label>
+                </div>
+
+                <!-- Navigation Buttons for Step 2 -->
+                <div class="flex gap-4">
+                    <button type="button" id="btn-back" class="w-1/3 py-4 bg-gray-100 text-muted rounded-2xl font-bold hover:bg-gray-200 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-arrow-left"></i> পূর্ববর্তী
+                    </button>
+                    <button type="submit" class="w-2/3 py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-briefcase"></i>  রেজিস্ট্রেশন করুন
+                    </button>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">মোবাইল নম্বর</label>
-                    <input type="tel" id="phone" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="01XXXXXXXXX" required>
-                </div>
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">পাসওয়ার্ড</label>
-                    <input type="password" id="password" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="পাসওয়ার্ড দিন" required>
-                </div>
-            </div>
-
-            <div>
-                <label class="block font-semibold text-sm mb-1 text-dark">ফেসবুক পেজ / প্রোফাইল লিংক (ঐচ্ছিক)</label>
-                <input type="url" id="fb_link" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="https://facebook.com/yourprofile">
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">শিক্ষাগত যোগ্যতা</label>
-                    <input type="text" id="education" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: অনার্স / ডিগ্রি" required>
-                </div>
-                <div>
-                    <label class="block font-semibold text-sm mb-1 text-dark">বয়স</label>
-                    <input type="number" id="age" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: ২৫" min="15" required>
-                </div>
-            </div>
-
-            <div>
-                <label class="block font-semibold text-sm mb-1 text-dark">वर्तमान ঠিকানা</label>
-                <textarea id="address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark h-20 resize-none" placeholder="আপনার সম্পূর্ণ ঠিকানা লিখুন" required></textarea>
-            </div>
-
-            <!-- রেফার কোড ইনপুট -->
-            <div>
-                <label class="block font-semibold text-sm mb-1 text-dark">রেফার কোড (ঐচ্ছিক - শুধুমাত্র রিসেলারদের জন্য)</label>
-                <input type="number" id="referred_by" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-2 focus:ring-primary/15 transition-all text-dark" placeholder="যেমন: ৬৭৬৫">
-            </div>
-
-            <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2 text-lg">
-                <i class="fa-solid fa-briefcase"></i> রিসেলার হিসেবে রেজিস্ট্রেশন করুন
-            </button>
         </form>
 
-        <div class="text-center mt-6 text-sm text-muted space-y-2">
-            <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-semibold hover:underline">লগইন করুন</a></p>
-            <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-semibold hover:underline">এখানে ক্লিক করুন</a></p>
+        <!-- Footer Links -->
+        <div class="text-center mt-8 pt-6 border-t border-gray-100 text-sm text-muted space-y-2">
+            <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-bold hover:underline">লগইন করুন</a></p>
+            <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
     </div>
 
@@ -121,7 +214,6 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        // window.supabase ব্যবহার করা হয়েছে (conflicts এড়াতে)
                         supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         console.log("Supabase Client initialized dynamically.");
                     }
@@ -132,8 +224,55 @@
 
             initializeSupabase();
 
-            // --- খ. রিসেলার রেজিস্ট্রেশন হ্যান্ডলার ---
-            document.getElementById('reseller-signup-form').addEventListener('submit', async (e) => {
+            // --- খ. টু-স্টেপ ফর্ম নেভিগেশন লজিক ---
+            const step1 = document.getElementById('form-step-1');
+            const step2 = document.getElementById('form-step-2');
+            const btnNext = document.getElementById('btn-next');
+            const btnBack = document.getElementById('btn-back');
+
+            const step1Indicator = document.getElementById('step-1-indicator');
+            const step2Indicator = document.getElementById('step-2-indicator');
+            const stepDivider = document.getElementById('step-divider');
+
+            // প্রথম ধাপের রিকোয়ার্ড ফিল্ড ভ্যালিডেশন
+            function validateStep1() {
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (!fullname || !email || !phone || !password) {
+                    alert("দয়া করে প্রথম ধাপের সবগুলি প্রয়োজনীয় ফিল্ড পূরণ করুন।");
+                    return false;
+                }
+                return true;
+            }
+
+            btnNext.addEventListener('click', () => {
+                if (validateStep1()) {
+                    // এনিমেশন ট্রানজিশন সহ স্লাইড পরিবর্তন
+                    step1.classList.add('hidden');
+                    step2.classList.remove('hidden');
+
+                    // ইন্ডিকেটর স্টাইল আপডেট
+                    step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-primary text-xs font-bold transition-all duration-300";
+                    stepDivider.className = "h-0.5 w-10 bg-primary";
+                    step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
+                }
+            });
+
+            btnBack.addEventListener('click', () => {
+                step2.classList.add('hidden');
+                step1.classList.remove('hidden');
+
+                // ইন্ডিকেটর রিস্টোর
+                step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
+                stepDivider.className = "h-0.5 w-10 bg-gray-200";
+                step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300";
+            });
+
+            // --- গ. ওয়ার্কার রেজিস্ট্রেশন সাবমিট হ্যান্ডলার ---
+            document.getElementById('worker-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
                 if (!supabaseClient) {
@@ -145,11 +284,14 @@
                 const email = document.getElementById('email').value.trim();
                 const phone = document.getElementById('phone').value.trim();
                 const password = document.getElementById('password').value.trim();
-                const fb_link = document.getElementById('fb_link').value.trim();
+                const referredByCode = document.getElementById('referred_by').value.trim();
+                
+                // স্টেপ ২ এর ডেটা সংগ্রহ
                 const education = document.getElementById('education').value.trim();
                 const age = document.getElementById('age').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const fb_link = document.getElementById('fb_link').value.trim();
                 const address = document.getElementById('address').value.trim();
-                const referredByCode = document.getElementById('referred_by').value.trim();
 
                 try {
                     const { data, error } = await supabaseClient.auth.signUp({
@@ -159,12 +301,12 @@
                             data: {
                                 full_name: fullname,
                                 phone_number: phone,
-                                role: 'reseller',
-                                fb_link: fb_link,
+                                role: 'worker', // ওয়ার্কার হিসেবে রেজিস্টার হচ্ছে
                                 education: education,
-                                age: parseInt(age),
+                                age: age ? parseInt(age) : null,
+                                city: city,
+                                fb_link: fb_link,
                                 address: address,
-                                // রেফারেল কোড মেটাডেটায় পাঠানো হচ্ছে
                                 referred_by_code: referredByCode ? parseInt(referredByCode) : null
                             }
                         }
@@ -176,11 +318,11 @@
                     }
 
                     if (data.user) {
-                        alert("রিসেলার হিসেবে আবেদন সম্পন্ন হয়েছে! অনুগ্রহ করে আপনার ইমেইল চেক করুন।");
+                        alert("ওয়ার্কার হিসেবে আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে! অনুগ্রহ করে ইমেইল ভেরিফাই করুন।");
                         window.location.href = "/login";
                     }
                 } catch (err) {
-                    alert("রিসেলার সাইনআপ ফেইলড: " + err.message);
+                    alert("রজিস্ট্রেশন প্রসেসে ত্রুটি: " + err.message);
                 }
             });
         });
