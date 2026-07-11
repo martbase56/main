@@ -177,7 +177,7 @@ async function updateLayoutNavigation() {
             if (profile) {
                 if (profile.role === 'reseller') {
                     dynamicNav.outerHTML = `
-                        <li class="w-full"><a href="/dashboard/reseller" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-chart-line"></i> রিসেলার প্যানেল</a></li>
+                        <li class="w-full"><a href="/dashboard/reseller" class="nav-link w-full text-left font-bold text-[0.95rem] text-white hover:text-white/80 flex items-center gap-1.5 transition-colors py-1"><i class="fa-solid fa-chart-line"></i> ওয়ার্কার প্যানেল</a></li>
                         <li class="w-full mt-2 lg:mt-0 lg:w-auto"><a href="#" onclick="handleLayoutLogout()" class="nav-link block text-center font-bold text-[0.95rem] bg-white/10 border border-white/20 text-white py-2.5 px-6 rounded-full hover:bg-white/20 transition-all shadow-md"><i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট</a></li>
                     `;
                 } else if (profile.role === 'admin') {
