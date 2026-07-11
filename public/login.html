@@ -8,7 +8,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -23,143 +23,195 @@
                     colors: {
                         primary: '#FF6B00',
                         secondary: '#FF8C33',
-                        canvas: '#FAF6F4',
-                        dark: '#111827',
-                        muted: '#4B5563',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        accent: '#FFF7ED',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
                         headings: ['"Bricolage Grotesque"', 'sans-serif'],
-                        body: ['"Rubik"', 'sans-serif'],
+                        body: ['"Plus Jakarta Sans"', 'sans-serif'],
                     },
                     animation: {
-                        'gradient-bg': 'gradient-bg 8s linear infinite',
-                        'card-float': 'card-float 6s ease-in-out infinite',
-                        'grid-move': 'grid-move 20s linear infinite',
+                        'blob': 'blob 10s infinite',
+                        'pulse-subtle': 'pulseSubtle 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
                     },
                     keyframes: {
-                        'gradient-bg': {
-                            '0%, 100%': { 'background-position': '0% 50%' },
-                            '50%': { 'background-position': '100% 50%' },
+                        blob: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.95)' },
                         },
-                        'card-float': {
-                            '0%, 100%': { transform: 'translateY(0)' },
+                        pulseSubtle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.85' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
                             '50%': { transform: 'translateY(-10px)' },
-                        },
-                        'grid-move': {
-                            '0%': { 'background-position': '0 0' },
-                            '100%': { 'background-position': '40px 40px' },
-                        },
-                    },
+                        }
+                    }
                 }
             }
         }
     </script>
-    
     <style>
-        /* কার্ডের জন্য কাস্টম অ্যানিমেটেড গ্রেডিয়েন্ট এবং প্যাটার্ন */
-        .card-bg-animated {
-            background: linear-gradient(135deg, #FF6B00, #FF8C33, #FF6B00, #E05300);
-            background-size: 300% 300%;
-            animation: gradient-bg 8s linear infinite;
-        }
-
-        .card-grid-overlay {
-            background-image: linear-gradient(#ffffff1a 1px, transparent 1px),
-                              linear-gradient(90deg, #ffffff1a 1px, transparent 1px);
-            background-size: 20px 20px;
-            animation: grid-move 20s linear infinite;
-        }
-
-        /* সূক্ষ্ম বর্ডার গ্লো ইফেক্ট */
-        .card-glow:hover {
-            box-shadow: 0 0 30px rgba(255, 107, 0, 0.4);
-            transform: scale(1.02);
+        /* Modern light grid background pattern */
+        .bg-grid-pattern {
+            background-size: 30px 30px;
+            background-image: linear-gradient(to right, rgba(241, 245, 249, 0.6) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(241, 245, 249, 0.6) 1px, transparent 1px);
         }
     </style>
 </head>
-<body class="bg-canvas font-bangla text-dark min-h-screen flex items-center justify-center p-5 relative overflow-hidden">
+<body class="bg-[#FAF9F6] bg-grid-pattern font-bangla text-dark min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
 
-    <!-- পেজের ব্যাকগ্রাউন্ডে সফট অব্জেক্টস (পূর্বের মতো) -->
-    <div class="absolute -top-32 -left-32 w-80 h-80 bg-primary/10 rounded-full blur-[120px]"></div>
-    <div class="absolute -bottom-32 -right-32 w-80 h-80 bg-secondary/10 rounded-full blur-[120px]"></div>
+    <!-- Decorative Animated Glowing Blobs (Light Mode Orange Theme) -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-orange-200/50 rounded-full blur-3xl filter animate-blob"></div>
+    <div class="absolute top-2/3 -right-20 w-96 h-96 bg-yellow-100/60 rounded-full blur-3xl filter animate-blob" style="animation-delay: 3s;"></div>
+    <div class="absolute top-10 right-1/4 w-60 h-60 bg-orange-100/40 rounded-full blur-3xl filter animate-blob" style="animation-delay: 5s;"></div>
 
-    <!-- মেইন এনিমেশন কার্ড (নতুন ডিজাইন) -->
-    <div class="w-full max-w-[480px] bg-white rounded-3xl p-2 shadow-2xl shadow-primary/10 relative card-glow transition-all duration-500 ease-out animate-card-float hover:shadow-primary/20 overflow-hidden border border-black/[0.03]">
+    <!-- Main Container -->
+    <div class="w-full max-w-5xl bg-white/80 backdrop-blur-xl rounded-[32px] border border-gray-100 shadow-[0_20px_50px_rgba(255,107,0,0.06)] relative overflow-hidden transition-all duration-300">
         
-        <!-- নতুন এনিমেটেড ব্যাকগ্রাউন্ড লেয়ার -->
-        <div class="absolute inset-0 card-bg-animated rounded-3xl opacity-90"></div>
-        <div class="absolute inset-0 card-grid-overlay rounded-3xl opacity-30"></div>
-
-        <!-- মূল কন্টেন্ট প্যানেল (Glassmorphic) -->
-        <div class="bg-white/95 backdrop-blur-sm rounded-[20px] p-8 md:p-10 relative z-10 border border-white/50">
+        <!-- Inside Card Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 min-h-[600px]">
             
-            <!-- ব্র্যান্ড লোগো -->
-            <div class="text-center mb-8 relative z-10">
-                <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MerketBaseBD</a>
-                <p class="text-xs text-muted mt-1 uppercase tracking-wider font-semibold">Premium Work & Earn Platform</p>
-            </div>
+            <!-- Left Panel: Premium Orange Showcase (Visible on Large Screens) -->
+            <div class="lg:col-span-5 bg-gradient-to-br from-primary to-orange-600 p-8 md:p-12 text-white flex flex-col justify-between relative overflow-hidden">
+                <!-- Abstract patterns inside orange card -->
+                <div class="absolute inset-0 bg-grid-pattern opacity-10 pointer-events-none"></div>
+                <div class="absolute top-[-30%] left-[-20%] w-[120%] h-[120%] bg-radial-gradient from-white/10 to-transparent pointer-events-none"></div>
+                
+                <!-- Logo / Header inside orange side -->
+                <div class="relative z-10 text-center lg:text-left">
+                    <a href="/" class="font-headings font-extrabold text-3xl tracking-tight block hover:scale-102 transition-transform duration-300">
+                        MerketBaseBD
+                    </a>
+                    <span class="inline-block mt-2 text-[11px] font-bold tracking-wider uppercase bg-white/20 px-3 py-1 rounded-full backdrop-blur-md">
+                        Premium Work & Earn
+                    </span>
+                </div>
 
-            <h3 class="text-xl font-bold text-center mb-6 text-dark flex items-center justify-center gap-2 relative z-10">
-                <i class="fa-solid fa-key text-primary animate-pulse"></i> অ্যাকাউন্টে প্রবেশ করুন
-            </h3>
+                <!-- Showcase / Stats Elements -->
+                <div class="relative z-10 my-10 lg:my-0 space-y-6 hidden lg:block">
+                    <div class="space-y-2">
+                        <h2 class="text-2xl font-bold font-bangla leading-tight">আপনার ক্যারিয়ারের ডিজিটাল যাত্রা শুরু হোক এখানেই</h2>
+                        <p class="text-sm text-orange-50/90 font-light font-sans">Access modern earning tools, work on premium micro-tasks, and withdraw instantly inside a secure network.</p>
+                    </div>
 
-            <form id="login-form" class="space-y-5 relative z-10">
-                <!-- ইমেইল ইনপুট -->
-                <div>
-                    <label class="block font-bold text-xs mb-1.5 text-dark/80">ইমেইল ঠিকানা</label>
-                    <div class="relative group">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors">
-                            <i class="fa-solid fa-envelope"></i>
-                        </span>
-                        <input type="email" id="email" class="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="example@domain.com" required>
+                    <!-- Mini Decorative Card Inside Orange Panel -->
+                    <div class="bg-white/15 backdrop-blur-md border border-white/20 rounded-2xl p-4 shadow-lg animate-float">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center text-primary shadow-sm">
+                                <i class="fa-solid fa-chart-line text-lg"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs text-orange-100">সক্রিয় মেম্বারস</p>
+                                <p class="text-lg font-bold font-body leading-none">৪৫,০০০+ ইউজার</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- পাসওয়ার্ড ইনপুট -->
-                <div>
-                    <label class="block font-bold text-xs mb-1.5 text-dark/80">পাসওয়ার্ড</label>
+                <!-- Footer Text in Left Panel -->
+                <div class="relative z-10 text-xs text-orange-100/80 hidden lg:block">
+                    <p>&copy; 2025 MarketBaseBD. All rights reserved.</p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Login Form Screen -->
+            <div class="lg:col-span-7 p-8 md:p-12 lg:p-16 flex flex-col justify-center">
+                
+                <!-- Form Top Header -->
+                <div class="mb-8">
+                    <h3 class="text-2xl font-extrabold text-dark tracking-tight flex items-center gap-2">
+                        লগইন করুন <span class="inline-block text-primary"><i class="fa-solid fa-fire text-xl animate-pulse"></i></span>
+                    </h3>
+                    <p class="text-sm text-muted mt-1.5 font-sans">অনুগ্রহ করে আপনার নিবন্ধিত অ্যাকাউন্ট ব্যবহার করে প্রবেশ করুন</p>
+                </div>
+
+                <form id="login-form" class="space-y-6">
+                    
+                    <!-- Advanced Input Box: Email -->
                     <div class="relative group">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors">
-                            <i class="fa-solid fa-lock"></i>
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors duration-200 pointer-events-none">
+                            <i class="fa-solid fa-envelope text-sm"></i>
                         </span>
-                        <input type="password" id="password" class="w-full pl-11 pr-11 py-3 bg-white border border-gray-100 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                        <input 
+                            type="email" 
+                            id="email" 
+                            required
+                            placeholder=" "
+                            class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm"
+                        >
+                        <!-- Dynamic Floating Label -->
+                        <label 
+                            for="email"
+                            class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none
+                            peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2
+                            peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            ইমেইল ঠিকানা
+                        </label>
+                    </div>
+
+                    <!-- Advanced Input Box: Password -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors duration-200 pointer-events-none">
+                            <i class="fa-solid fa-lock text-sm"></i>
+                        </span>
+                        <input 
+                            type="password" 
+                            id="password" 
+                            required
+                            placeholder=" "
+                            class="peer w-full pl-11 pr-12 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm"
+                        >
+                        <!-- Dynamic Floating Label -->
+                        <label 
+                            for="password"
+                            class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none
+                            peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2
+                            peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2"
+                        >
+                            পাসওয়ার্ড লিখুন
+                        </label>
                         
-                        <!-- শো/হাইড বাটন -->
-                        <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center active:scale-95 transition-transform">
-                            <i class="fa-solid fa-eye text-gray-400 text-sm hover:text-primary transition-colors" id="eye-icon"></i>
+                        <!-- Toggle Password Button -->
+                        <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary active:scale-90 transition-all">
+                            <i class="fa-solid fa-eye text-sm" id="eye-icon"></i>
                         </button>
                     </div>
+
+                    <!-- Button with gradient and subtle hover effect -->
+                    <button type="submit" class="w-full py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm relative overflow-hidden group">
+                        <i class="fa-solid fa-arrow-right-to-bracket text-sm transition-transform group-hover:translate-x-1"></i> 
+                        লগইন করুন
+                    </button>
+                </form>
+
+                <!-- Responsive Sign-up Options Links -->
+                <div class="mt-8 pt-6 border-t border-gray-100 text-center text-xs text-muted space-y-4">
+                    <p class="leading-relaxed">
+                        নতুন অ্যাকাউন্ট খুলতে চান? <br class="sm:hidden"> 
+                        <a href="/signup" class="text-primary font-bold hover:underline transition-colors">কাস্টমার সাইনআপ</a> 
+                        অথবা 
+                        <a href="/signup/reseller" class="text-primary font-bold hover:underline transition-colors">ওয়ার্কার সাইনআপ</a>
+                    </p>
+                    
+                    <p>
+                        <a href="/" class="text-gray-400 hover:text-primary transition-colors font-bold inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-arrow-left"></i> হোমে ফিরে যান
+                        </a>
+                    </p>
                 </div>
 
-                <!-- সাবমিট বাটন -->
-                <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary active:scale-[0.98] transition-all duration-150 shadow-lg shadow-primary/20 flex items-center justify-center gap-2.5 text-sm relative overflow-hidden group">
-                    <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-shimmer"></span>
-                    <i class="fa-solid fa-right-to-bracket transition-transform group-hover:translate-x-1"></i> লগইন করুন
-                </button>
-            </form>
-
-            <!-- ফুটার লিংকসমূহ -->
-            <div class="text-center mt-8 text-xs text-muted space-y-3 relative z-10 border-t border-gray-100 pt-5">
-                <p>নতুন অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">কাস্টমার সাইনআপ</a> অথবা <a href="/signup/reseller" class="text-primary font-bold hover:underline">ওয়ার্কার সাইনআপ</a></p>
-                <p><a href="/" class="text-gray-500 hover:text-primary transition-colors font-bold inline-flex items-center gap-1.5"><i class="fa-solid fa-arrow-left-long"></i> হোমে ফিরে যান</a></p>
             </div>
+
         </div>
     </div>
-
-    <!-- Shimmer Keyframe Injection for Button -->
-    <style>
-        @keyframes shimmer {
-            100% { transform: translateX(100%); }
-        }
-        .group-hover\:animate-shimmer:hover .group-hover\:animate-shimmer {
-            animation: shimmer 1s;
-        }
-        /* Custom shorthand is not working with CDN, so added directly */
-        .group:hover .group-hover\:animate-shimmer {
-             animation: shimmer 1s;
-        }
-    </style>
 
     <!-- Supabase SDK & Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -168,7 +220,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             let supabaseClient = null;
 
-            // --- ক. সুপাবেস ডাইনামিক ইনিশিয়ালাইজেশন ---
+            // --- Dynamic Supabase Initialization ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -186,7 +238,7 @@
 
             initializeSupabase();
 
-            // --- খ. পাসওয়ার্ড শো/হাইড ইন্টারেক্টিভ লজিক ---
+            // --- Password Show/Hide Interactive Logic ---
             const passwordInput = document.getElementById('password');
             const togglePasswordBtn = document.getElementById('toggle-password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -205,7 +257,7 @@
                 });
             }
 
-            // --- গ. লগইন ফর্ম সাবমিট প্রসেসিং ---
+            // --- Login Form Submit Processing ---
             document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClient) {
