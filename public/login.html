@@ -23,77 +23,114 @@
                     colors: {
                         primary: '#FF6B00',
                         secondary: '#FF8C33',
-                        canvas: '#FAF6F4',
                         dark: '#111827',
-                        muted: '#4B5563',
+                        muted: '#6B7280',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
                         headings: ['"Bricolage Grotesque"', 'sans-serif'],
                         body: ['"Rubik"', 'sans-serif'],
+                    },
+                    animation: {
+                        'gradient-bg': 'gradient-bg 10s ease infinite',
+                        'float-slow': 'float-slow 8s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        'gradient-bg': {
+                            '0%, 100%': { 'background-position': '0% 50%' },
+                            '50%': { 'background-position': '100% 50%' },
+                        },
+                        'float-slow': {
+                            '0%, 100%': { transform: 'translateY(0) scale(1)' },
+                            '50%': { transform: 'translateY(-15px) scale(1.05)' },
+                        }
                     }
                 }
             }
         }
     </script>
+    <style>
+        /* অ্যানিমেটেড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ডের জন্য */
+        .animated-bg {
+            background: linear-gradient(-45deg, #FF6B00, #FF8C33, #FFA057, #E05300);
+            background-size: 400% 400%;
+        }
+    </style>
 </head>
-<body class="bg-canvas font-bangla text-dark min-h-screen flex items-center justify-center p-5">
+<body class="animated-bg animate-gradient-bg font-bangla text-dark min-h-screen flex items-center justify-center p-5 relative overflow-hidden">
 
-    <div class="w-full max-w-[450px] bg-white rounded-3xl border border-black/[0.02] p-8 md:p-10 shadow-xl shadow-primary/5 relative overflow-hidden">
-        <!-- Background Soft Orbs -->
-        <div class="absolute -top-16 -left-16 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
-        <div class="absolute -bottom-16 -right-16 w-32 h-32 bg-secondary/10 rounded-full blur-2xl"></div>
+    <!-- ব্যাকগ্রাউন্ডের জন্য এক্সট্রা ইফেক্টিভ গ্লোয়িং অবজেক্টস -->
+    <div class="absolute top-10 left-10 w-72 h-72 bg-white/10 rounded-full blur-3xl animate-float-slow"></div>
+    <div class="absolute bottom-10 right-10 w-80 h-80 bg-black/10 rounded-full blur-3xl animate-float-slow" style="animation-delay: -3s;"></div>
 
-        <!-- Brand logo -->
+    <!-- মেইন কার্ড (Glassmorphic & Micro-interactions) -->
+    <div class="w-full max-w-[450px] bg-white/95 backdrop-blur-md rounded-3xl border border-white/20 p-8 md:p-10 shadow-2xl shadow-black/20 relative overflow-hidden transform transition-all duration-300 hover:shadow-black/30">
+        
+        <!-- ভেতরে সফট ব্যাকগ্রাউন্ড গ্লো -->
+        <div class="absolute -top-16 -left-16 w-32 h-32 bg-primary/20 rounded-full blur-2xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-16 -right-16 w-32 h-32 bg-secondary/20 rounded-full blur-2xl animate-pulse-slow" style="animation-delay: 2s;"></div>
+
+        <!-- ব্র্যান্ড লোগো -->
         <div class="text-center mb-8 relative z-10">
-            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight">MerketBaseBD</a>
-            <p class="text-xs text-muted mt-1 uppercase tracking-wider font-semibold">Premium Work & Earn Platform</p>
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight block hover:scale-105 transition-transform duration-300">MerketBaseBD</a>
+            <p class="text-[10px] text-muted mt-1.5 uppercase tracking-widest font-bold bg-primary/5 py-1 px-3 rounded-full inline-block">Premium Work & Earn Platform</p>
         </div>
 
         <h3 class="text-xl font-bold text-center mb-6 text-dark flex items-center justify-center gap-2 relative z-10">
-            <i class="fa-solid fa-key text-primary"></i> অ্যাকাউন্টে প্রবেশ করুন
+            <i class="fa-solid fa-key text-primary animate-bounce"></i> অ্যাকাউন্টে প্রবেশ করুন
         </h3>
 
         <form id="login-form" class="space-y-5 relative z-10">
-            <!-- Email Input with FA Icon inside -->
+            <!-- ইমেইল ইনপুট -->
             <div>
-                <label class="block font-bold text-xs mb-1.5 text-dark">ইমেইল ঠিকানা</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                <label class="block font-bold text-xs mb-1.5 text-dark/80">ইমেইল ঠিকানা</label>
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors">
                         <i class="fa-solid fa-envelope"></i>
                     </span>
-                    <input type="email" id="email" class="w-full pl-11 pr-4 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="example@domain.com" required>
+                    <input type="email" id="email" class="w-full pl-11 pr-4 py-3 bg-gray-50/50 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="example@domain.com" required>
                 </div>
             </div>
 
-            <!-- Password Input with FA Icon and Show/Hide Toggle inside [1.1] -->
+            <!-- পাসওয়ার্ড ইনপুট -->
             <div>
-                <label class="block font-bold text-xs mb-1.5 text-dark">পাসওয়ার্ড</label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                <label class="block font-bold text-xs mb-1.5 text-dark/80">পাসওয়ার্ড</label>
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors">
                         <i class="fa-solid fa-lock"></i>
                     </span>
-                    <input type="password" id="password" class="w-full pl-11 pr-11 py-3 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
+                    <input type="password" id="password" class="w-full pl-11 pr-11 py-3 bg-gray-50/50 border border-gray-200 rounded-xl font-body text-[0.95rem] outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium" placeholder="আপনার পাসওয়ার্ড লিখুন" required>
                     
-                    <!-- Show/Hide Button with Eye Icon [1.1] -->
-                    <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center active:scale-95 transition-transform">
-                        <i class="fa-solid fa-eye text-gray-400 text-sm" id="eye-icon"></i>
+                    <!-- শো/হাইড বাটন -->
+                    <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center active:scale-90 transition-transform">
+                        <i class="fa-solid fa-eye text-gray-400 text-sm hover:text-primary transition-colors" id="eye-icon"></i>
                     </button>
                 </div>
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-md shadow-primary/10 flex items-center justify-center gap-2 text-sm">
-                <i class="fa-solid fa-right-to-bracket animate-pulse"></i> লগইন করুন
+            <!-- সাবমিট বাটন উইথ এফেক্টস -->
+            <button type="submit" class="w-full py-3.5 bg-primary text-white rounded-xl font-bold hover:bg-secondary active:scale-[0.99] transition-all duration-150 shadow-lg shadow-primary/20 flex items-center justify-center gap-2 text-sm relative overflow-hidden group">
+                <span class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></span>
+                <i class="fa-solid fa-right-to-bracket transition-transform group-hover:translate-x-1"></i> লগইন করুন
             </button>
         </form>
 
-        <div class="text-center mt-8 text-xs text-muted space-y-3 relative z-10">
-            <p>নতুন অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">কাস্টমার সাইনআপ</a> অথবা <a href="/signup/reseller" class="text-primary font-bold hover:underline">ওয়ার্কার সাইনআপ</a></p>
-            <p><a href="/" class="text-gray-500 hover:text-primary transition-colors font-bold"><i class="fa-solid fa-arrow-left-long"></i> হোমে ফিরে যান</a></p>
+        <!-- ফুটার লিংকসমূহ -->
+        <div class="text-center mt-8 text-xs text-muted space-y-3 relative z-10 border-t border-gray-100 pt-5">
+            <p>নতুন অ্যাকাউন্ট খুলতে চান? <br class="sm:hidden"> <a href="/signup" class="text-primary font-bold hover:underline">কাস্টমার সাইনআপ</a> অথবা <a href="/signup/reseller" class="text-primary font-bold hover:underline">ওয়ার্কার সাইনআপ</a></p>
+            <p><a href="/" class="text-gray-400 hover:text-primary transition-colors font-bold inline-flex items-center gap-1"><i class="fa-solid fa-arrow-left-long"></i> হোমে ফিরে যান</a></p>
         </div>
     </div>
 
-    <!-- Supabase SDK & Global Layout -->
+    <!-- Shimmer Keyframe Injection for Button -->
+    <style>
+        @keyframes shimmer {
+            100% { transform: translateX(100%); }
+        }
+    </style>
+
+    <!-- Supabase SDK & Logic -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -118,7 +155,7 @@
 
             initializeSupabase();
 
-            // --- খ. পাসওয়ার্ড শো/হাইড ইন্টারেক্টিভ লজিক [1.1] ---
+            // --- খ. পাসওয়ার্ড শো/হাইড ইন্টারেক্টিভ লজিক ---
             const passwordInput = document.getElementById('password');
             const togglePasswordBtn = document.getElementById('toggle-password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -126,11 +163,9 @@
             if (passwordInput && togglePasswordBtn && eyeIcon) {
                 togglePasswordBtn.addEventListener('click', (e) => {
                     e.preventDefault();
-                    // টাইপ পরিবর্তন
                     const isPassword = passwordInput.getAttribute('type') === 'password';
                     passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
                     
-                    // আইকন পরিবর্তন [1.1]
                     if (isPassword) {
                         eyeIcon.className = "fa-solid fa-eye-slash text-primary text-sm";
                     } else {
@@ -173,7 +208,6 @@
                             return;
                         }
 
-                        // রোলের ভিত্তিতে ড্যাশবোর্ড রিডাইরেকশন
                         if (profile.role === 'reseller') {
                             window.location.href = "/dashboard/reseller";
                         } else if (profile.role === 'admin') {
