@@ -197,9 +197,7 @@
             <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-bold hover:underline">লগইন করুন</a></p>
             <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
-    </div>
-
-    <!-- Supabase SDK -->
+    </div><!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -214,6 +212,7 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
+                        // window.supabase ব্যবহার করা হয়েছে গ্লোবাল কনফ্লিক্ট এড়াতে
                         supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         console.log("Supabase Client initialized dynamically.");
                     }
@@ -271,7 +270,20 @@
                 step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300";
             });
 
-            // --- গ. ওয়ার্কার রেজিস্ট্রেশন সাবমিট হ্যান্ডলার ---
+            // --- ক. ইউআরএল থেকে রেফারেল কোড অটো-ডিটেক্ট করা ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            
+            if (refCode) {
+                const refInput = document.getElementById('referred_by');
+                if (refInput) {
+                    refInput.value = refCode;
+                    refInput.readOnly = true; // লক করা হলো যাতে ভুলবশত পরিবর্তন না হয়
+                    refInput.className += " bg-gray-150 text-gray-400 border-gray-300 font-bold";
+                }
+            }
+
+            // --- গ. ওয়ার্কার রেজিস্ট্রেশন সাবমিট হ্যান্ডলার (সংশোধিত) ---
             document.getElementById('worker-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -286,14 +298,18 @@
                 const password = document.getElementById('password').value.trim();
                 const referredByCode = document.getElementById('referred_by').value.trim();
                 
-                // স্টেপ ২ এর ডেটা সংগ্রহ
-                const education = document.getElementById('education').value.trim();
+                // স্টেপ ২ এর ডেটা সংগ্রহ (উইদাউট এডুকেশন ফিল্ড)
                 const age = document.getElementById('age').value.trim();
                 const city = document.getElementById('city').value.trim();
                 const fb_link = document.getElementById('fb_link').value.trim();
                 const address = document.getElementById('address').value.trim();
 
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেসিং হচ্ছে...`;
+
                 try {
+                    // role: 'reseller' পাস করা হচ্ছে ব্যাকএন্ড ও ডাটাবেজ সামঞ্জস্যতার জন্য
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
@@ -301,8 +317,7 @@
                             data: {
                                 full_name: fullname,
                                 phone_number: phone,
-                                role: 'worker', // ওয়ার্কার হিসেবে রেজিস্টার হচ্ছে
-                                education: education,
+                                role: 'reseller', 
                                 age: age ? parseInt(age) : null,
                                 city: city,
                                 fb_link: fb_link,
@@ -322,10 +337,11 @@
                         window.location.href = "/login";
                     }
                 } catch (err) {
-                    alert("রজিস্ট্রেশন প্রসেসে ত্রুটি: " + err.message);
+                    alert("রেজিস্ট্রেশন প্রসেসে ত্রুটি: " + err.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-briefcase"></i>  রেজিস্ট্রেশন করুন`;
                 }
             });
         });
     </script>
-</body>
-</html>
