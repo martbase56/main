@@ -204,7 +204,7 @@
                 loadProducts(true); 
             };
 
-            // --- গ. ডাইনামিক প্রোডাক্ট পেজিনেশন ও ইনফিনিট স্ক্রল লোডার (রিসেলার প্রাইস হাইলাইটেড) ---
+            // --- গ. ডাইনামিক প্রোডাক্ট পেজিনেশন ও ইনফিনিট স্ক্রল লোডার ---
             async function loadProducts(isFirstPage = false) {
                 if (isLoading) return;
                 isLoading = true;
@@ -248,7 +248,6 @@
                             // কাস্টমার বিক্রয় মূল্য নির্ধারণ
                             const retailPrice = prod.customer_offer_price ? parseFloat(prod.customer_offer_price) : parseFloat(prod.regular_price);
                             const resellerPrice = parseFloat(prod.reseller_price);
-                            // রিসেলারের ন্যূনতম নিট লাভ হিসাব করা (খুচরা মূল্য - পাইকারি মূল্য)
                             const minProfit = Math.max(retailPrice - resellerPrice, 0);
 
                             prodContainer.innerHTML += `
@@ -260,14 +259,18 @@
                                     
                                     <button onclick="toggleFavorite('${prod.id}')" class="absolute top-3 right-3 w-8 h-8 bg-white/95 backdrop-blur rounded-full flex items-center justify-center text-red-500 shadow-sm hover:scale-110 active:scale-95 transition-transform z-10"><i class="fa-solid fa-heart"></i></button>
                                     
-                                    <a href="/product?id=${prod.id}" class="w-full h-40 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                    <!-- (ডাইনামিক ফিক্স) ক্লিকেবল লিংক সরাসরি নতুন রিসেলার প্রোডাক্ট ডিটেইলসে (/dashboard/reseller-product) রিডাইরেক্ট করবে -->
+                                    <a href="/dashboard/reseller-product?id=${prod.id}" class="w-full h-40 bg-gray-50 flex items-center justify-center overflow-hidden relative">
                                         ${cardImgUrl ? `<img src="${cardImgUrl}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt="${prod.title}">` : `<i class="fa-solid fa-image text-3xl text-gray-400"></i>`}
                                     </a>
                                     
                                     <div class="product-info p-3 flex flex-col flex-grow">
-                                        <h4 class="product-title font-bold text-xs text-dark line-clamp-2 h-8 mb-2 group-hover:text-primary transition-colors leading-snug">${prod.title}</h4>
+                                        <!-- টাইটেল লিংকও নতুন রিসেলার প্রোডাক্ট ডিটেইলসে রিডাইরেক্ট করবে -->
+                                        <h4 class="product-title font-bold text-xs text-dark line-clamp-2 h-8 mb-2 group-hover:text-primary transition-colors leading-snug">
+                                            <a href="/dashboard/reseller-product?id=${prod.id}">${prod.title}</a>
+                                        </h4>
                                         
-                                        <!-- রিসেলার প্রাইসিং প্যানেল (হাইলাইটেড) -->
+                                        <!-- রিসেলার প্রাইসিং প্যানেল -->
                                         <div class="space-y-1.5 border-t border-gray-50 pt-2 mb-3 mt-auto">
                                             <div class="flex justify-between items-center text-[0.7rem] font-bold">
                                                 <span class="text-primary">রিসেলার দাম:</span>
@@ -323,7 +326,7 @@
                 }
             });
 
-            // --- ঙ. সার্চ বক্স ইন্টিগ্রেশন ---
+            // --- ঙ. সার্চ বক্স - ক্যাটাগরি ফিল্টার চেইন ---
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -375,4 +378,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
