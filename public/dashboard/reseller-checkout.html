@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Reseller Checkout</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
+
+    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
+    <div id="header-placeholder"></div>
+
+    <div class="max-w-[1100px] mx-auto p-5 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
+        
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
+            <h2 class="text-2xl font-extrabold text-dark flex items-center gap-2">
+                <i class="fa-solid fa-cart-shopping text-primary"></i> রিসেলার কাস্টম চেকআউট
+            </h2>
+            <a href="/dashboard/reseller-products" class="text-sm font-semibold text-primary hover:underline"><i class="fa-solid fa-arrow-left"></i> ইনভেন্টরি প্রোডাক্টস</a>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- 👤 Left Side: Shipping Address Form -->
+            <form id="checkout-form" class="lg:col-span-7 space-y-5">
+                <h3 class="text-lg font-bold border-b border-gray-100 pb-2"><i class="fa-solid fa-truck"></i> কাস্টমারের ডেলিভারি ঠিকানা</h3>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">কাস্টমারের নাম</label>
+                        <input type="text" id="customer_name" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="সম্পূর্ণ নাম লিখুন" required>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">কাস্টমারের মোবাইল নম্বর</label>
+                        <input type="tel" id="customer_phone" class="w-full px-4 py-3 border border-gray-200 rounded-xl font-body outline-none focus:border-primary text-dark" placeholder="01XXXXXXXXX" required>
+                    </div>
+                </div>
+
+                <!-- Division, District, Upazila Selector -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">বিভাগ (Division)</label>
+                        <select id="division" class="w-full px-3 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" required>
+                            <option value="">নির্বাচন করুন</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">জেলা (District)</label>
+                        <select id="district" class="w-full px-3 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" required>
+                            <option value="">আগে বিভাগ সিলেক্ট করুন</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold text-sm mb-1">উপজেলা (Upazila)</label>
+                        <select id="upazila" class="w-full px-3 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" required>
+                            <option value="">আগে জেলা সিলেক্ট করুন</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-sm mb-1">বিস্তারিত ঠিকানা</label>
+                    <textarea id="delivery_address" class="w-full px-4 py-2.5 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark h-20 resize-none" placeholder="বাসা নং, রোড নং এবং পরিচিত ল্যান্ডমার্ক লিখুন..." required></textarea>
+                </div>
+
+                <div>
+                    <label class="block font-semibold text-sm mb-1">অর্ডার নোট / নির্দেশনা (ঐচ্ছিক)</label>
+                    <input type="text" id="order_note" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: ডেলিভারির আগে ফোন দিবেন।">
+                </div>
+
+                <div class="bg-gray-50 p-4 rounded-2xl border border-gray-150">
+                    <span class="block font-bold text-sm mb-2"><i class="fa-solid fa-credit-card"></i> পেমেন্ট মেথড</span>
+                    <label class="flex items-center gap-2 cursor-pointer font-semibold text-sm">
+                        <input type="radio" name="payment_method" value="COD" checked class="accent-primary"> ক্যাশ অন ডেলিভারি (COD)
+                    </label>
+                </div>
+            </form>
+
+            <!-- 🛒 Right Side: Reseller Summary -->
+            <div class="lg:col-span-5 bg-gray-50/50 border border-gray-100 p-6 rounded-2xl flex flex-col h-fit">
+                <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-invoice-dollar"></i> কার্ট তালিকা (রিসেলার)</h3>
+
+                <!-- Dynamic Cart Items Container -->
+                <div class="divide-y divide-gray-100 max-h-[150px] overflow-y-auto mb-4 pr-1" id="cart-items-list">
+                    <!-- কার্টের প্রোডাক্টগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে জেনারেট হবে -->
+                </div>
+
+                <!-- 🛒 Reseller Custom Input Panel -->
+                <div class="space-y-4 border-t border-gray-100 pt-4 mb-4">
+                    <div>
+                        <label class="block font-bold text-xs text-primary mb-1">১. কাস্টমারের কাছে বিক্রয় মূল্য (৳)</label>
+                        <input type="number" id="customer_selling_price" oninput="calculateResellerProfit()" class="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary font-body text-sm text-dark font-bold" placeholder="কাস্টমারের ফুল সেলস ভ্যালু লিখুন" required>
+                    </div>
+                    <div>
+                        <label class="block font-bold text-xs text-gray-500 mb-1">২. অগ্রিম সংগৃহীত টাকা (অগ্রিম না নিলে ফাঁকা রাখুন)</label>
+                        <input type="number" id="advance_taken" oninput="calculateResellerProfit()" class="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary font-body text-sm text-dark" placeholder="৳ অগ্রিম এডভান্স মানি (যদি থাকে)">
+                    </div>
+                </div>
+
+                <!-- 💼 Live Net Profit Card Widget [2] -->
+                <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-md flex justify-between items-center mb-4 transition-transform hover:scale-[1.01]">
+                    <div>
+                        <span class="text-[0.65rem] font-bold block uppercase opacity-90">আপনার আনুমানিক নিট লাভ</span>
+                        <h4 class="text-lg font-black font-body" id="reseller-profit-val">৳ ০</h4>
+                    </div>
+                    <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-wallet text-white"></i></div>
+                </div>
+
+                <!-- Financial calculations -->
+                <div class="space-y-3 text-sm border-t border-gray-100 pt-4">
+                    <div class="flex justify-between">
+                        <span class="text-muted">রিসেলার প্যাক কস্ট (Wholesale)</span>
+                        <span class="font-bold font-body" id="subtotal-val">৳ 0</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-muted">ডেলিভারি চার্জ</span>
+                        <span class="font-bold text-primary font-body" id="delivery-val">৳ 0</span>
+                    </div>
+                    <div class="flex justify-between text-base font-extrabold border-t border-dashed border-gray-200 pt-3 text-dark">
+                        <!-- কুরিয়ার কাস্টমার থেকে এই টাকা তুলবে -->
+                        <span>কুরিয়ার কালেকশন (COD)</span>
+                        <span class="font-body text-primary text-lg" id="total-val">৳ 0</span>
+                    </div>
+                </div>
+
+                <button type="button" id="btn-place-order" class="w-full mt-6 py-4 bg-primary text-white rounded-xl font-bold hover:bg-secondary transition-all shadow-lg shadow-primary/10 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-truck-fast"></i> অর্ডার কনফার্ম করুন
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- 🌐 ডাইনামিক ফুটার প্লেসহোল্ডার -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Supabase SDK & Shared Layout Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        const bdLocations = {
+            "Dhaka": {
+                "Dhaka (City)": ["Mirpur", "Uttara", "Dhanmondi", "Gulshan", "Badda", "Motijheel", "Mohammadpur", "Khilgaon"],
+                "Dhaka District": ["Dhamrai", "Dohar", "Keraniganj", "Nawabganj", "Savar"],
+                "Gazipur": ["Gazipur Sadar", "Kaliakair", "Kaliganj", "Kapasia", "Sreepur"],
+                "Narayanganj": ["Narayanganj Sadar", "Araihazar", "Bandar", "Rupganj", "Sonargaon"],
+                "Narsingdi": ["Narsingdi Sadar", "Belabo", "Monohardi", "Palash", "Raipura", "Shibpur"],
+                "Munshiganj": ["Munshiganj Sadar", "Gazaria", "Lohajang", "Sirajdikhan", "Sreenagar", "Tongibari"],
+                "Manikganj": ["Manikganj Sadar", "Singair", "Shibalaya", "Saturia", "Harirampur", "Gheor", "Daulatpur"],
+                "Tangail": ["Tangail Sadar", "Basail", "Bhuapur", "Delduar", "Gopalpur", "Kalihati", "Madhupur", "Mirzapur", "Nagarpur", "Sakhipur"],
+                "Faridpur": ["Faridpur Sadar", "Alfadanga", "Bhanga", "Boalmari", "Charbhadrasan", "Madhukhali", "Nagarkanda", "Sadarpur"],
+                "Kishoreganj": ["Kishoreganj Sadar", "Bhairab", "Bajitpur", "Itna", "Karimganj", "Katiadi", "Mithamain", "Nikli", "Pakundia", "Tarail"],
+                "Gopalganj": ["Gopalganj Sadar", "Kashiani", "Kotalipara", "Muksudpur", "Tungipara"],
+                "Madaripur": ["Madaripur Sadar", "Kalkini", "Rajoir", "Shibchar"],
+                "Rajbari": ["Rajbari Sadar", "Baliakandi", "Goalandaghat", "Pangsha", "Kalukhali"],
+                "Shariatpur": ["Shariatpur Sadar", "Damudya", "Gosairhat", "Naria", "Zajira", "Bhedarganj"]
+            },
+            "Chittagong": {
+                "Chittagong": ["Double Mooring", "Hathazari", "Sandwip", "Raozan", "Rangunia", "Patiya", "Anwara"],
+                "Cox's Bazar": ["Cox's Bazar Sadar", "Chakaria", "Maheshkhali", "Ramu", "Teknaf", "Ukhiya", "Pekua"],
+                "Feni": ["Feni Sadar", "Chhagalnaiya", "Daganbhuiyan", "Parshuram", "Sonavazi"],
+                "Comilla": ["Comilla Sadar", "Barura", "Chandina", "Daudkandi", "Debidwar", "Homna", "Laksam", "Muradnagar"]
+            },
+            "Rajshahi": {
+                "Rajshahi": ["Boalia", "Motihar", "Rajpara", "Shah Mokhdum", "Paba", "Godagari", "Tanore", "Bagha"],
+                "Bogra": ["Bogra Sadar", "Adamdighi", "Dhunat", "Gabtali", "Kahaloo", "Nandigram", "Sariakandi", "Sherpur"]
+            },
+            "Khulna": {
+                "Khulna": ["Khulna Sadar", "Batiaghata", "Dacope", "Dumuria", "Dighalia", "Koyra", "Paikgachha", "Phultala", "Rupsha"],
+                "Jessore": ["Jessore Sadar", "Abhaynagar", "Bagherpara", "Chowgacha", "Jhikargachha", " Keshabpur", "Manirampur", "Sharsha"]
+            },
+            "Barisal": {
+                "Barisal": ["Barisal Sadar", "Bakerganj", "Babuganj", "Banaripara", "Gournadi", "Hizla", "Mehendiganj", "Muladi", "Wazirpur"],
+                "Bhola": ["Bhola Sadar", "Burhanuddin", "Char Fasson", "Daulatkhan", "Lalmohan", "Manpura", "Tazumuddin"]
+            },
+            "Sylhet": {
+                "Sylhet": ["Sylhet Sadar", "Balaganj", "Beanibazar", "Bishwanath", "Fenchuganj", "Golapganj", "Gowainghat", "Kanaighat", "Zakiganj"],
+                "Moulvibazar": ["Moulvibazar Sadar", "Barlekha", "Kamalganj", "Kulaura", "Rajnagar", "Sreemangal", "Juri"]
+            },
+            "Rangpur": {
+                "Rangpur": ["Rangpur Sadar", "Badarganj", "Gangachara", "Kaunia", "Mithapukur", "Pirgachha", "Pirganj", "Taraganj"],
+                "Dinajpur": ["Dinajpur Sadar", "Birganj", "Biral", "Bochaganj", "Chirirbandar", "Phulbari", "Ghoraghat", "Hakimpur"]
+            },
+            "Mymensingh": {
+                "Mymensingh": ["Mymensingh Sadar", "Bhaluka", "Gaffargaon", "Gauripur", "Haluaghat", "Ishwarganj", "Muktagachha", "Nandail", "Trishal"],
+                "Sherpur": ["Sherpur Sadar", "Nalitabari", "Sreebardi", "Nakla", "Jhenaigati"]
+            }
+        };
+
+        let cartItems = [];
+        let shippingCost = 0;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                verifyResellerSession();
+            }
+
+            async function verifyResellerSession() {
+                const client = window.supabaseClient;
+                try {
+                    const { data: { session } } = await client.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+
+                    const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).single();
+                    if (profile) {
+                        if (!profile.is_active || profile.role !== 'reseller') {
+                            window.location.href = "/active";
+                            return;
+                        }
+                        
+                        // ডাইনামিক প্রোফাইল ডাটা দিয়ে কাস্টমার নাম ও মোবাইল অটো-ফিল করা
+                        document.getElementById('customer_name').value = profile.full_name || '';
+                        document.getElementById('customer_phone').value = profile.phone_number || '';
+                    }
+
+                    loadCartFromLocalStorage();
+
+                } catch (e) {
+                    console.error("Auth verify failed", e);
+                }
+            }
+
+            function loadCartFromLocalStorage() {
+                cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+                const listContainer = document.getElementById('cart-items-list');
+
+                if (cartItems.length > 0) {
+                    listContainer.innerHTML = '';
+                    cartItems.forEach(item => {
+                        listContainer.innerHTML += `
+                            <div class="flex gap-4 py-2 items-center">
+                                <div class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center text-gray-400 overflow-hidden shrink-0">
+                                    ${item.image_url ? `<img src="${item.image_url}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image"></i>`}
+                                </div>
+                                <div class="flex-grow min-w-0">
+                                    <h4 class="font-bold text-[0.7rem] text-dark truncate">${item.title}</h4>
+                                    <p class="text-[0.6rem] text-muted font-body">রিসেলার রেট: ৳${item.price} x ${item.quantity}</p>
+                                </div>
+                                <div class="text-right font-bold text-xs text-dark shrink-0 font-body">
+                                    ৳${item.price * item.quantity}
+                                </div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    listContainer.innerHTML = '<p class="text-center py-5 text-sm text-gray-500">আপনার কার্টটি খালি।</p>';
+                }
+                calculateResellerProfit();
+            }
+
+            // ডিস্ট্রিক্ট ও উপজেলা লোডার
+            const divisionSelect = document.getElementById('division');
+            const districtSelect = document.getElementById('district');
+            const upazilaSelect = document.getElementById('upazila');
+
+            for (let division in bdLocations) {
+                divisionSelect.innerHTML += `<option value="${division}">${division}</option>`;
+            }
+
+            divisionSelect.addEventListener('change', (e) => {
+                const selectedDivision = e.target.value;
+                districtSelect.innerHTML = `<option value="">নির্বাচন করুন</option>`;
+                upazilaSelect.innerHTML = `<option value="">আগে জেলা সিলেক্ট করুন</option>`;
+                
+                if (selectedDivision && bdLocations[selectedDivision]) {
+                    for (let district in bdLocations[selectedDivision]) {
+                        districtSelect.innerHTML += `<option value="${district}">${district}</option>`;
+                    }
+                }
+                calculateShipping();
+            });
+
+            districtSelect.addEventListener('change', (e) => {
+                const selectedDivision = divisionSelect.value;
+                const selectedDistrict = e.target.value;
+                upazilaSelect.innerHTML = `<option value="">নির্বাচন করুন</option>`;
+
+                if (selectedDivision && selectedDistrict && bdLocations[selectedDivision][selectedDistrict]) {
+                    bdLocations[selectedDivision][selectedDistrict].forEach(upazila => {
+                        upazilaSelect.innerHTML += `<option value="${upazila}">${upazila}</option>`;
+                    });
+                }
+                calculateShipping();
+            });
+
+            function calculateShipping() {
+                const division = divisionSelect.value;
+                const district = districtSelect.value;
+
+                if (!division || !district) {
+                    shippingCost = 0;
+                } else if (district === "Dhaka (City)") {
+                    shippingCost = 60;
+                } else if (division === "Dhaka") {
+                    shippingCost = 100;
+                } else {
+                    shippingCost = 120;
+                }
+                calculateResellerProfit();
+            }
+
+            // --- ঘ. ডাইনামিক প্রফিট ও কুরিয়ার কালেকশন ক্যালকুলেটর (Fixed mathematical formulas) ---
+            window.calculateResellerProfit = function() {
+                // ১. কার্টের রিসেলার পাইকারি মূল্যের মোট যোগফল
+                const totalResellerCost = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                
+                // ২. কাস্টমারের কাছে বিক্রয় মূল্য ইনপুট পড়া
+                const customerSellingPrice = parseFloat(document.getElementById('customer_selling_price').value) || 0.0;
+                
+                // ৩. অগ্রিম নেওয়া টাকা পড়া (না নিলে ডিফল্ট ০) [2]
+                const advanceTaken = parseFloat(document.getElementById('advance_taken').value) || 0.0;
+
+                // ৪. রিসেলারের নিট প্রফিট হিসাব (কাস্টমার বিক্রয় মূল্য - রিসেলার পাইকারি মূল্য)
+                const netProfit = Math.max(customerSellingPrice - totalResellerCost, 0);
+
+                // ৫. কুরিয়ার কালেকশন হিসাব (কাস্টমার বিক্রয় মূল্য + ডেলিভারি চার্জ - অগ্রিম নেওয়া টাকা)
+                const collectableAmount = Math.max((customerSellingPrice + shippingCost) - advanceTaken, 0);
+
+                // ইউআই আপডেট
+                document.getElementById('reseller-profit-val').innerText = `৳ ${netProfit.toFixed(2)}`;
+                document.getElementById('subtotal-val').innerText = `৳ ${totalResellerCost}`;
+                document.getElementById('delivery-val').innerText = `৳ ${shippingCost}`;
+                document.getElementById('total-val').innerText = `৳ ${collectableAmount}`;
+            }
+
+            // --- ঙ. ফাইনাল রিসেলার কাস্টম অর্ডার সাবমিশন ---
+            document.getElementById('btn-place-order').addEventListener('click', async () => {
+                if (cartItems.length === 0) {
+                    alert("আপনার কার্টে কোনো প্রোডাক্ট নেই।");
+                    return;
+                }
+
+                const customerName = document.getElementById('customer_name').value.trim();
+                const customerPhone = document.getElementById('customer_phone').value.trim();
+                const division = divisionSelect.value;
+                const district = districtSelect.value;
+                const upazila = upazilaSelect.value;
+                const addressDetails = document.getElementById('delivery_address').value.trim();
+                const orderNote = document.getElementById('order_note').value.trim();
+                
+                const customerSellingPrice = parseFloat(document.getElementById('customer_selling_price').value) || 0.0;
+                const advanceTaken = parseFloat(document.getElementById('advance_taken').value) || 0.0;
+
+                if (!customerName || !customerPhone || !division || !district || !upazila || !addressDetails || customerSellingPrice <= 0) {
+                    alert("অর্ডার সম্পন্ন করতে ফর্মের সমস্ত তথ্য এবং কাস্টমার বিক্রয় মূল্য প্রদান করা আবশ্যক।");
+                    return;
+                }
+
+                if (!window.supabaseClient) {
+                    alert("সুপাবেস ডাটাবেজ কানেক্ট করা হয়নি।");
+                    return;
+                }
+
+                const client = window.supabaseClient;
+                const sessionData = await client.auth.getSession();
+                const user = sessionData.data.session ? sessionData.data.session.user : null;
+
+                if (!user) {
+                    alert("অর্ডার করতে দয়া করে আগে লগইন সম্পন্ন করুন।");
+                    window.location.href = "/login";
+                    return;
+                }
+
+                const fullDeliveryAddress = `${addressDetails}, ${upazila}, ${district}, ${division}`;
+                const totalResellerCost = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+                // কুরিয়ার কালেকশন ক্যালকুলেশন
+                const collectableAmount = Math.max((customerSellingPrice + shippingCost) - advanceTaken, 0);
+
+                const payload = {
+                    user_id: user.id,
+                    customer_name: customerName,
+                    customer_phone: customerPhone,
+                    delivery_address: fullDeliveryAddress,
+                    payment_method: "COD", // রিসেলার অর্ডার সবসময় সিওডি
+                    payment_details: null,
+                    order_note: orderNote || null,
+                    items: cartItems.map(item => ({
+                        product_id: item.product_id,
+                        quantity: parseInt(item.quantity),
+                        price: parseFloat(item.price) // রিসেলার পাইকারি রেট
+                    })),
+                    collectable_amount: parseFloat(collectableAmount),
+                    shipping_cost: parseFloat(shippingCost),
+                    coupon_code: null,
+                    coupon_discount: 0.0,
+                    // (নতুন কলাম ডাটা) কাস্টমার বিক্রয় মূল্য ও অগ্রিম পেমেন্ট [2]
+                    customer_selling_price: parseFloat(customerSellingPrice),
+                    advance_taken: parseFloat(advanceTaken)
+                };
+
+                const orderBtn = document.getElementById('btn-place-order');
+                orderBtn.disabled = true;
+                orderBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-lg"></i> প্রসেসিং হচ্ছে...`;
+
+                try {
+                    const response = await fetch('/api/orders/place', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert("সাফল্য! আপনার কাস্টম ড্রপশিপিং অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
+                        localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
+                        window.location.href = "/profile";
+                    } else {
+                        alert("অর্ডার প্লেস করতে সমস্যা হয়েছে: " + result.detail);
+                    }
+                } catch (err) {
+                    alert("সার্ভার বা নেটওয়ার্ক কানেকশন ফেইলড।");
+                } finally {
+                    orderBtn.disabled = false;
+                    orderBtn.innerHTML = `<i class="fa-solid fa-truck-fast"></i> অর্ডার কনফার্ম করুন`;
+                }
+            });
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+  </html>
