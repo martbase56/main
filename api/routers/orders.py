@@ -1,4 +1,4 @@
-# api/routers/orders.py
+# api/routers/orders.py (রিসেলার অ্যাডভান্স ও কাস্টম প্রফিট সহ সম্পূর্ণ ও চূড়ান্ত কোড)
 import os
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -28,6 +28,8 @@ class OrderCreateSchema(BaseModel):
     shipping_cost: float
     coupon_code: Optional[str] = None
     coupon_discount: float = 0.0
+    customer_selling_price: Optional[float] = None  # কাস্টমার বিক্রয় মূল্য
+    advance_taken: Optional[float] = 0.0           # অগ্রিম সংগৃহীত টাকা
 
 class CouponValidateSchema(BaseModel):
     code: str
@@ -75,7 +77,7 @@ def validate_coupon(data: CouponValidateSchema):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৩. এন্ডপয়েন্ট: মাল্টি-আইটেম অর্ডার প্লেসিং ---
+# --- ৩. এন্ডপয়েন্ট: মাল্টি-আইটেম ও কাস্টম প্রফিট অর্ডার প্লেসিং ---
 @router.post("/place")
 def place_order(order: OrderCreateSchema):
     try:
@@ -92,11 +94,12 @@ def place_order(order: OrderCreateSchema):
             if product_query.data:
                 total_reseller_cost += float(product_query.data['reseller_price']) * item.quantity
 
-        # গ. রিসেলার লাভ নির্ধারণ করা
+        # গ. রিসেলার লাভ নির্ধারণ করা (রিসেলার অ্যাডভান্স ও কুরিয়ার কালেকশন সমন্বিত সূত্র)
         reseller_profit = 0.0
         if user_role == 'reseller':
-            # রিসেলারের লাভ = (কালেকশন অ্যামাউন্ট - শিপিং খরচ) - রিসেলার পাইকারি দাম
-            reseller_profit = (order.collectable_amount - order.shipping_cost) - total_reseller_cost
+            # রিসেলারের লাভ = (কুরিয়ার কালেকশন + অগ্রিম প্রাপ্ত টাকা) - (রিসেলার কস্ট + শিপিং কস্ট)
+            total_advance = order.advance_taken if order.advance_taken else 0.0
+            reseller_profit = (order.collectable_amount + total_advance) - (total_reseller_cost + order.shipping_cost)
             if reseller_profit < 0:
                 reseller_profit = 0.0
 
@@ -119,7 +122,9 @@ def place_order(order: OrderCreateSchema):
             "coupon_code": order.coupon_code.upper() if order.coupon_code else None,
             "coupon_discount": order.coupon_discount,
             "reseller_profit": reseller_profit,
-            "status": "pending"
+            "status": "pending",
+            "customer_selling_price": order.customer_selling_price,
+            "advance_taken": order.advance_taken if order.advance_taken else 0.0
         }
 
         new_order = supabase.table("orders").insert(order_payload).execute()
@@ -129,7 +134,7 @@ def place_order(order: OrderCreateSchema):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: এডমিন কর্তৃক অর্ডার স্ট্যাটাস আপডেট (৫টি কাস্টম স্ট্যাটাস) ---
+# --- ৪. এন্ডপয়েন্ট: এডমিন কর্তৃক অর্ডার স্ট্যাটাস আপডেট (হোল্ড ব্যালেন্স ইন্টিগ্রেশন) ---
 @router.post("/admin/update-status/{order_id}")
 def update_order_status(order_id: str, new_status: str, admin_user: dict = Depends(get_current_user)):
     # এডমিন সিকিউরিটি চেক
@@ -201,7 +206,7 @@ def transfer_hold_balance(user_id: str):
         gmail_target = 10
         referral_target = 4
 
-        target_met = (delivered_count >= orders_target) and (gmail_sells >= gmail_target) and (referral_count >= referral_target)
+        target_met = (delivered_count >= orders_target) && (gmail_sells >= gmail_target) && (referral_count >= referral_target)
 
         if not target_met:
             raise HTTPException(
@@ -210,7 +215,7 @@ def transfer_hold_balance(user_id: str):
             )
 
         if hold_balance <= 0:
-            raise HTTPException(status_code=400, detail="উইথড্র বা ট্রান্সফার করার মতো কোনো হোল্ড ব্যালেন্স নেই।")
+            raise HTTPException(status_code=400, detail="উইথড্র বা স্থানান্তর করার মতো কোনো হোল্ড ব্যালেন্স নেই।")
 
         # ঙ. ব্যালেন্স ট্রান্সফার করা (হোল্ড টু মেইন ওয়ালেট)
         new_wallet_balance = wallet_balance + hold_balance
