@@ -36,7 +36,7 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (Contains All 9+ Standalone Nav Links) -->
+    <!-- 🗂️ Left Sticky Sidebar (Admin SPA Menu) -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -45,11 +45,10 @@
             </button>
         </div>
 
-        <!-- Navigation Menu -->
         <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-1.5 overflow-y-auto" id="sidebar-menu">
             <!-- 1. Dashboard -->
             <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold transition-all text-xs">
-                <i class="fa-solid fa-chart-line text-base"></i>
+                <i class="fa-solid fa-chart-line text-lg"></i>
                 <span>ড্যাশবোর্ড ওভারভিউ</span>
             </button>
             <!-- 2. Users Management -->
@@ -107,7 +106,7 @@
         </nav>
     </aside>
 
-    <!-- 📊 Main Content Area -->
+    <!-- 📊 Main Content SPA Panel -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
         <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
@@ -117,13 +116,13 @@
             </div>
             <div class="flex items-center gap-3 bg-white p-2 rounded-full border border-gray-100 shadow-sm pr-4">
                 <div class="w-9 h-9 bg-primary/10 text-primary rounded-full flex items-center justify-center font-bold">A</div>
-                <span class="text-sm font-semibold text-dark">এডমিন প্যানেল</span>
+                <span class="text-sm font-semibold text-dark">এডমিন ওভারভিউ</span>
             </div>
         </header>
 
         <!-- ==================== ১. SECTION: DASHBOARD OVERVIEW ==================== -->
         <div id="dashboard-sec" class="admin-tab-content space-y-8">
-            <!-- 🚀 4 Glowing Statistics Cards -->
+            <!-- 🚀 4 Statistics Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Total Users -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
@@ -160,7 +159,7 @@
             </div>
 
             <!-- Pending Activation Requests Table -->
-            <section id="activation-requests" class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
+            <section class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
                     <i class="fa-solid fa-user-check text-primary animate-pulse"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
                 </h3>
@@ -182,6 +181,60 @@
                             </tr>
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            <!-- 🎯 ৪. (নতুন রিকোয়ারমেন্ট) কুইক অ্যাকশন কন্ট্রোল উইজেটস (Quick Admin Shortcuts Grid) -->
+            <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md space-y-4">
+                <h3 class="text-sm font-bold text-dark border-b border-gray-100 pb-3 flex items-center gap-2"><i class="fa-solid fa-shapes text-primary animate-pulse"></i> কুইক অ্যাকশন কন্ট্রোল উইজেটস (Shortcuts)</h3>
+                <p class="text-[0.7rem] text-muted">এক ক্লিকে অ্যাডমিন প্যানেলের নির্দিষ্ট ডিরেক্টরি পেজে জাম্প করুন:</p>
+                
+                <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-4 text-center">
+                    <!-- 1. Users List -->
+                    <a href="/admin/users" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-sm border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-users"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">ইউজার লিস্ট</span>
+                    </a>
+                    <!-- 2. Orders -->
+                    <a href="/admin/orders" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-orange-50 text-primary flex items-center justify-center text-sm border border-orange-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-cart-shopping"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">অর্ডার লিস্ট</span>
+                    </a>
+                    <!-- 3. Product list -->
+                    <a href="/admin/products" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm border border-indigo-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-box-open"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">পণ্য তালিকা</span>
+                    </a>
+                    <!-- 4. Add Product -->
+                    <a href="/dashboard/add-product" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm border border-emerald-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-square-plus"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">নতুন পণ্য</span>
+                    </a>
+                    <!-- 5. Gmail Task -->
+                    <a href="/admin/gmail" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-sm border border-red-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-envelope-open-text"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">জিমেইল জব</span>
+                    </a>
+                    <!-- 6. Instagram Task -->
+                    <a href="/admin/instagram" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center text-sm border border-pink-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-instagram"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">ইনস্টাগ্রাম</span>
+                    </a>
+                    <!-- 7. Facebook Task -->
+                    <a href="/admin/facebook" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-facebook-f"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">ফেসবুক জব</span>
+                    </a>
+                    <!-- 8. Telegram Service -->
+                    <a href="/admin/telegram" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
+                        <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center text-sm border border-sky-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-telegram text-base"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">টেলিগ্রাম প্যাক</span>
+                    </a>
+                    <!-- 9. Settings -->
+                    <button onclick="switchAdminSection('settings-sec')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group w-full">
+                        <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-sm mx-auto group-hover:scale-105 transition-transform"><i class="fa-solid fa-gears"></i></div>
+                        <span class="text-[0.65rem] font-bold text-dark">গ্লোবাল সেটিংস</span>
+                    </button>
                 </div>
             </section>
         </div>
@@ -229,7 +282,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // সাইডবার মেনু টগল
+            // মোবাইল সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -275,13 +328,13 @@
 
                     currentToken = session.access_token;
                     
-                    // সাকসেসফুল ভ্যালিডেশন হলে ডাটা লোড হবে
+                    // ইনিশিয়াল ডাটা লোড
                     loadAdminStats(currentToken);
                     loadActivationRequests(currentToken);
                     loadSystemSettings(currentToken);
 
                 } catch (e) {
-                    console.error("Admin check fail", e);
+                    console.error("Admin validation error", e);
                 }
             }
 
@@ -300,7 +353,7 @@
                 }
             };
 
-            // --- ঘ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড ---
+            // --- ঘ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড (সংশোধিত এরে-লেন্থ ক্যালকুলেশন) ---
             async function loadAdminStats(token) {
                 try {
                     const response = await fetch('/api/admin/stats', {
@@ -319,7 +372,7 @@
                 }
             }
 
-            // --- ঙ. এপিআই এর মাধ্যমে পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট লোড (ফরেন-কি ফিক্সড) ---
+            // --- ঙ. এপিআই এর মাধ্যমে পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট লোড (সংশোধিত ফরেন-কি রিলেশন) [1.1.1, 1.2.5] ---
             async function loadActivationRequests(token) {
                 const listContainer = document.getElementById('activation-requests-list');
                 try {
@@ -341,8 +394,8 @@
                                         <td class="py-4 px-4 font-mono font-bold">${req.trx_id}</td>
                                         <td class="py-4 px-4 font-body font-bold text-primary">৳${req.amount}</td>
                                         <td class="py-4 px-4 flex justify-center gap-2">
-                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-check"></i> Approve</button>
-                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-colors"><i class="fa-solid fa-xmark"></i> Reject</button>
+                                            <button onclick="approveRequest('${req.id}')" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-check"></i> Approve</button>
+                                            <button onclick="rejectRequest('${req.id}')" class="bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-sm transition-all hover:scale-105 active:scale-95"><i class="fa-solid fa-xmark"></i> Reject</button>
                                         </td>
                                     </tr>
                                 `;
@@ -356,7 +409,7 @@
                 }
             }
 
-            // --- চ. ডাইনামিক সেটিংস লোড করা ---
+            // --- চ. ডাইনামিক সেটিংস লোড ---
             async function loadSystemSettings(token) {
                 try {
                     const response = await fetch('/api/admin/get-settings', {
@@ -373,7 +426,6 @@
                 }
             }
 
-            // --- ছ. সেটিংস সাবমিট হ্যান্ডলার (FastAPI /update-settings) ---
             document.getElementById('system-settings-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!currentToken) return;
@@ -412,7 +464,7 @@
                 }
             });
 
-            // --- অনুমোদনের একশন লজিকস ---
+            // --- ছ. অ্যাডমিন অ্যাক্টিভেশন একশনস লজিকস ---
             window.approveRequest = async function(requestId) {
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
                 try {
