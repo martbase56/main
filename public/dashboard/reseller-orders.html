@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Reseller Orders</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Orders</span>
+        <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main class="max-w-[750px] mx-auto px-4 pt-5 space-y-6">
+
+        <!-- 📊 ১. ৪টি লাইভ স্ট্যাটাস উইজেট কার্ডস (Stats) -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Total Order -->
+            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow text-center">
+                <span class="text-[0.65rem] text-muted font-bold block mb-1">মোট অর্ডার</span>
+                <h3 class="text-lg font-extrabold text-indigo-600 font-body" id="stats-total-orders">--</h3>
+            </div>
+            <!-- Success / Delivered -->
+            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow text-center">
+                <span class="text-[0.65rem] text-muted font-bold block mb-1">সফল ডেলিভারি</span>
+                <h3 class="text-lg font-extrabold text-emerald-600 font-body" id="stats-success-orders">--</h3>
+            </div>
+            <!-- Shipped -->
+            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow text-center">
+                <span class="text-[0.65rem] text-muted font-bold block mb-1">শিপড অর্ডার</span>
+                <h3 class="text-lg font-extrabold text-primary font-body" id="stats-shipped-orders">--</h3>
+            </div>
+            <!-- Cancelled -->
+            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow text-center">
+                <span class="text-[0.65rem] text-muted font-bold block mb-1">বাতিলকৃত অর্ডার</span>
+                <h3 class="text-lg font-extrabold text-red-500 font-body" id="stats-cancelled-orders">--</h3>
+            </div>
+        </div>
+
+        <!-- 🗺️ ২. ডাইনামিক লাইভ ট্র্যাকিং প্যানেল (৫টি স্ট্যাটাস এবং লাভ ট্র্যাকার) -->
+        <div id="tracking-panel" class="p-6 bg-gradient-to-br from-white to-primary/[0.02] border border-primary/20 rounded-2xl shadow-md space-y-5 hidden">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h4 class="font-extrabold text-base text-dark flex items-center gap-2"><i class="fa-solid fa-map-location-dot text-primary animate-pulse"></i> রিয়েল-টাইম লাইভ ট্র্যাকিং</h4>
+                    <p class="text-xs text-muted mt-1">অর্ডার আইডি: <span class="font-mono font-bold text-primary" id="track-order-id">#--</span></p>
+                </div>
+                <button onclick="document.getElementById('tracking-panel').classList.add('hidden')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
+            </div>
+
+            <!-- Stepper Timeline -->
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 relative pt-4">
+                <div class="hidden sm:block absolute top-[26px] left-[40px] right-[40px] h-[3px] bg-gray-200 -z-10"></div>
+                
+                <div class="flex sm:flex-col items-center gap-3 text-center" id="step-pending">
+                    <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-receipt"></i></div>
+                    <span class="text-xs font-bold">অর্ডার পেন্ডিং</span>
+                </div>
+                <div class="flex sm:flex-col items-center gap-3 text-center" id="step-accepted">
+                    <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-check"></i></div>
+                    <span class="text-xs font-bold">অর্ডার গৃহীত</span>
+                </div>
+                <div class="flex sm:flex-col items-center gap-3 text-center" id="step-shipped">
+                    <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-truck-fast"></i></div>
+                    <span class="text-xs font-bold">শিপড করা হয়েছে</span>
+                </div>
+                <div class="flex sm:flex-col items-center gap-3 text-center" id="step-delivered">
+                    <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-circle-check"></i></div>
+                    <span class="text-xs font-bold">ডেলিভারি সফল</span>
+                </div>
+            </div>
+
+            <!-- Status message -->
+            <p id="track-status-desc" class="text-xs sm:text-sm font-semibold text-center text-muted bg-gray-50 py-3 px-4 rounded-xl border border-gray-100"></p>
+
+            <!-- Cancelled Alert -->
+            <div id="cancelled-alert" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 text-xs font-semibold flex items-center gap-2">
+                <i class="fa-solid fa-circle-exclamation text-base"></i> 
+                <span>দুঃখিত, এই অর্ডারটি বাতিল করা হয়েছে। যেকোনো প্রয়োজনে সাপোর্টে যোগাযোগ করুন।</span>
+            </div>
+
+            <!-- Delivery Details & Net Profit card -->
+            <div class="bg-gray-50 border border-gray-150 p-5 rounded-2xl space-y-3">
+                <h5 class="text-xs font-bold text-dark border-b border-gray-200 pb-2"><i class="fa-solid fa-map-location"></i> ডেলিভারি তথ্য (Delivery Details)</h5>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs leading-relaxed">
+                    <p class="font-semibold text-muted">গ্রাহকের নাম: <span id="track-cust-name" class="font-bold text-dark">--</span></p>
+                    <p class="font-semibold text-muted">মোবাইল নম্বর: <span id="track-cust-phone" class="font-bold text-dark font-body">--</span></p>
+                    <p class="font-semibold text-muted sm:col-span-2">ডেলিভারি ঠিকানা: <span id="track-cust-address" class="font-bold text-dark">--</span></p>
+                    <p class="font-semibold text-muted">কুরিয়ার কালেকশন (COD): <span id="track-cust-cod" class="font-bold text-primary font-body">--</span></p>
+                    <!-- Your Profit Margin -->
+                    <p class="font-semibold text-muted">আপনার নিট লাভ (Profit): <span id="track-cust-profit" class="font-bold text-emerald-600 font-body">--</span></p>
+                    <p class="font-semibold text-muted">অর্ডার নোট: <span id="track-cust-note" class="font-bold text-dark">--</span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 📦 ৩. চলমান অর্ডারসমূহ (Recent Running Orders) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
+            <h3 class="text-sm font-bold text-dark flex items-center gap-2 text-primary"><i class="fa-solid fa-truck-ramp-box"></i> রানিং চলমান অর্ডারসমূহ</h3>
+            <div class="space-y-3 max-h-[250px] overflow-y-auto no-scrollbar" id="running-orders-container">
+                <p class="text-xs text-muted text-center py-5">কোনো রানিং অর্ডার নেই।</p>
+            </div>
+        </section>
+
+        <!-- 📦 ৪. আমার সফল অর্ডারসমূহ (All Orders List) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow space-y-4">
+            <h3 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-box-archive text-primary"></i> আমার সফল অর্ডারসমূহ</h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">অর্ডার আইডি</th>
+                            <th class="py-3 px-4">কাস্টমার নাম</th>
+                            <th class="py-3 px-4">কালেকশন (৳)</th>
+                            <th class="py-3 px-4">স্ট্যাটাস</th>
+                            <th class="py-3 px-4 text-center">লাইভ ট্র্যাকিং</th>
+                        </tr>
+                    </thead>
+                    <tbody id="orders-list-container" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-gray-500">আপনার অর্ডার তালিকা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 📱 Sticky Bottom Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK & Global Layout -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let supabaseClientInstance = null;
+        let resellerUserId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                supabaseClientInstance = window.supabaseClient;
+                verifyResellerSession();
+            }
+
+            async function verifyResellerSession() {
+                try {
+                    const { data: { session } } = await supabaseClientInstance.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    resellerUserId = session.user.id;
+
+                    const { data: profile } = await supabaseClientInstance.from('profiles').select('role, is_active').eq('id', resellerUserId).single();
+                    if (!profile || profile.role !== 'reseller') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    if (!profile.is_active) {
+                        window.location.href = "/active";
+                        return;
+                    }
+
+                    // সেশন সাকসেসফুল হলে সব অর্ডার লোড করা
+                    loadResellerAllOrders();
+
+                } catch(e) {
+                    console.error("Auth check failed", e);
+                }
+            }
+
+            // --- খ. রিসেলারের সব অর্ডার লোড এবং স্ট্যাটস ক্যালকুলেশন ---
+            async function loadResellerAllOrders() {
+                const listContainer = document.getElementById('orders-list-container');
+                const runningContainer = document.getElementById('running-orders-container');
+                try {
+                    const { data: orders, error } = await supabaseClientInstance
+                        .from('orders')
+                        .select('*')
+                        .eq('placed_by', resellerUserId)
+                        .order('created_at', { ascending: false });
+
+                    if (error) throw error;
+
+                    if (orders) {
+                        // ১. ৪টি স্ট্যাটাস ডাইনামিক কাউন্টার ক্যালকুলেশন
+                        const totalOrders = orders.length;
+                        const deliveredOrders = orders.filter(o => o.status === 'delivered').length;
+                        const shippedOrders = orders.filter(o => o.status === 'shipped').length;
+                        const cancelledOrders = orders.filter(o => o.status === 'cancelled').length;
+
+                        document.getElementById('stats-total-orders').innerText = totalOrders;
+                        document.getElementById('stats-success-orders').innerText = deliveredOrders;
+                        document.getElementById('stats-shipped-orders').innerText = shippedOrders;
+                        document.getElementById('stats-cancelled-orders').innerText = cancelledOrders;
+
+                        // ২. চলমান অর্ডারসমূহ ফিল্টার ও রেন্ডার (pending, accepted, shipped) [cite: 1.1.2]
+                        const running = orders.filter(o => ['pending', 'accepted', 'shipped'].includes(o.status));
+                        if (running.length > 0) {
+                            runningContainer.innerHTML = '';
+                            running.forEach(order => {
+                                // ৪-সংখ্যার অর্ডার আইডি
+                                const displayId = order.order_id_code || ("#0" + order.order_id_num) || order.id.substring(0,8);
+                                const statusColors = order.status === 'shipped' ? 'text-blue-600 bg-blue-50 border-blue-200' : 'text-amber-600 bg-amber-50 border-amber-200';
+                                
+                                runningContainer.innerHTML += `
+                                    <div class="bg-white border border-gray-150 p-4 rounded-xl flex justify-between items-center shadow-sm">
+                                        <div class="space-y-1">
+                                            <span class="text-xs font-bold text-primary font-mono">${displayId}</span>
+                                            <h4 class="text-xs font-extrabold text-dark">কাস্টমার: ${order.customer_name}</h4>
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            <span class="px-2 py-0.5 rounded text-[0.65rem] font-bold border ${statusColors}">${order.status}</span>
+                                            <button onclick="trackOrder('${order.id}', '${order.status}', '${displayId}', '${order.customer_name}', '${order.customer_phone}', '${order.delivery_address}', '${order.collectable_amount}', '${order.reseller_profit}', '${order.order_note || "নেই"}')" class="bg-primary hover:bg-secondary text-white text-[0.65rem] font-bold py-1.5 px-3 rounded-lg shadow"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } else {
+                            runningContainer.innerHTML = '<p class="text-xs text-muted text-center py-5">বর্তমানে কোনো রানিং অর্ডার নেই।</p>';
+                        }
+
+                        // ৩. সফল সব অর্ডার হিস্ট্রি রেন্ডার
+                        if (totalOrders > 0) {
+                            listContainer.innerHTML = '';
+                            orders.forEach(order => {
+                                const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50 border-green-200' : (order.status === 'cancelled' ? 'text-red-500 bg-red-50 border-red-200' : 'text-primary bg-primary/5 border-primary/10');
+                                const displayId = order.order_id_code || ("#0" + order.order_id_num) || order.id.substring(0,8);
+
+                                listContainer.innerHTML += `
+                                    <tr class="hover:bg-gray-50/50 transition-colors">
+                                        <td class="py-4 px-4 font-mono text-sm text-primary font-bold">${displayId}</td>
+                                        <td class="py-4 px-4 font-semibold text-dark">${order.customer_name}</td>
+                                        <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
+                                        <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold border ${statusColor}">${order.status}</span></td>
+                                        <td class="py-4 px-4 text-center">
+                                            <button onclick="trackOrder('${order.id}', '${order.status}', '${displayId}', '${order.customer_name}', '${order.customer_phone}', '${order.delivery_address}', '${order.collectable_amount}', '${order.reseller_profit}', '${order.order_note || "নেই"}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
+                                        </td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            listContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো অর্ডারের রেকর্ড পাওয়া যায়নি।</td></tr>';
+                        }
+                    }
+                } catch(e) {
+                    console.error("Reseller orders load failed", e);
+                }
+            }
+
+            // --- গ. ৫টি স্ট্যাটাস ভিত্তিক লাইভ ট্র্যাকিং লজিক ---
+            window.trackOrder = function(orderId, status, displayOrderId, custName, custPhone, custAddress, codAmount, profit, orderNote) {
+                const trackingPanel = document.getElementById('tracking-panel');
+                const trackOrderIdSpan = document.getElementById('track-order-id');
+                const cancelledAlert = document.getElementById('cancelled-alert');
+                const statusDesc = document.getElementById('track-status-desc');
+                
+                trackOrderIdSpan.innerText = displayOrderId;
+                trackingPanel.classList.remove('hidden');
+
+                // ডেলিভারি এড্রেস এবং রিসেলার লাভ ট্র্যাকিং আপডেট
+                document.getElementById('track-cust-name').innerText = custName;
+                document.getElementById('track-cust-phone').innerText = custPhone;
+                document.getElementById('track-cust-address').innerText = custAddress;
+                document.getElementById('track-cust-cod').innerText = `৳${codAmount}`;
+                document.getElementById('track-cust-profit').innerText = `৳${profit}`;
+                document.getElementById('track-cust-note').innerText = orderNote;
+
+                const stepPending = document.getElementById('step-pending').querySelector('div');
+                const stepAccepted = document.getElementById('step-accepted').querySelector('div');
+                const stepShipped = document.getElementById('step-shipped').querySelector('div');
+                const stepDelivered = document.getElementById('step-delivered').querySelector('div');
+
+                [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => {
+                    step.className = "w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all";
+                });
+
+                if (status === 'cancelled') {
+                    cancelledAlert.classList.remove('hidden');
+                    statusDesc.classList.add('hidden');
+                    [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => step.parentElement.classList.add('opacity-40'));
+                } else {
+                    cancelledAlert.classList.add('hidden');
+                    statusDesc.classList.remove('hidden');
+                    [stepPending, stepAccepted, stepShipped, stepDelivered].forEach(step => step.parentElement.classList.remove('opacity-40'));
+                    
+                    if (status === 'pending') {
+                        stepPending.className = "w-12 h-12 bg-amber-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-amber-400 animate-pulse shadow-lg shadow-amber-500/30";
+                        statusDesc.innerText = "🕒 কাস্টমারের ড্রপশিপিং অর্ডারটি সফলভাবে জমা হয়েছে। এডমিন পেমেন্ট চেক করছেন।";
+                    } else if (status === 'accepted') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                        statusDesc.innerText = "✅ অর্ডারটি এডমিন কর্তৃক গৃহিত হয়েছে। পণ্য প্যাকেজিংয়ের কাজ চলছে।";
+                    } else if (status === 'shipped') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepShipped.className = "w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-secondary animate-pulse shadow-lg shadow-primary/30";
+                        statusDesc.innerText = "🚚 কুরিয়ারে বুকিং সম্পন্ন হয়েছে এবং আপনার কাস্টমারের ঠিকানার পথে রওয়ানা হয়েছে।";
+                    } else if (status === 'delivered') {
+                        stepPending.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepAccepted.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepShipped.className = "w-12 h-12 bg-green-500 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-green-400";
+                        stepDelivered.className = "w-12 h-12 bg-emerald-600 text-white rounded-full flex items-center justify-center text-lg font-bold border-2 border-emerald-500 shadow-lg shadow-emerald-600/30";
+                        statusDesc.innerText = "🎉 অভিনন্দন! প্রোডাক্টটি সফলভাবে কাস্টমারের ঠিকানায় ডেলিভারি সম্পন্ন হয়েছে ও আপনার প্রফিট ক্রেডিট করা হয়েছে।";
+                    }
+                }
+
+                trackingPanel.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+  </html>
