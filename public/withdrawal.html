@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Withdrawal Hub</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 🌐 হেডার প্লেসহোল্ডার -->
+    <div id="header-placeholder"></div>
+
+    <main class="max-w-[700px] mx-auto px-4 py-8 space-y-6">
+
+        <!-- 💰 ১. ওয়ালেট ব্যালেন্স উইজেট -->
+        <div class="bg-gradient-to-br from-dark to-gray-900 text-white rounded-3xl p-6 flex justify-between items-center shadow-lg relative overflow-hidden">
+            <div class="absolute -top-10 -left-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
+            <div>
+                <span class="text-xs text-gray-400 font-bold block uppercase tracking-wider">উইথড্র যোগ্য মেইন ব্যালেন্স</span>
+                <h3 class="text-3xl font-extrabold text-primary font-body mt-1" id="main-balance-val">৳০.০০</h3>
+            </div>
+            <div class="w-14 h-14 bg-white/5 border border-white/10 text-primary rounded-full flex items-center justify-center text-2xl shadow-inner">
+                <i class="fa-solid fa-wallet"></i>
+            </div>
+        </div>
+
+        <!-- 🎯 ২. উইথড্রাল শর্ত চেকলিস্ট (Auto-validation Checklist) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-3">
+            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-check"></i> উইথড্রাল রিকোয়ারমেন্টস চেকলিস্ট</h4>
+            
+            <div class="space-y-2 text-xs">
+                <div class="flex items-center gap-2" id="chk-gmail">
+                    <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
+                    <span>আপনার নিজের কমপক্ষে ৩টি জিমেইল সফলভাবে অ্যাপ্রুভড হতে হবে। (<span id="chk-my-gmails-count" class="font-body">0</span>/৩)</span>
+                </div>
+                <div class="flex items-center gap-2" id="chk-refer">
+                    <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
+                    <span>আপনার কমপক্ষে ৩টি সফল রেফারেল থাকতে হবে। (<span id="chk-my-ref-count" class="font-body">0</span>/৩) [cite: 1.1.2]</span>
+                </div>
+                <div class="flex items-center gap-2" id="chk-referred-active">
+                    <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
+                    <span>আপনার রেফার করা অন্তত ৩ জন মেম্বারকে প্রত্যেকে ৩টি করে জিমেইল সফলভাবে সাবমিট করতে হবে। (<span id="chk-referred-active-count" class="font-body">0</span>/৩) [cite: 1.1.2]</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 💸 ৩. উইথড্রাল ফর্ম -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
+            <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-paper-plane text-primary"></i> নতুন উইথড্রাল রিকোয়েস্ট পাঠান</h4>
+            
+            <form id="withdraw-form" class="space-y-4 text-xs font-bold">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block mb-1 text-dark">উইথড্র পরিমাণ (৳ - ন্যূনতম ১০০)</label>
+                        <input type="number" id="withdraw-amount" class="w-full px-3 py-2.5 border border-gray-200 rounded-lg font-body outline-none focus:border-primary text-dark" placeholder="৳" min="100" required>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-dark">পেমেন্ট গেটওয়ে</label>
+                        <select id="withdraw-method" class="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-primary text-dark bg-white" required>
+                            <option value="bKash">bKash (বিকাশ)</option>
+                            <option value="Nagad">Nagad (নগদ)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block mb-1 text-dark">মোবাইল নম্বর (Personal)</label>
+                        <input type="text" id="withdraw-phone" class="w-full px-3 py-2 border border-gray-200 rounded-lg font-body outline-none focus:border-primary text-dark" placeholder="017XXXXXXXX" required>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-submit-withdrawal" class="w-full py-3.5 bg-gray-200 text-gray-400 rounded-xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2" disabled>
+                    <i class="fa-solid fa-money-bill-transfer animate-pulse"></i> উইথড্রাল রিকোয়েস্ট পাঠান
+                </button>
+            </form>
+        </section>
+
+        <!-- 📋 ৪. উইথড্রাল হিস্ট্রি তালিকা (পেমেন্ট ট্র্যাকিং) -->
+        <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
+            <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-history text-primary"></i> আমার উইথড্রাল হিস্ট্রি</h4>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead>
+                        <tr class="border-b border-gray-100 text-gray-500 font-semibold bg-gray-50/50">
+                            <th class="py-3 px-4">রিকোয়েস্ট আইডি</th>
+                            <th class="py-3 px-4">তারিখ</th>
+                            <th class="py-3 px-4">পেমেন্ট মেথড</th>
+                            <th class="py-3 px-4">মোবাইল নম্বর</th>
+                            <th class="py-3 px-4">পরিমাণ (৳)</th>
+                            <th class="py-3 px-4 text-center">স্ট্যাটাস</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdraw-history-list" class="divide-y divide-gray-100">
+                        <tr>
+                            <td colspan="6" class="py-6 text-center text-gray-500">ডাটা লোড হচ্ছে...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav - Sync to /withdrawal) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- 🌐 ফুটার প্লেসহোল্ডার -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Supabase SDK & Shared Layout Engine -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let currentResellerId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ও গেটকিপার চেক ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                verifyResellerSession();
+            }
+
+            async function verifyResellerSession() {
+                const client = window.supabaseClient;
+                try {
+                    const { data: { session } } = await client.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    currentResellerId = session.user.id;
+
+                    const { data: profile } = await client.from('profiles').select('role, is_active').eq('id', currentResellerId).single();
+                    if (!profile || profile.role !== 'reseller') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    if (!profile.is_active) {
+                        window.location.href = "/active";
+                        return;
+                    }
+
+                    // সেশন সাকসেসফুল হলে সব উইথড্রাল ডাটা লোড হবে
+                    loadResellerWithdrawalDashboard();
+
+                } catch (e) {
+                    console.error("Auth check error", e);
+                }
+            }
+
+            // --- খ. রিসেলার লাইভ উইথড্রাল ডাটা ও চেকলিস্ট ভ্যালিডেশন ---
+            async function loadResellerWithdrawalDashboard() {
+                const client = window.supabaseClient;
+                try {
+                    // ১. ওয়ালেট ব্যালেন্স লোড
+                    const { data: profile } = await client.from('profiles').select('*').eq('id', currentResellerId).single();
+                    if (profile) {
+                        document.getElementById('main-balance-val').innerText = `৳ ${(profile.wallet_balance || 0).toFixed(2)}`;
+                    }
+
+                    // ২. নিজের জিমেইল ভেরিফিকেশন চেক (কমপক্ষে ৩টি)
+                    const { count: myGmailCount } = await client.from('gmail_submissions').select('id', { count: 'exact', head: true }).eq('reseller_id', currentResellerId).eq('status', 'approved');
+                    const hasMyGmails = myGmailCount >= 3;
+                    document.getElementById('chk-my-gmails-count').innerText = myGmailCount || 0;
+                    updateCheckStyle('chk-gmail', hasMyGmails);
+
+                    // ৩. সফল রেফারেল চেক (কমপক্ষে ৩টি সফল রেফার) [cite: 1.1.2]
+                    const { data: referralData } = await client.from('referrals').select('referred_id').eq('referrer_id', currentResellerId).eq('status', 'success');
+                    const myRefSuccessCount = referralData ? referralData.length : 0;
+                    const hasMyRefs = myRefSuccessCount >= 3;
+                    document.getElementById('chk-my-ref-count').innerText = myRefSuccessCount;
+                    updateCheckStyle('chk-refer', hasMyRefs);
+
+                    // ৪. রেফারকৃত কাস্টমারদের জিমেইল ভেরিফিকেশন চেক (তাদেরও ৩টি করে জিমেইল থাকতে হবে) [cite: 1.1.2]
+                    let activeReferredCount = 0;
+                    if (referralData && referralData.length > 0) {
+                        for (let ref of referralData) {
+                            const { count: refGmailCount } = await client.from('gmail_submissions').select('id', { count: 'exact', head: true }).eq('reseller_id', ref.referred_id).eq('status', 'approved');
+                            if (refGmailCount >= 3) {
+                                activeReferredCount++;
+                            }
+                        }
+                    }
+                    const hasReferredActive = activeReferredCount >= 3;
+                    document.getElementById('chk-referred-active-count').innerText = activeReferredCount;
+                    updateCheckStyle('chk-referred-active', hasReferredActive);
+
+                    // ৫. শর্তসমূহ পূর্ণ হলে উইথড্র বাটন সক্রিয় করা
+                    const myWalletBalance = parseFloat(profile.wallet_balance || 0);
+                    const withdrawBtn = document.getElementById('btn-submit-withdrawal');
+                    
+                    if (hasMyGmails && hasMyRefs && hasReferredActive && myWalletBalance >= 100) {
+                        withdrawBtn.disabled = false;
+                        withdrawBtn.className = "w-full py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-secondary flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-primary/10 transition-all";
+                    } else {
+                        withdrawBtn.disabled = true;
+                        withdrawBtn.className = "w-full py-3 bg-gray-200 text-gray-400 rounded-xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2";
+                    }
+
+                    // ৬. উইথড্রাল হিস্ট্রি তালিকা লোড
+                    loadWithdrawalHistory();
+
+                } catch(e) {
+                    console.error("Dashboard check error", e);
+                }
+            }
+
+            function updateCheckStyle(elementId, isSuccess) {
+                const el = document.getElementById(elementId);
+                if (!el) return;
+                const icon = el.querySelector('i');
+                const text = el.querySelector('span');
+
+                if (isSuccess) {
+                    icon.className = "fa-solid fa-circle-check text-green-500 text-sm";
+                    text.className = "text-green-600 font-semibold";
+                } else {
+                    icon.className = "fa-solid fa-circle-xmark text-red-500 text-sm";
+                    text.className = "text-muted";
+                }
+            }
+
+            // --- গ. উইথড্রাল সাবমিশন রিকোয়েস্ট (FastAPI /api/orders/withdraw-request) ---
+            document.getElementById('withdraw-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!supabaseClient || !currentResellerId) return;
+
+                const amount = parseFloat(document.getElementById('withdraw-amount').value);
+                const method = document.getElementById('withdraw-method').value;
+                const phone = document.getElementById('withdraw-phone').value.trim();
+                const submitBtn = document.getElementById('btn-submit-withdrawal');
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> সাবমিট হচ্ছে...`;
+
+                try {
+                    const response = await fetch('/api/orders/withdraw-request', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            user_id: currentResellerId,
+                            amount: amount,
+                            payment_method: method,
+                            receiver_number: phone
+                        })
+                    });
+
+                    const result = await response.json();
+                    if (response.ok) {
+                        alert(result.message);
+                        document.getElementById('withdraw-amount').value = '';
+                        document.getElementById('withdraw-phone').value = '';
+                        loadResellerWithdrawalDashboard(); // ড্যাশবোর্ড ডাটা রিফ্রেশ
+                    } else {
+                        alert("উইথড্র ব্যর্থ হয়েছে: " + result.detail);
+                    }
+                } catch(err) {
+                    alert("সার্ভার বা নেটওয়ার্ক কানেকশন ফেইলড।");
+                } finally {
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // --- ঘ. ব্যক্তিগত উইথড্রাল হিস্ট্রি তালিকা রেন্ডার ---
+            async function loadWithdrawalHistory() {
+                const listContainer = document.getElementById('withdraw-history-list');
+                const client = window.supabaseClient;
+                try {
+                    const { data: withdrawals } = await client
+                        .from('withdrawals')
+                        .select('*')
+                        .eq('user_id', currentResellerId)
+                        .order('created_at', { ascending: false });
+
+                    if (withdrawals && withdrawals.length > 0) {
+                        listContainer.innerHTML = '';
+                        withdrawals.forEach(w => {
+                            const createdDate = new Date(w.created_at).toLocaleDateString('bn-BD');
+                            
+                            let statusStyle = "text-gray-500 bg-gray-50 border-gray-200";
+                            if (w.status === 'approved') statusStyle = "text-green-600 bg-green-50 border-green-200";
+                            if (w.status === 'rejected') statusStyle = "text-red-500 bg-red-50 border-red-200";
+
+                            listContainer.innerHTML += `
+                                <tr class="hover:bg-gray-50/50 transition-colors">
+                                    <td class="py-4 px-4 font-mono text-xs text-gray-500 font-bold">${w.id.substring(0,8)}...</td>
+                                    <td class="py-4 px-4 text-muted">${createdDate}</td>
+                                    <td class="py-4 px-4 font-bold text-primary">${w.payment_method}</td>
+                                    <td class="py-4 px-4 font-body font-semibold text-dark">${w.receiver_number}</td>
+                                    <td class="py-4 px-4 font-body font-bold text-gray-700">৳${w.amount}</td>
+                                    <td class="py-4 px-4 text-center">
+                                        <span class="px-2.5 py-1 rounded-md text-[0.65rem] font-bold border ${statusStyle}">${w.status}</span>
+                                    </td>
+                                </tr>
+                            `;
+                        });
+                    } else {
+                        listContainer.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-gray-500">আপনার কোনো উইথড্রাল রিকোয়েস্টের হিস্ট্রি পাওয়া যায়নি।</td></tr>';
+                    }
+                } catch(e) {
+                    console.error("Withdraw history fetch fail", e);
+                }
+            }
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+</html>
