@@ -56,7 +56,7 @@
                 <!-- Thumbnail Row -->
                 <div class="grid grid-cols-4 gap-3" id="thumbnails-container"></div>
                 
-                <!-- 📥 Image Download Button (Sleek Orange Outlined Pill) -->
+                <!-- 📥 Image Download Button -->
                 <button onclick="downloadActiveImage()" class="w-full py-2.5 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]">
                     <i class="fa-solid fa-circle-down"></i> এই ছবিটি গ্যালারিতে ডাউনলোড করুন
                 </button>
@@ -74,7 +74,7 @@
                     <span class="px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20" id="warranty-badge">নো ওয়ারেন্টি</span>
                 </div>
 
-                <!-- 💰 Reseller Price Panel (Detailed & Highlighting profit margin) -->
+                <!-- 💰 Reseller Price Panel -->
                 <div class="bg-primary/5 border border-primary/15 rounded-2xl p-4 space-y-3">
                     <div class="flex justify-between items-center border-b border-primary/10 pb-2.5">
                         <div>
@@ -88,7 +88,6 @@
                     </div>
                     <div class="flex justify-between items-center text-xs">
                         <span class="text-muted font-semibold">খুচরা বিক্রয় মূল্য: <strong class="text-dark font-body" id="customer-price-val">৳০</strong></span>
-                        <!-- Minimum Profit Margin Badge [2] -->
                         <span class="px-3 py-1 bg-emerald-600 text-white font-bold rounded-lg text-[0.65rem] flex items-center gap-1"><i class="fa-solid fa-coins"></i> ন্যূনতম লাভ: <span id="profit-val" class="font-body font-black">৳০</span></span>
                     </div>
                 </div>
@@ -125,12 +124,10 @@
 
         </section>
 
-        <!-- 📋 Product Description Card with Clipboard Copy Option -->
+        <!-- Product Description Card -->
         <section class="bg-white rounded-3xl p-5 border border-black/[0.01] shadow-md space-y-4 relative">
             <div class="flex justify-between items-center border-b border-gray-100 pb-2">
                 <h3 class="text-sm font-bold text-dark flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-primary"></i> প্রোডাক্টের বিবরণ</h3>
-                
-                <!-- 📋 Copy Description Button -->
                 <button onclick="copyDescription()" class="text-xs font-bold text-primary hover:text-secondary flex items-center gap-1.5 active:scale-95 transition-transform">
                     <i class="fa-solid fa-copy"></i> ডেসক্রিপশন কপি করুন
                 </button>
@@ -171,7 +168,7 @@
     <script>
         let productData = null;
         let productQty = 1;
-        let activeImageUrl = ""; // ডাউনলোডের জন্য বর্তমান সচল ইমেজের লিংক
+        let activeImageUrl = ""; 
 
         document.addEventListener('DOMContentLoaded', () => {
             
@@ -247,7 +244,7 @@
                     const thumbContainer = document.getElementById('thumbnails-container');
                     
                     if (product.images && product.images.length > 0) {
-                        activeImageUrl = product.images[0]; // ১ম ছবিকে ডিফল্ট সচল ইমেজ ধরা হলো
+                        activeImageUrl = product.images[0]; 
                         mainImageWrapper.innerHTML = `<img id="main-img" src="${product.images[0]}" class="w-full h-full object-cover transition-all duration-300">`;
                         
                         thumbContainer.innerHTML = '';
@@ -321,12 +318,12 @@
                 }
             }
 
-            // --- ৫. গ্লোবাল এক্টিভিটি ও ফাইল ডাউনলোড মেকানিজম ---
+            // --- ৫. গলোবাল ফাইল ডাউনলোড এবং কন্টাক্ট অ্যাকশন ---
             window.switchMainImage = function(url) {
                 const mainImg = document.getElementById('main-img');
                 if (mainImg) {
                     mainImg.src = url;
-                    activeImageUrl = url; // ডাউনলোড করার জন্য সচল ইমেজ আপডেট করা হলো
+                    activeImageUrl = url; 
                 }
             };
 
@@ -350,7 +347,6 @@
                     document.body.removeChild(a);
                     window.URL.revokeObjectURL(blobUrl);
                 } catch (err) {
-                    // কোনো কারণে ব্রাউজার ব্লগ অবজেক্ট ব্লক করলে সরাসরি নতুন ট্যাবে ওপেন হবে
                     window.open(activeImageUrl, '_blank');
                 }
             };
@@ -394,7 +390,7 @@
                     cart.push({
                         product_id: productData.id,
                         title: productData.title,
-                        price: parseFloat(productData.reseller_price), // রিসেলার রেট অনুযায়ী কার্ট তৈরি হবে
+                        price: parseFloat(productData.reseller_price), 
                         image_url: productData.images && productData.images.length > 0 ? productData.images[0] : "",
                         quantity: productQty
                     });
@@ -405,7 +401,7 @@
                 alert("সাফল্য! প্রোডাক্টটি রিসেলার মূল্যে আপনার কার্টে যোগ করা হয়েছে।");
             };
 
-            // সরাসরি বুস্ট/অর্ডার করুন
+            // (ডাইনামিক ফিক্স) সরাসরি রিসেলার চেকআউটে (/dashboard/reseller-checkout) রিডাইরেক্ট করবে
             window.handleBuyNow = function() {
                 if (!productData) return;
 
@@ -418,11 +414,11 @@
                 }];
 
                 localStorage.setItem('cart', JSON.stringify(tempCart));
-                window.location.href = `/checkout?id=${productData.id}&qty=${productQty}`;
+                window.location.href = `/dashboard/reseller-checkout?id=${productData.id}&qty=${productQty}`;
             };
 
             checkLayoutAndLoad();
         });
     </script>
 </body>
-  </html>
+</html>
