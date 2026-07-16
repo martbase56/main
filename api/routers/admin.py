@@ -1,4 +1,4 @@
-# api/routers/admin.py (কাউন্টার ও রিলেশনাল জয়েনিং এরর ফিক্সড সম্পূর্ণ কোড)
+# api/routers/admin.py (এডমিন ড্যাশবোর্ডের পরিপূর্ণ ও চূড়ান্ত কোড)
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
@@ -9,12 +9,13 @@ from api.routers.auth import get_current_user
 
 router = APIRouter()
 
+# --- ১. Pydantic সেটিংস স্কিমা ---
 class SettingsUpdateSchema(BaseModel):
     activation_fee: float
     dashboard_notice: str
     imgbb_api_key: str
 
-# --- ১. হেল্পার ডিপেনডেন্সি: এডমিন রোল ভেরিফাই করা ---
+# --- ২. হেল্পার ডিপেনডেন্সি: এডমিন রোল ভেরিফাই করা ---
 def verify_admin(current_user: dict = Depends(get_current_user)):
     try:
         user_id = current_user.id
@@ -26,23 +27,23 @@ def verify_admin(current_user: dict = Depends(get_current_user)):
         raise HTTPException(status_code=403, detail="এডমিন ভেরিফিকেশন ব্যর্থ হয়েছে।")
 
 
-# --- ২. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস ---
+# --- ৩. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস ---
 @router.get("/stats")
 def get_dashboard_stats(admin: dict = Depends(verify_admin)):
     try:
-        # ক. মোট ইউজার সংখ্যা
+        # মোট ইউজার সংখ্যা
         total_users_query = supabase.table("profiles").select("id").execute()
         total_users_count = len(total_users_query.data) if total_users_query.data else 0
 
-        # খ. আজকের তারিখের শুরু (ISO Format in UTC)
+        # আজকের তারিখের শুরু (ISO Format in UTC)
         today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         today_start_iso = today_start.isoformat()
 
-        # গ. আজকের নতুন ইউজার সংখ্যা
+        # আজকের নতুন ইউজার সংখ্যা
         today_users_query = supabase.table("profiles").select("id").gte("created_at", today_start_iso).execute()
         today_users_count = len(today_users_query.data) if today_users_query.data else 0
 
-        # ঘ. আজকের মোট অর্ডার ও টাকার পরিমাণ
+        # আজকের মোট অর্ডার ও টাকার পরিমাণ
         today_orders_query = supabase.table("orders").select("total_cost").gte("created_at", today_start_iso).execute()
         today_orders_count = len(today_orders_query.data) if today_orders_query.data else 0
         
@@ -59,11 +60,10 @@ def get_dashboard_stats(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৩. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
+# --- ৪. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/activation-requests")
 def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
     try:
-        # (গুরুত্বপূর্ণ ফিক্স) user_id ফরেন-কি স্পষ্ট করে দেওয়া হয়েছে [1.1.1, 1.2.5]
         query = supabase.table("activation_requests")\
             .select("*, profiles!user_id(full_name)")\
             .eq("status", "pending")\
@@ -74,11 +74,10 @@ def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৪. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
+# --- ৫. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/orders")
 def get_all_orders(admin: dict = Depends(verify_admin)):
     try:
-        # (গুরুত্বপূর্ণ ফিক্স) placed_by ফরেন-কি স্পষ্ট করে দেওয়া হয়েছে [1.1.1, 1.2.5]
         query = supabase.table("orders")\
             .select("*, profiles!placed_by(full_name)")\
             .order("created_at", desc=True)\
@@ -88,7 +87,7 @@ def get_all_orders(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৫. এন্ডপয়েন্ট: সিস্টেম সেটিংস রিড করা ---
+# --- ৬. এন্ডপয়েন্ট: সিস্টেম সেটিংস রিড করা ---
 @router.get("/get-settings")
 def get_settings(admin: dict = Depends(verify_admin)):
     try:
@@ -99,7 +98,7 @@ def get_settings(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৬. এন্ডপয়েন্ট: সিস্টেম সেটিংস সেভ/আপডেট করা ---
+# --- ৭. এন্ডপয়েন্ট: system_settings সেভ/আপডেট করা ---
 @router.post("/update-settings")
 def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_admin)):
     try:
@@ -111,9 +110,7 @@ def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_adm
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# ==================== ব্যবহারকারী নিয়ন্ত্রণ এন্ডপয়েন্টসমূহ ====================
-
-# --- ৭. এন্ডপয়েন্ট: সকল ব্যবহারকারীর তালিকা ফেচ করা ---
+# --- ৮. এন্ডপয়েন্ট: ব্যবহারকারীদের তালিকা দেখা ---
 @router.get("/users")
 def get_all_users(admin: dict = Depends(verify_admin)):
     try:
@@ -123,7 +120,7 @@ def get_all_users(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৮. এন্ডপয়েন্ট: ব্যবহারকারীকে ব্যান করা ---
+# --- ৯. এন্ডপয়েন্ট: ইউজার ব্যান করা ---
 @router.post("/users/{user_id}/ban")
 def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -133,7 +130,7 @@ def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৯. এন্ডপয়েন্ট: ব্যবহারকারীকে আনব্যান/একটিভ করা ---
+# --- ১০. এন্ডপয়েন্ট: ইউজার আনব্যান করা ---
 @router.post("/users/{user_id}/unban")
 def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -143,12 +140,64 @@ def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ১০. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল ডিলিট করা ---
+# --- ১১. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল ডিলিট করা ---
 @router.delete("/users/{user_id}")
 def delete_user_account(user_id: str, admin: dict = Depends(verify_admin)):
     try:
         supabase.auth.admin.delete_user(user_id)
         supabase.table("profiles").delete().eq("id", user_id).execute()
         return {"status": "success", "message": "ব্যবহারকারীর অ্যাকাউন্ট ও প্রোফাইল ডাটাবেজ থেকে চিরতরে ডিলিট করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ১২. এন্ডপয়েন্ট: পেন্ডিং উইথড্রাল তালিকা দেখা (ফরেন-কি জয়েনিং ফিক্সড) ---
+@router.get("/withdrawals")
+def get_pending_withdrawals(admin: dict = Depends(verify_admin)):
+    try:
+        query = supabase.table("withdrawals")\
+            .select("*, profiles!user_id(full_name)")\
+            .eq("status", "pending")\
+            .order("created_at", desc=False)\
+            .execute()
+        return query.data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ১৩. এন্ডপয়েন্ট: উইথড্রাল অনুমোদন করা ---
+@router.post("/approve-withdrawal/{withdrawal_id}")
+def approve_withdrawal(withdrawal_id: str, admin: dict = Depends(verify_admin)):
+    try:
+        supabase.table("withdrawals").update({"status": "approved"}).eq("id", withdrawal_id).execute()
+        return {"status": "success", "message": "উইথড্রাল রিকোয়েস্টটি সফলভাবে অ্যাপ্রুভ ও পরিশোধ করা হয়েছে।"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# --- ১৪. এন্ডপয়েন্ট: উইথড্রাল রিজেক্ট করা (টাকা ওয়ালেটে ফেরত যাবে) ---
+@router.post("/reject-withdrawal/{withdrawal_id}")
+def reject_withdrawal(withdrawal_id: str, admin: dict = Depends(verify_admin)):
+    try:
+        withdraw_query = supabase.table("withdrawals").select("*").eq("id", withdrawal_id).single().execute()
+        withdraw = withdraw_query.data
+        if not withdraw:
+            raise HTTPException(status_code=404, detail="রিকোয়েস্টটি পাওয়া যায়নি।")
+
+        if withdraw['status'] != 'pending':
+            return {"status": "info", "message": "এটি ইতিমধ্যে প্রসেস করা হয়েছে।"}
+
+        user_id = withdraw['user_id']
+        refund_amount = float(withdraw['amount'])
+
+        user_profile = supabase.table("profiles").select("wallet_balance").eq("id", user_id).single().execute()
+        if user_profile.data:
+            current_bal = float(user_profile.data.get('wallet_balance', 0) or 0)
+            supabase.table("profiles").update({"wallet_balance": current_bal + refund_amount}).eq("id", user_id).execute()
+            supabase.table("withdrawals").update({"status": "rejected"}).eq("id", withdrawal_id).execute()
+
+            return {"status": "success", "message": "রিকোয়েস্টটি বাতিল করা হয়েছে এবং টাকা ওয়ালেটে রিফান্ড করা হয়েছে।"}
+        
+        raise HTTPException(status_code=400, detail="ইউজার প্রোফাইল পাওয়া যায়নি।")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
