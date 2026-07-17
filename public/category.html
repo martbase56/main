@@ -79,13 +79,12 @@
     <script src="/layout.js"></script>
     
     <script>
-        // গ্লোবাল ভেরিয়েবল conflicts এড়াতে ডাইনামিক ক্লায়েন্ট ট্র্যাকার
         let supabaseClientInstance = null;
-        let selectedCategorySlug = "";
+        let selectedCategoryIdentifier = ""; // এটি স্লাগ অথবা আইডি যেকোনোটি হোল্ড করবে
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক ---
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন এবং সেশন চেইন ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -93,11 +92,19 @@
                 }
                 supabaseClientInstance = window.supabaseClient;
                 
-                // ইউআরএল থেকে কাস্টম ক্যাটাগরি স্লাগ রিড করা
+                // (মাস্টার ফিক্স) ইউআরএল-এর কুয়েরি স্ট্রিং এবং পাথ ডিরেক্টরি উভয় দিক থেকে আইডি/স্লাগ ডিটেক্ট করা [2.2.4]
                 const urlParams = new URLSearchParams(window.location.search);
-                selectedCategorySlug = urlParams.get('slug');
+                let queryIdentifier = urlParams.get('slug') || urlParams.get('id');
 
-                if (!selectedCategorySlug) {
+                if (queryIdentifier) {
+                    selectedCategoryIdentifier = queryIdentifier;
+                } else {
+                    // যদি ব্রাউজার বারে কুয়েরি না থাকে (Vercel rewrite এর কারণে), তবে পাথ সেগমেন্ট থেকে স্লাগ নেওয়া হবে [2.2.4]
+                    const pathSegments = window.location.pathname.split('/');
+                    selectedCategoryIdentifier = pathSegments[pathSegments.length - 1];
+                }
+
+                if (!selectedCategoryIdentifier || selectedCategoryIdentifier === "category") {
                     alert("ভুল ইউআরএল! ক্যাটাগরি সনাক্ত করা যায়নি।");
                     window.location.href = "/";
                     return;
@@ -110,12 +117,21 @@
             // --- খ. ক্যাটাগরি তথ্য ও প্রোডাক্ট তালিকা লোড ---
             async function loadCategoryDataAndProducts() {
                 try {
-                    // ১. স্লাগ দিয়ে ডাটাবেজ থেকে ক্যাটাগরি অবজেক্ট বের করা
-                    const { data: category, error: catError } = await supabaseClientInstance
-                        .from('categories')
-                        .select('*')
-                        .eq('slug', selectedCategorySlug)
-                        .single();
+                    // ১. ডাইনামিক কুয়েরি চেকার (আইডিটি কি UUID নাকি সাধারণ টেক্সট স্লাগ তা যাচাই করা)
+                    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+                    const isUUID = uuidRegex.test(selectedCategoryIdentifier);
+
+                    let query = supabaseClientInstance.from('categories').select('*');
+                    
+                    if (isUUID) {
+                        // যদি আইডিটি UUID হয় তবে id কলামে কুয়েরি করবে
+                        query = query.eq('id', selectedCategoryIdentifier);
+                    } else {
+                        // যদি স্লাগ টেক্সট হয় তবে slug কলামে কুয়েরি করবে
+                        query = query.eq('slug', selectedCategoryIdentifier);
+                    }
+
+                    const { data: category, error: catError } = await query.single();
 
                     if (catError || !category) {
                         alert("ক্যাটাগরি ডাটাবেজে খুঁজে পাওয়া যায়নি।");
@@ -125,7 +141,6 @@
 
                     // হেডার উইজেট আপডেট
                     document.getElementById('header-cat-title').innerText = category.name;
-                    // ক্যাটাগরির সঠিক আইকন সেট করা
                     const headerIcon = document.getElementById('header-cat-icon');
                     if (headerIcon) headerIcon.className = `fa-solid ${category.icon} text-white`;
 
@@ -189,7 +204,6 @@
                             `;
                         });
                     } else {
-                        // কন্ডিশনাল ফ্লাশ এলার্ট কার্ড যদি কোনো প্রোডাক্ট না থাকে
                         prodContainer.innerHTML = `
                             <div class="col-span-full py-16 text-center flex flex-col items-center justify-center gap-2 text-muted">
                                 <i class="fa-solid fa-face-frown text-4xl text-primary animate-bounce"></i>
@@ -213,13 +227,13 @@
                     const { data: otherCats } = await supabaseClientInstance
                         .from('categories')
                         .select('*')
-                        .neq('slug', selectedCategorySlug)
+                        .neq('slug', selectedCategoryIdentifier)
+                        .neq('id', selectedCategoryIdentifier) // আইডি দিয়ে লোড হয়ে থাকলেও ফিল্টার হবে
                         .limit(10);
 
                     if (otherCats && otherCats.length > 0) {
                         container.innerHTML = '';
                         otherCats.forEach(cat => {
-                            // (ক্লিন রাউটিং) সরাসরি এক্সটেনশন ছাড়া ডাইনামিক ক্যাটাগরি রাউট সেট করা হয়েছে
                             container.innerHTML += `
                                 <a href="/category/${cat.slug}" class="category-card bg-white rounded-2xl p-4 text-center border border-black/[0.01] hover:translate-y-[-4px] hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 shadow-sm">
                                     <i class="fa-solid ${cat.icon} text-2xl text-primary mb-2 block"></i>
