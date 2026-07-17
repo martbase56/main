@@ -81,49 +81,40 @@
         </div>
     </div>
 
-    <!-- Supabase SDK -->
+   <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let supabaseClient = null;
+            let supabaseClientInstance = null;
 
-            // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড ---
-            async function initializeSupabase() {
-                try {
-                    const response = await fetch('/api/auth/config');
-                    if (!response.ok) throw new Error("Config fetch failed");
-                    const config = await response.json();
-                    
-                    if (config.supabase_url && config.supabase_anon_key) {
-                        // window.supabase ব্যবহার করে ইনিশিয়ালাইজেশন করা হয়েছে
-                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        console.log("Supabase Client initialized successfully.");
-                    } else {
-                        console.warn("Credentials missing in env variables.");
-                    }
-                } catch (err) {
-                    console.error("Supabase failed to initialize:", err);
+            // --- ক. সুপাবেস গ্লোবাল ক্লায়েন্ট ভেরিফিকেশন চেক ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
                 }
+                supabaseClientInstance = window.supabaseClient;
             }
 
-            initializeSupabase();
+            checkLayoutAndLoad();
 
             // --- খ. কাস্টমার রেজিস্ট্রেশন হ্যান্ডলার ---
             document.getElementById('customer-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!supabaseClient) {
+                if (!supabaseClientInstance) {
                     alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
 
-                const fullname = document.getElementById('fullname').value;
-                const email = document.getElementById('email').value;
-                const phone = document.getElementById('phone').value;
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
                 const password = document.getElementById('password').value;
 
                 try {
-                    const { data, error } = await supabaseClient.auth.signUp({
+                    const { data, error } = await supabaseClientInstance.auth.signUp({
                         email: email,
                         password: password,
                         options: {
@@ -150,5 +141,3 @@
             });
         });
     </script>
-</body>
-</html>
