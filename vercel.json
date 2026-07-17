@@ -11,6 +11,10 @@
       "destination": "/public/signup/reseller.html"
     },
     {
+      "source": "/category/:slug",
+      "destination": "/public/category.html?slug=:slug"
+    },
+    {
       "source": "/dashboard/category/:slug",
       "destination": "/public/dashboard/reseller-category.html?slug=:slug"
     },
