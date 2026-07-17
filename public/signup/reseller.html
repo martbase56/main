@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MerketBaseBD - Reseller Dashboard</title>
+    <title>MerketBaseBD - ওয়ার্কার রেজিস্ট্রেশন</title>
     
     <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Tailwind CSS Play CDN -->
@@ -18,575 +18,330 @@
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
-                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
-                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
-                        dark: '#111827',          /* চারকোল ব্ল্যাক */
-                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        dark: '#0F172A',
+                        muted: '#64748B',
+                        accent: '#FFF7ED',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
                         headings: ['"Bricolage Grotesque"', 'sans-serif'],
-                        body: ['"Rubik"', 'sans-serif'],
+                        body: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%, 100%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '55%': { transform: 'translate(30px, -40px) scale(1.05)' },
+                        }
                     }
                 }
             }
         }
     </script>
+    <style>
+        .bg-grid-pattern {
+            background-size: 30px 30px;
+            background-image: linear-gradient(to right, rgba(241, 245, 249, 0.6) 1px, transparent 1px),
+                              linear-gradient(to bottom, rgba(241, 245, 249, 0.6) 1px, transparent 1px);
+        }
+    </style>
 </head>
-<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+<body class="bg-[#FAF9F6] bg-grid-pattern font-bangla text-dark min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
 
-    <!-- 📱 App Style Sticky Header -->
-    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <!-- Sidebar Drawer Toggle -->
-            <button id="drawer-toggle" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center text-dark text-lg active:scale-95 transition-transform">
-                <i class="fa-solid fa-bars-staggered"></i>
-            </button>
-            <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD</span>
-        </div>
-
-        <!-- 💸 bKash-style Tap to Reveal Wallet Balance Pill -->
-        <div onclick="toggleBalance()" class="bg-primary/10 border border-primary/20 rounded-full px-4 py-1.5 flex items-center gap-2 cursor-pointer select-none active:scale-95 transition-transform" id="balance-pill">
-            <span class="text-xs font-bold text-primary" id="balance-label">ব্যালেন্স দেখুন</span>
-            <span class="text-sm font-bold text-primary font-body hidden" id="balance-amount">৳--</span>
-            <i class="fa-solid fa-wallet text-primary text-xs"></i>
-        </div>
-    </header>
-
-    <!-- 📁 Off-Canvas App Drawer Menu (Toggle Menu) -->
-    <div id="app-drawer" class="fixed inset-y-0 left-0 w-[280px] bg-dark text-gray-300 z-50 transform -translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
-        <div class="p-6 bg-gradient-to-r from-primary to-secondary text-white flex flex-col items-center text-center">
-            <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center text-2xl font-bold mb-3 border-2 border-white/30">
-                <i class="fa-solid fa-user-tie"></i>
-            </div>
-            <h4 class="font-bold text-base leading-tight" id="drawer-fullname">লোডিং...</h4>
-            <span class="text-xs font-bold bg-black/20 px-3 py-1 rounded-full mt-2 font-body" id="drawer-id">আইডি: ----</span>
-        </div>
-
-        <div class="flex-grow p-4 space-y-2 overflow-y-auto">
-            <a href="/" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-house"></i> হোম পেজ</a>
-            <a href="/dashboard/reseller-profile" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-box-open"></i> আমার অর্ডারসমূহ</a>
-            <a href="https://www.marketbasebd.com/withdrawal" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-wallet"></i> উইথড্র প্যানেল</a>
-            <a href="/dashboard/referral" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-gift"></i> রেফারেল সেন্টার</a>
-            <a href="/dashboard/reseller-profile" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-white/5 transition-all text-sm font-semibold"><i class="fa-solid fa-user-gear"></i> প্রোফাইল সেটিংস</a>
-        </div>
-
-        <div class="p-4 border-t border-white/5">
-            <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 hover:bg-red-500/10 transition-all font-semibold text-sm">
-                <i class="fa-solid fa-arrow-right-from-bracket"></i> লগআউট করুন
-            </button>
-        </div>
-    </div>
-    <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-30 hidden"></div>
+    <!-- Decorative Animated Glowing Blobs -->
+    <div class="absolute -top-20 -left-20 w-80 h-80 bg-orange-200/40 rounded-full blur-3xl filter animate-blob"></div>
+    <div class="absolute bottom-10 right-10 w-90 h-90 bg-yellow-100/50 rounded-full blur-3xl filter animate-blob" style="animation-delay: 4s;"></div>
 
     <!-- Main Container -->
-    <div class="max-w-[1200px] mx-auto px-4 pt-5 space-y-6">
-
-        <!-- 📢 ১. স্লাইডার ব্যানার -->
-        <div class="w-full aspect-[3/1] max-sm:aspect-[2.2/1] rounded-2xl overflow-hidden shadow-sm border border-primary/5">
-            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover">
+    <div class="w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-[32px] border border-gray-100 p-6 md:p-10 shadow-[0_20px_50px_rgba(255,107,0,0.06)] relative overflow-hidden transition-all duration-300">
+        
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight block hover:scale-102 transition-all">MerketBaseBD</a>
+            <p class="text-[11px] text-muted mt-1.5 uppercase tracking-wider font-bold bg-primary/5 py-1 px-3 rounded-full inline-block">Premium Work & Earn Platform</p>
+            <h3 class="text-lg md:text-xl font-bold mt-4 text-dark flex items-center justify-center gap-2">
+                <i class="fa-solid fa-briefcase text-primary"></i> ওয়ার্কার অ্যাকাউন্ট রেজিস্ট্রেশন
+            </h3>
         </div>
 
-        <!-- 📢 ২. নোটিশবোর্ড -->
-        <div class="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-center gap-3">
-            <span class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center shrink-0"><i class="fa-solid fa-bullhorn text-sm animate-bounce"></i></span>
-            <marquee class="text-xs font-bold text-dark" id="ticker-text">সিস্টেম নোটিশ লোড হচ্ছে...</marquee>
+        <!-- Multi-Step Progress Tracker -->
+        <div class="flex items-center justify-center gap-3 mb-8 max-w-sm mx-auto">
+            <div id="step-1-indicator" class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20">
+                <span class="w-5 h-5 rounded-full bg-white text-primary flex items-center justify-center text-[10px]">১</span> অ্যাকাউন্ট সেটআপ
+            </div>
+            <div class="h-0.5 w-10 bg-gray-200" id="step-divider"></div>
+            <div id="step-2-indicator" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300">
+                <span class="w-5 h-5 rounded-full bg-gray-200 text-muted flex items-center justify-center text-[10px]">২</span> আপনার তথ্য
+            </div>
         </div>
 
-        <!-- 💸 ৩. ব্যালেন্স ও রেফারেল কুইক উইজেট -->
-        <section class="grid grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow flex items-center gap-3">
-                <div class="w-9 h-9 bg-primary/10 text-primary rounded-xl flex items-center justify-center text-base"><i class="fa-solid fa-wallet"></i></div>
-                <div>
-                    <span class="text-[0.62rem] text-muted font-bold block">আমার ওয়ালেট</span>
-                    <h3 class="text-sm font-extrabold text-dark font-body" id="wallet-val">৳--</h3>
+        <form id="worker-signup-form" class="space-y-6">
+            
+            <!-- ================= STEP 1: ACCOUNT DETAILS ================= -->
+            <div id="form-step-1" class="space-y-5 transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Name Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-user text-sm"></i>
+                        </span>
+                        <input type="text" id="fullname" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="fullname" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">সম্পূর্ণ নাম</label>
+                    </div>
+
+                    <!-- Email Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                        </span>
+                        <input type="email" id="email" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="email" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">ইমেইল ঠিকানা</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- Phone Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-phone text-sm"></i>
+                        </span>
+                        <input type="tel" id="phone" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="phone" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">মোবাইল নম্বর</label>
+                    </div>
+
+                    <!-- Password Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-lock text-sm"></i>
+                        </span>
+                        <input type="password" id="password" required placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="password" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">পাসওয়ার্ড দিন</label>
+                    </div>
+                </div>
+
+                <!-- Refer Code Input -->
+                <div class="relative group">
+                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                        <i class="fa-solid fa-gift text-sm"></i>
+                    </span>
+                    <input type="number" id="referred_by" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                    <label for="referred_by" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">রেফার কোড (ঐচ্ছিক)</label>
+                </div>
+
+                <!-- Next Button -->
+                <button type="button" id="btn-next" class="w-full py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm">
+                    পরবর্তী ধাপ <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+
+            <!-- ================= STEP 2: USER ADDITIONAL DATA ================= -->
+            <div id="form-step-2" class="space-y-5 hidden transition-all duration-300">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">                    <!-- Age Input -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-calendar text-sm"></i>
+                        </span>
+                        <input type="number" id="age" min="15" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="age" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">বয়স</label>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <!-- City/District Input (Sorua/Sohor) -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-solid fa-city text-sm"></i>
+                        </span>
+                        <input type="text" id="city" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="city" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">শহর / জেলা</label>
+                    </div>
+
+                    <!-- Facebook Profile Link -->
+                    <div class="relative group">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                            <i class="fa-brands fa-facebook text-sm"></i>
+                        </span>
+                        <input type="url" id="fb_link" placeholder=" " class="peer w-full pl-11 pr-4 py-3.5 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm">
+                        <label for="fb_link" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">ফেসবুক আইডি লিঙ্ক (ঐচ্ছিক)</label>
+                    </div>
+                </div>
+
+                <!-- Address Textarea -->
+                <div class="relative group">
+                    <span class="absolute top-4 left-4 text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
+                        <i class="fa-solid fa-map-location-dot text-sm"></i>
+                    </span>
+                    <textarea id="address" placeholder=" " class="peer w-full pl-11 pr-4 pt-3.5 pb-2 bg-gray-50/60 border-2 border-gray-100 rounded-2xl outline-none focus:border-primary focus:bg-white focus:ring-4 focus:ring-primary/10 transition-all text-dark font-medium placeholder-transparent text-sm h-24 resize-none"></textarea>
+                    <label for="address" class="absolute left-11 top-6 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:top-3 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">বর্তমান সম্পূর্ণ ঠিকানা</label>
+                </div>
+
+                <!-- Navigation Buttons for Step 2 -->
+                <div class="flex gap-4">
+                    <button type="button" id="btn-back" class="w-1/3 py-4 bg-gray-100 text-muted rounded-2xl font-bold hover:bg-gray-200 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-arrow-left"></i> পূর্ববর্তী
+                    </button>
+                    <button type="submit" class="w-2/3 py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm">
+                        <i class="fa-solid fa-briefcase"></i>  রেজিস্ট্রেশন করুন
+                    </button>
                 </div>
             </div>
-            <div class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow flex items-center gap-3">
-                <div class="w-9 h-9 bg-green-100 text-green-600 rounded-xl flex items-center justify-center text-base"><i class="fa-solid fa-gift"></i></div>
-                <div>
-                    <span class="text-[0.62rem] text-muted font-bold block">মোট রেফারেল</span>
-                    <h3 class="text-sm font-extrabold text-dark font-body" id="wallet-referrals">--</h3>
-                </div>
-            </div>
-        </section>
 
-        <!-- 📞 ৪. কুইক সাপোর্ট সেন্টার (আইকন ভিত্তিক) -->
-        <section class="bg-white p-4 rounded-2xl border border-black/[0.01] shadow">
-            <div class="grid grid-cols-4 gap-2 text-center">
-                <a href="https://wa.me/8801781146747" target="_blank" class="flex flex-col items-center gap-1">
-                    <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center text-lg"><i class="fa-brands fa-whatsapp"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">WhatsApp</span>
-                </a>
-                <a href="https://t.me/yourno" target="_blank" class="flex flex-col items-center gap-1">
-                    <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-600 flex items-center justify-center text-lg"><i class="fa-brands fa-telegram"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">Telegram</span>
-                </a>
-                <a href="https://t.me/channel" target="_blank" class="flex flex-col items-center gap-1">
-                    <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center text-lg"><i class="fa-solid fa-bullhorn"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">Channel</span>
-                </a>
-                <a href="https://facebook.com/page" target="_blank" class="flex flex-col items-center gap-1">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-lg"><i class="fa-brands fa-facebook-f"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark">FB Page</span>
-                </a>
-            </div>
-        </section>
+        </form>
 
-        <!-- 💰 ৫. ইনকাম প্রজেক্ট (Income Projects Grid) -->
-        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 border-l-4 border-primary pl-2">ইনকাম প্রজেক্ট</h4>
-            <div class="grid grid-cols-4 gap-4 text-center">
-                <!-- Gmail -->
-                <a href="/dashboard/gmail-task" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-red-50 text-red-500 flex items-center justify-center text-base border border-red-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-envelope"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">জিমেইল সেল</span>
-                </a>
-                <!-- Facebook -->
-                <a href="/dashboard/facebook-task" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-facebook"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">ফেসবুক সেল</span>
-                </a>
-                <!-- Instagram -->
-                <a href="/dashboard/instagram-task" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-pink-50 text-pink-500 flex items-center justify-center text-base border border-pink-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-instagram"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">ইনস্টাগ্রাম সেল</span>
-                </a>
-                <!-- Ad Share (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-share-nodes"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">এড শেয়ার জব</span>
-                </button>
-                <!-- Micro Job (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-list-check"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">মাইক্রো জব</span>
-                </button>
-                <!-- Gift Code -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-500 flex items-center justify-center text-base border border-amber-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-gift"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">গিফট কোড</span>
-                </button>
-                <!-- Data Entry (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-keyboard"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">Data Entry</span>
-                </button>
-                <!-- Referral -->
-                <a href="/dashboard/referral" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-base border border-emerald-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-user-group"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">রেফারাল</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- ⭐ ৬. প্রিমিয়াম জব (Premium Jobs Grid) -->
-        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 border-l-4 border-primary pl-2">প্রিমিয়াম জব প্যানেল</h4>
-            <div class="grid grid-cols-4 gap-4 text-center">
-                <!-- Reselling -->
-                <a href="https://www.marketbasebd.com/dashboard/reseller-products" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center text-base border border-primary/20 group-hover:scale-105 transition-transform"><i class="fa-solid fa-store"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">রিসেলিং পণ্য</span>
-                </a>
-                <!-- Job Post (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-square-plus"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">জব পোস্ট</span>
-                </button>
-                <!-- Text Job (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-file-lines"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">টেক্সট জব</span>
-                </button>
-                <!-- Mobile Recharge (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-mobile-screen"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">মোবাইল রিচার্জ</span>
-                </button>
-                <!-- Drive Offer (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-car-side"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">ড্রাইভ অফার</span>
-                </button>
-                <!-- Vendor (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-handshake"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">ভেন্ডর</span>
-                </button>
-                <!-- Promotion (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-rectangle-ad"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">প্রোমোশন</span>
-                </button>
-            </div>
-        </section>
-
-        <!-- 📦 ৭. রিসেলিং জোন (Reselling Zone Grid) -->
-        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 border-l-4 border-primary pl-2">রিসেলিং জোন</h4>
-            <div class="grid grid-cols-4 gap-4 text-center">
-                <a href="https://www.marketbasebd.com/dashboard/reseller-products" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-box-open"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">সকল প্রোডাক্ট</span>
-                </a>
-                <a href="https://www.marketbasebd.com/dashboard/reseller-products" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-magnifying-glass"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">অনুসন্ধান</span>
-                </a>
-                <a href="/dashboard/reseller-order" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-bag-shopping"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">আমার অর্ডার</span>
-                </a>
-                <a href="/#offers-section" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-fire"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">অফার প্রোডাক্ট</span>
-                </a>
-                <a href="/dashbord/category" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-list-ul"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">ক্যাটাগরি সমূহ</span>
-                </a>
-                <a href="/load" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-shield-halved"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">ভেরিফাইড পণ্য</span>
-                </a>
-                <a href="/dashboard/reseller-wishlist" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-rose-50 text-rose-500 flex items-center justify-center border border-rose-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-heart"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">পছন্দের তালিকা</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 🔗 ৮. কুইক একশন (Quick Links Grid) -->
-        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 border-l-4 border-primary pl-2">কুইক অ্যাকশনস</h4>
-            <div class="grid grid-cols-4 gap-4 text-center">
-                <a href="/dashboard/erorr" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center border border-green-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-circle-dollar-to-slot"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">আয়ের বিবরণ</span>
-                </a>
-                <a href="/dashboard/reseller-orders" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-gray-50 text-gray-500 flex items-center justify-center border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">অর্ডার হিস্ট্রি</span>
-                </a>
-                <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-user-gear"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">প্রোফাইল</span>
-                </a>
-                <a href="https://www.marketbasebd.com/withdrawal" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center border border-amber-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-wallet"></i></div>
-                    <span class="text-[0.65rem] font-bold text-dark leading-snug">উইথড্র করুন</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- 🚀 ৯. ডিজিটাল সার্ভিস (Digital Services Grid) -->
-        <section class="bg-white rounded-2xl p-5 border border-black/[0.01] shadow-sm">
-            <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-4 border-l-4 border-primary pl-2">ডিজিটাল সার্ভিস প্যানেল</h4>
-            <div class="grid grid-cols-4 gap-4 text-center">
-                <!-- TikTok Boost -->
-                <a href="/tiktok-ad" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-dark text-white flex items-center justify-center text-base border border-white/5 group-hover:scale-105 transition-transform"><i class="fa-brands fa-tiktok"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">টিকটক বুস্ট</span>
-                </a>
-                <!-- Facebook Boost -->
-                <a href="/facebook-ad" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-base border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-facebook-f"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">ফেসবুক বুস্ট</span>
-                </a>
-                <!-- Telegram Services -->
-                <a href="/telegram-service" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-sky-50 text-sky-600 flex items-center justify-center text-base border border-sky-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-telegram text-lg"></i></div>
-                    <span class="text-[0.68rem] font-bold text-dark leading-snug">টেলিগ্রাম প্রিমিয়াম</span>
-                </a>
-                <!-- Canva (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-palette"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">ক্যানভা প্রো</span>
-                </button>
-                <!-- Capcut (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-video"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">ক্যাপকাট প্রো</span>
-                </button>
-                <!-- Other Services (Coming Soon) -->
-                <button onclick="showComingSoon()" class="flex flex-col items-center gap-1.5 group">
-                    <div class="w-11 h-11 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center text-base border border-gray-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-circle-nodes"></i></div>
-                    <span class="text-[0.68rem] font-bold text-gray-500 leading-snug">অন্যান্য সার্ভিস</span>
-                </button>
-            </div>
-        </section>
-
-    </div>
-
-    <!-- 🎁 ১০. গ্লসি এবং চমৎকার কামিং সুন মোডাল পপআপ (Coming Soon Popup Widget) -->
-    <div id="coming-soon-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white rounded-3xl max-w-[380px] w-full p-6 text-center space-y-4 border border-primary/20 shadow-2xl animate-scale-up">
-            <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center text-3xl mx-auto"><i class="fa-solid fa-hourglass-start animate-spin"></i></div>
-            <h3 class="text-xl font-extrabold text-dark font-headings">Coming Soon!</h3>
-            <p class="text-xs text-muted leading-relaxed">এই চমৎকার প্রফেশনাল সার্ভিসটির ব্যাকএন্ড ডেভেলপমেন্টের কাজ চলছে। খুব শীঘ্রই এটি আপনার সেবায় লাইভ করা হবে। আমাদের সাথেই থাকুন!</p>
-            <button onclick="closeComingSoonModal()" class="w-full py-3 bg-primary text-white rounded-xl font-bold text-xs hover:bg-secondary active:scale-95 transition-all shadow shadow-primary/20">ঠিক আছে</button>
+        <!-- Footer Links -->
+        <div class="text-center mt-8 pt-6 border-t border-gray-100 text-sm text-muted space-y-2">
+            <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-bold hover:underline">লগইন করুন</a></p>
+            <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
-    </div>
-
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
-        <a href="#" class="flex flex-col items-center gap-1 text-primary shrink-0">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
-        </a>
-        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
-            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
-            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
-        </a>
-        <a href="https://www.marketbasebd.com/dashboard/reseller-products" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
-            <i class="fa-solid fa-box-open text-lg"></i>
-            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
-        </a>
-        <a href="https://www.marketbasebd.com/withdrawal" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
-            <i class="fa-solid fa-wallet text-lg"></i>
-            <span class="text-[0.65rem] font-bold">উইথড্র</span>
-        </a>
-        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
-            <i class="fa-solid fa-circle-user text-lg"></i>
-            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
-        </a>
-    </nav><!-- Supabase SDK & Global Layout -->
+    </div><!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="/layout.js"></script>
     
     <script>
-        let resellerUserId = null;
-        let isBalanceVisible = false;
-        let walletBalanceAmount = 0.0;
-
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // সাইডবার ড্রয়ার টগল লজিক
-            const drawerToggle = document.getElementById('drawer-toggle');
-            const appDrawer = document.getElementById('app-drawer');
-            const drawerOverlay = document.getElementById('drawer-overlay');
+            let supabaseClient = null;
 
-            function toggleSidebarMenu() {
-                appDrawer.classList.toggle('-translate-x-full');
-                drawerOverlay.classList.toggle('hidden');
+            // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড করার ফাংশন ---
+            async function initializeSupabase() {
+                try {
+                    const response = await fetch('/api/auth/config');
+                    if (!response.ok) throw new Error("Config API Error");
+                    const config = await response.json();
+                    
+                    if (config.supabase_url && config.supabase_anon_key) {
+                        // window.supabase ব্যবহার করা হয়েছে গ্লোবাল কনফ্লিক্ট এড়াতে
+                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
+                        console.log("Supabase Client initialized dynamically.");
+                    }
+                } catch (err) {
+                    console.error("Supabase failed to load dynamically:", err);
+                }
             }
 
-            if (drawerToggle) drawerToggle.addEventListener('click', toggleSidebarMenu);
-            if (drawerOverlay) drawerOverlay.addEventListener('click', toggleSidebarMenu);
-            window.closeDrawer = toggleSidebarMenu;
+            initializeSupabase();
 
-            // বিকাশ-স্টাইল ট্যাপ টু ব্যালেন্স লজিক
-            window.toggleBalance = function() {
-                const label = document.getElementById('balance-label');
-                const amount = document.getElementById('balance-amount');
-                
-                isBalanceVisible = !isBalanceVisible;
-                
-                if (isBalanceVisible) {
-                    label.classList.add('hidden');
-                    amount.innerText = `৳${walletBalanceAmount.toFixed(2)}`;
-                    amount.classList.remove('hidden');
-                    
-                    setTimeout(() => {
-                        isBalanceVisible = false;
-                        amount.classList.add('hidden');
-                        label.classList.remove('hidden');
-                    }, 4000);
-                } else {
-                    amount.classList.add('hidden');
-                    label.classList.remove('hidden');
+            // --- খ. টু-স্টেপ ফর্ম নেভিগেশন লজিক ---
+            const step1 = document.getElementById('form-step-1');
+            const step2 = document.getElementById('form-step-2');
+            const btnNext = document.getElementById('btn-next');
+            const btnBack = document.getElementById('btn-back');
+
+            const step1Indicator = document.getElementById('step-1-indicator');
+            const step2Indicator = document.getElementById('step-2-indicator');
+            const stepDivider = document.getElementById('step-divider');
+
+            // প্রথম ধাপের রিকোয়ার্ড ফিল্ড ভ্যালিডেশন
+            function validateStep1() {
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value.trim();
+
+                if (!fullname || !email || !phone || !password) {
+                    alert("দয়া করে প্রথম ধাপের সবগুলি প্রয়োজনীয় ফিল্ড পূরণ করুন।");
+                    return false;
                 }
-            };
+                return true;
+            }
 
-            // (ফিক্সড) কামিং সুন মডাল শো/হাইড করার গ্লোবাল ফাংশনস [1.1, 1.1.2]
-            window.showComingSoon = function() {
-                const modal = document.getElementById('coming-soon-modal');
-                if (modal) modal.classList.remove('hidden');
-            };
+            btnNext.addEventListener('click', () => {
+                if (validateStep1()) {
+                    // এনিমেশন ট্রানজিশন সহ স্লাইড পরিবর্তন
+                    step1.classList.add('hidden');
+                    step2.classList.remove('hidden');
 
-            window.closeComingSoonModal = function() {
-                const modal = document.getElementById('coming-soon-modal');
-                if (modal) modal.classList.add('hidden');
-            };
+                    // ইন্ডিকেটর স্টাইল আপডেট
+                    step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-primary text-xs font-bold transition-all duration-300";
+                    stepDivider.className = "h-0.5 w-10 bg-primary";
+                    step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
+                }
+            });
 
-            // ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন চেক
-            async function checkLayoutAndLoad() {
-                if (!window.supabaseClient) {
-                    setTimeout(checkLayoutAndLoad, 100);
+            btnBack.addEventListener('click', () => {
+                step2.classList.add('hidden');
+                step1.classList.remove('hidden');
+
+                // ইন্ডিকেটর রিস্টোর
+                step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
+                stepDivider.className = "h-0.5 w-10 bg-gray-200";
+                step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300";
+            });
+
+            // --- ক. ইউআরএল থেকে রেফারেল কোড অটো-ডিটেক্ট করা ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const refCode = urlParams.get('ref');
+            
+            if (refCode) {
+                const refInput = document.getElementById('referred_by');
+                if (refInput) {
+                    refInput.value = refCode;
+                    refInput.readOnly = true; // লক করা হলো যাতে ভুলবশত পরিবর্তন না হয়
+                    refInput.className += " bg-gray-150 text-gray-400 border-gray-300 font-bold";
+                }
+            }
+
+            // --- গ. ওয়ার্কার রেজিস্ট্রেশন সাবমিট হ্যান্ডলার (সংশোধিত) ---
+            document.getElementById('worker-signup-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                if (!supabaseClient) {
+                    alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি।");
                     return;
                 }
-                verifyResellerAndLoad();
-            }
 
-            // রিসেলার সেশন ও গেটকিপার ভেরিফিকেশন
-            async function verifyResellerAndLoad() {
-                const client = window.supabaseClient; // গ্লোবাল ক্লায়েন্ট রিড
-                if (!client) return;
+                const fullname = document.getElementById('fullname').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const referredByCode = document.getElementById('referred_by').value.trim();
+                
+                // স্টেপ ২ এর ডেটা সংগ্রহ (উইদাউট এডুকেশন ফিল্ড)
+                const age = document.getElementById('age').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const fb_link = document.getElementById('fb_link').value.trim();
+                const address = document.getElementById('address').value.trim();
 
-                try {
-                    const { data: { session } } = await client.auth.getSession();
-                    if (!session) {
-                        window.location.href = "/login";
-                        return;
-                    }
-                    resellerUserId = session.user.id;
-
-                    const { data: profile } = await client.from('profiles').select('*').eq('id', resellerUserId).single();
-                    if (!profile || profile.role !== 'reseller') {
-                        alert("দুঃখিত, শুধুমাত্র রিসেলাররাই ড্যাশবোর্ড অ্যাক্সেস করতে পারবেন।");
-                        window.location.href = "/";
-                        return;
-                    }
-
-                    // (গেটকিপার নিরাপত্তা) সচল না থাকলে ব্লক করে পাঠানো হবে [1.1.3]
-                    if (!profile.is_active) {
-                        window.location.href = "/active";
-                        return;
-                    }
-
-                    document.getElementById('drawer-fullname').innerText = profile.full_name || "Reseller User";
-                    document.getElementById('drawer-id').innerText = `রিসেলার আইডি: ${profile.refer_code}`;
-                    
-                    // টাইপ কাস্টিং ফিক্স
-                    walletBalanceAmount = parseFloat(profile.wallet_balance || 0);
-                    document.getElementById('wallet-val').innerText = `৳${walletBalanceAmount}`;
-
-                    // একটিভিটি টাইমস্ট্যাম্প আপডেট করা
-                    fetch(`/api/auth/update-activity/${resellerUserId}`, { method: 'POST' });
-
-                    // গ্লোবাল সুপাবেস দিয়ে ডাটা লোড প্রসেস
-                    loadNotice();
-                    loadReferralsCount();
-                    loadHighlightedProducts();
-                    loadCategoriesScroll();
-
-                } catch (e) {
-                    console.error("Reseller check error", e);
-                }
-            }
-
-            async function loadNotice() {
-                const client = window.supabaseClient;
-                if (!client) return;
-                try {
-                    const { data: setting } = await client.from('system_settings').select('value').eq('key', 'dashboard_notice').single().execute();
-                    if (setting) {
-                        document.getElementById('ticker-text').innerText = setting.value;
-                    }
-                } catch(e) {}
-            }
-
-            async function loadReferralsCount() {
-                try {
-                    const response = await fetch(`/api/auth/referrals/${resellerUserId}`);
-                    if (response.ok) {
-                        const referrals = await response.json();
-                        const successCount = referrals ? referrals.filter(r => r.status === 'success').length : 0;
-                        document.getElementById('wallet-referrals').innerText = successCount;
-                    }
-                } catch(e) {}
-            }
-
-            async function loadCategoriesScroll() {
-                const client = window.supabaseClient;
-                if (!client) return;
-                const scrollContainer = document.getElementById('categories-scroll');
-                try {
-                    const { data: categories } = await client.from('categories').select('*').execute();
-                    if (categories && categories.length > 0) {
-                        scrollContainer.innerHTML = '';
-                        categories.forEach(cat => {
-                            scrollContainer.innerHTML += `
-                                <a href="/category/${cat.slug}" class="bg-white border border-gray-150 rounded-full px-4 py-2 text-xs font-bold text-dark flex items-center gap-2 shrink-0 hover:border-primary transition-all">
-                                    <i class="fa-solid ${cat.icon} text-primary"></i> ${cat.name}
-                                </a>
-                            `;
-                        });
-                    }
-                } catch(e) {}
-            }
-
-            async function loadHighlightedProducts() {
-                const client = window.supabaseClient;
-                if (!client) return;
-
-                const offersScroll = document.getElementById('offers-products-scroll');
-                const verifiedScroll = document.getElementById('verified-products-scroll');
-                const wishlistScroll = document.getElementById('wishlist-products-scroll');
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেসিং হচ্ছে...`;
 
                 try {
-                    // ১. অফার প্রোডাক্ট লোড
-                    const { data: offers } = await client.from('products').select('*').not('customer_offer_price', 'is', null).limit(10).execute();
-                    if (offers && offers.length > 0) {
-                        offersScroll.innerHTML = '';
-                        offers.forEach(prod => {
-                            const img = prod.images && prod.images.length > 0 ? prod.images[0] : prod.image_url;
-                            offersScroll.innerHTML += `
-                                <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
-                                    <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
-                                        ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
-                                    </a>
-                                    <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
-                                    <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.customer_offer_price}</p>
-                                </div>
-                            `;
-                        });
-                    } else {
-                        offersScroll.innerHTML = '<p class="text-[0.65rem] text-muted">কোনো অফার পণ্য নেই।</p>';
-                    }
-
-                    // ২. ভেরিফাইড প্রোডাক্ট লোড
-                    const { data: verified } = await client.from('products').select('*').limit(10).execute();
-                    if (verified && verified.length > 0) {
-                        verifiedScroll.innerHTML = '';
-                        verified.forEach(prod => {
-                            const img = prod.images && prod.images.length > 0 ? prod.images[0] : prod.image_url;
-                            verifiedScroll.innerHTML += `
-                                <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
-                                    <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
-                                        ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
-                                    </a>
-                                    <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
-                                    <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.regular_price}</p>
-                                </div>
-                            `;
-                        });
-                    }
-
-                    // ৩. উইশলিস্ট প্রোডাক্ট লোড
-                    const wishlistIds = JSON.parse(localStorage.getItem('wishlist')) || [];
-                    if (wishlistIds.length > 0) {
-                        const { data: wishlistProds } = await client.from('products').select('*').in('id', wishlistIds).limit(10).execute();
-                        if (wishlistProds && wishlistProds.length > 0) {
-                            wishlistScroll.innerHTML = '';
-                            wishlistProds.forEach(prod => {
-                                const img = prod.images && prod.images.length > 0 ? prod.images[0] : prod.image_url;
-                                wishlistScroll.innerHTML += `
-                                    <div class="bg-white border border-gray-150 rounded-xl p-3 flex flex-col w-[130px] shrink-0 text-center hover:shadow-sm transition-shadow">
-                                        <a href="/product?id=${prod.id}" class="w-full h-20 bg-gray-50 flex items-center justify-center overflow-hidden rounded-lg">
-                                            ${img ? `<img src="${img}" class="w-full h-full object-cover">` : `<i class="fa-solid fa-image text-gray-300 text-xl"></i>`}
-                                        </a>
-                                        <h5 class="text-[0.7rem] font-bold text-dark truncate mt-2">${prod.title}</h5>
-                                        <p class="text-xs font-bold text-primary mt-1 font-body">৳${prod.regular_price}</p>
-                                    </div>
-                                `;
-                            });
+                    // role: 'reseller' পাস করা হচ্ছে ব্যাকএন্ড ও ডাটাবেজ সামঞ্জস্যতার জন্য
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: {
+                            data: {
+                                full_name: fullname,
+                                phone_number: phone,
+                                role: 'reseller', 
+                                age: age ? parseInt(age) : null,
+                                city: city,
+                                fb_link: fb_link,
+                                address: address,
+                                referred_by_code: referredByCode ? parseInt(referredByCode) : null
+                            }
                         }
+                    });
+
+                    if (error) {
+                        alert("রেজিস্ট্রেশন ত্রুটি: " + error.message);
+                        return;
                     }
 
-                } catch(e) {}
-            }
-
-            window.handleLogout = async function() {
-                if (window.supabaseClient) {
-                    await window.supabaseClient.auth.signOut();
-                    window.location.href = "/login";
+                    if (data.user) {
+                        alert("ওয়ার্কার হিসেবে আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে! অনুগ্রহ করে ইমেইল ভেরিফাই করুন।");
+                        window.location.href = "/login";
+                    }
+                } catch (err) {
+                    alert("রেজিস্ট্রেশন প্রসেসে ত্রুটি: " + err.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<i class="fa-solid fa-briefcase"></i>  রেজিস্ট্রেশন করুন`;
                 }
-            };
-
-            // রানিং প্রসেস স্টার্ট
-            checkLayoutAndLoad();
+            });
         });
     </script>
