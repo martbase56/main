@@ -19,8 +19,12 @@
       "destination": "/public/dashboard/reseller-profile.html"
     },
     {
-      "source": "/category/:slug",
-      "destination": "/category.html?slug=:slug"
+      "source": "/dashboard/category/:slug",
+      "destination": "/public/dashboard/reseller-category.html?slug=:slug"
+    },
+    {
+      "source": "/dashboard/reseller-wishlist",
+      "destination": "/public/dashboard/reseller-wishlist.html"
     }
   ]
 }
