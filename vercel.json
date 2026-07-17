@@ -8,23 +8,27 @@
     },
     {
       "source": "/signup/reseller",
-      "destination": "/signup-reseller.html"
-    },
-    {
-      "source": "/dashboard/reseller",
-      "destination": "/public/dashboard/reseller.html"
-    },
-    {
-      "source": "/dashboard/reseller-profile",
-      "destination": "/public/dashboard/reseller-profile.html"
+      "destination": "/public/signup/reseller.html"
     },
     {
       "source": "/dashboard/category/:slug",
       "destination": "/public/dashboard/reseller-category.html?slug=:slug"
     },
     {
-      "source": "/dashboard/reseller-wishlist",
-      "destination": "/public/dashboard/reseller-wishlist.html"
+      "source": "/admin/:page",
+      "destination": "/public/admin/:page.html"
+    },
+    {
+      "source": "/dashboard/:page",
+      "destination": "/public/dashboard/:page.html"
+    },
+    {
+      "source": "/:page",
+      "destination": "/public/:page.html"
+    },
+    {
+      "source": "/",
+      "destination": "/public/index.html"
     }
   ]
 }
