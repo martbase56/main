@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MerketBaseBD - Reseller Wishlist Products</title>
+    
+    <!-- Google Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS Play CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
+                    },
+                    fontFamily: {
+                        bangla: ['"Anek Bangla"', 'sans-serif'],
+                        headings: ['"Bricolage Grotesque"', 'sans-serif'],
+                        body: ['"Rubik"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
+
+    <!-- 📱 App Style Sticky Header -->
+    <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
+        <span class="font-headings font-extrabold text-xl text-primary flex items-center gap-1.5"><i class="fa-solid fa-heart text-red-500"></i> পছন্দের পণ্যসমূহ</span>
+        <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
+    </header>
+
+    <main class="max-w-[1200px] mx-auto px-4 pt-5 space-y-6">
+
+        <!-- 📦 Reseller Wishlist Products Grid -->
+        <section class="space-y-4">
+            <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="wishlist-products-container">
+                <p class="col-span-full text-center py-10">পছন্দের পণ্য তালিকা লোড হচ্ছে...</p>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
+        <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-house text-lg"></i>
+            <span class="text-[0.65rem] font-bold">ড্যাশবোর্ড</span>
+        </a>
+        <a href="/profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-clock-rotate-left text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অর্ডারসমূহ</span>
+        </a>
+        <a href="/" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-box-open text-lg"></i>
+            <span class="text-[0.65rem] font-bold">প্রোডাক্টস</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-wallet text-lg"></i>
+            <span class="text-[0.65rem] font-bold">উইথড্র</span>
+        </a>
+        <a href="/dashboard/reseller-profile" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
+            <i class="fa-solid fa-circle-user text-lg"></i>
+            <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
+        </a>
+    </nav>
+
+    <!-- Supabase SDK & Global Layout -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        let supabaseClientInstance = null;
+        let resellerUserId = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ও গেটকিপার চেক ---
+            async function checkLayoutAndLoad() {
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                supabaseClientInstance = window.supabaseClient;
+                verifyResellerSession();
+            }
+
+            async function verifyResellerSession() {
+                try {
+                    const { data: { session } } = await supabaseClientInstance.auth.getSession();
+                    if (!session) {
+                        window.location.href = "/login";
+                        return;
+                    }
+                    resellerUserId = session.user.id;
+
+                    const { data: profile } = await supabaseClientInstance.from('profiles').select('role, is_active').eq('id', resellerUserId).single();
+                    if (!profile || profile.role !== 'reseller') {
+                        alert("অনুমতি নেই!");
+                        window.location.href = "/";
+                        return;
+                    }
+
+                    if (!profile.is_active) {
+                        window.location.href = "/active";
+                        return;
+                    }
+
+                    // উইশলিস্ট ডাটা লোড
+                    loadWishlistData();
+
+                } catch(e) {
+                    console.error("Auth verify failed", e);
+                }
+            }
+
+            // --- খ. লোকাল মেমোরি থেকে ডাইনামিক উইশলিস্ট প্রোডাক্ট লোড ---
+            async function loadWishlistData() {
+                const container = document.getElementById('wishlist-products-container');
+                const wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+
+                if (wishlist.length === 0) {
+                    container.innerHTML = '<p class="col-span-full text-center py-10 font-bold text-muted">পছন্দের তালিকায় কোনো পণ্য নেই।</p>';
+                    return;
+                }
+
+                try {
+                    const { data: products } = await supabaseClientInstance
+                        .from('products')
+                        .select('*')
+                        .in('id', wishlist);
+
+                    if (products && products.length > 0) {
+                        container.innerHTML = '';
+                        products.forEach(prod => {
+                            const cardImgUrl = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image_url;
+                            
+                            const retailPrice = prod.customer_offer_price ? parseFloat(prod.customer_offer_price) : parseFloat(prod.regular_price);
+                            const resellerPrice = parseFloat(prod.reseller_price);
+                            const minProfit = Math.max(retailPrice - resellerPrice, 0);
+
+                            container.innerHTML += `
+                                <div class="product-card group bg-white rounded-2xl border border-gray-100 overflow-hidden flex flex-col hover:translate-y-[-5px] hover:border-primary/20 hover:shadow-lg transition-all duration-300 relative shadow-sm" id="wish-card-${prod.id}">
+                                    <!-- পছন্দের তালিকা থেকে মুছে ফেলার ট্র্যাশ বাটন -->
+                                    <button onclick="removeWishlistItem('${prod.id}')" class="absolute top-2 right-2 w-7 h-7 bg-white rounded-full flex items-center justify-center text-red-500 shadow hover:scale-110 active:scale-95 transition-all z-10"><i class="fa-solid fa-trash-can"></i></button>
+                                    
+                                    <a href="/dashboard/reseller-product?id=${prod.id}" class="w-full h-40 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                        ${cardImgUrl ? `<img src="${cardImgUrl}" class="w-full h-full object-cover" alt="${prod.title}">` : `<i class="fa-solid fa-image text-3xl text-gray-400"></i>`}
+                                    </a>
+                                    
+                                    <div class="product-info p-3 flex flex-col flex-grow">
+                                        <h4 class="product-title font-bold text-xs text-dark line-clamp-2 h-8 mb-2 group-hover:text-primary transition-colors leading-snug">
+                                            <a href="/dashboard/reseller-product?id=${prod.id}">${prod.title}</a>
+                                        </h4>
+                                        
+                                        <!-- রিসেলার প্রাইসিং প্যানেল -->
+                                        <div class="space-y-1.5 border-t border-gray-50 pt-2 mb-3 mt-auto">
+                                            <div class="flex justify-between items-center text-[0.7rem] font-bold">
+                                                <span class="text-primary">রিসেলার দাম:</span>
+                                                <span class="text-primary font-body font-extrabold">৳${resellerPrice}</span>
+                                            </div>
+                                            <div class="flex justify-between items-center text-[0.65rem] text-muted">
+                                                <span>খুচরা মূল্য:</span>
+                                                <span class="font-body font-semibold">৳${retailPrice}</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- কুইক কার্ট এবং ডিরেক্ট বাই নাও বাটন -->
+                                        <div class="grid grid-cols-2 gap-1.5 mt-auto">
+                                            <button onclick="addToCart('${prod.id}', '${prod.title}', '${resellerPrice}', '${cardImgUrl || ""}')" class="py-2 bg-gray-100 text-dark rounded-lg font-bold text-[0.7rem] hover:bg-gray-200 transition-all flex items-center justify-center gap-1"><i class="fa-solid fa-cart-plus text-primary"></i> Cart</button>
+                                            <button onclick="buyNow('${prod.id}', '${prod.title}', '${resellerPrice}', '${cardImgUrl || ""}')" class="py-2 bg-primary text-white rounded-lg font-bold text-[0.7rem] hover:bg-secondary hover:shadow-md transition-all flex items-center justify-center gap-1"><i class="fa-solid fa-bag-shopping"></i> Order</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        container.innerHTML = '<p class="col-span-full text-center py-10 font-bold text-muted">পছন্দের তালিকায় কোনো পণ্য নেই।</p>';
+                    }
+                } catch(e) {
+                    console.error("Wishlist data fetch error", e);
+                }
+            }
+
+            // পছন্দের তালিকা থেকে রিমুভ করার প্রোগ্রামাটিক ফাংশন
+            window.removeWishlistItem = function(productId) {
+                let wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+                const index = wishlist.indexOf(productId);
+                if (index > -1) {
+                    wishlist.splice(index, 1);
+                    localStorage.setItem('wishlist', JSON.stringify(wishlist));
+                    if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
+                    document.getElementById(`wish-card-${productId}`).remove();
+                    if (wishlist.length === 0) {
+                        document.getElementById('wishlist-products-container').innerHTML = '<p class="col-span-full text-center py-10 font-bold text-muted">পছন্দের তালিকায় কোনো পণ্য নেই।</p>';
+                    }
+                    alert("প্রোডাক্টটি সফলভাবে রিমুভ করা হয়েছে।");
+                }
+            };
+
+            // --- গ. লেআউট শেয়ার্ড কার্ট একশনস ---
+            window.updateLocalBadges = function() {
+                if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
+            };
+
+            window.addToCart = function(productId, title, price, imageUrl) {
+                let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                const existingItem = cart.find(item => item.product_id === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ product_id: productId, title: title, price: parseFloat(price), image_url: imageUrl, quantity: 1 });
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateLocalBadges();
+                alert("সাফল্য! প্রোডাক্টটি কার্টে যোগ করা হয়েছে।");
+            };
+
+            window.buyNow = function(productId, title, price, imageUrl) {
+                const tempCart = [{ product_id: productId, title: title, price: parseFloat(price), image_url: imageUrl, quantity: 1 }];
+                localStorage.setItem('cart', JSON.stringify(tempCart));
+                window.location.href = `/checkout?id=${productId}&qty=1`;
+            };
+
+            checkLayoutAndLoad();
+        });
+    </script>
+</body>
+</html>
