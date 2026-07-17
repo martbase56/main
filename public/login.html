@@ -213,32 +213,27 @@
         </div>
     </div>
 
-    <!-- Supabase SDK & Logic -->
+  <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            let supabaseClient = null;
+            let supabaseClientInstance = null;
 
-            // --- Dynamic Supabase Initialization ---
-            async function initializeSupabase() {
-                try {
-                    const response = await fetch('/api/auth/config');
-                    if (!response.ok) throw new Error("Config fetch failed");
-                    const config = await response.json();
-                    
-                    if (config.supabase_url && config.supabase_anon_key) {
-                        supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
-                        console.log("Supabase Client initialized successfully.");
-                    }
-                } catch (err) {
-                    console.error("Supabase failed to initialize:", err);
+            // --- ক. সুপাবেস গ্লোবাল ক্লায়েন্ট ভেরিফিকেশন চেক ---
+            async function checkLayoutAndLoad() {
+                // layout.js এর গ্লোবাল ক্লায়েন্ট রেডি হওয়া পর্যন্ত অপেক্ষা করবে
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
                 }
+                supabaseClientInstance = window.supabaseClient;
             }
 
-            initializeSupabase();
+            checkLayoutAndLoad();
 
-            // --- Password Show/Hide Interactive Logic ---
+            // --- খ. পাসওয়ার্ড শো/হাইড ইন্টারেক্টিভ লজিক ---
             const passwordInput = document.getElementById('password');
             const togglePasswordBtn = document.getElementById('toggle-password');
             const eyeIcon = document.getElementById('eye-icon');
@@ -257,10 +252,10 @@
                 });
             }
 
-            // --- Login Form Submit Processing ---
+            // --- গ. লগইন ফর্ম সাবমিট প্রসেসিং ---
             document.getElementById('login-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
-                if (!supabaseClient) {
+                if (!supabaseClientInstance) {
                     alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
                     return;
                 }
@@ -269,7 +264,7 @@
                 const password = document.getElementById('password').value;
 
                 try {
-                    const { data, error } = await supabaseClient.auth.signInWithPassword({
+                    const { data, error } = await supabaseClientInstance.auth.signInWithPassword({
                         email: email,
                         password: password,
                     });
@@ -280,7 +275,7 @@
                     }
 
                     if (data.user) {
-                        const { data: profile, error: profileError } = await supabaseClient
+                        const { data: profile, error: profileError } = await supabaseClientInstance
                             .from('profiles')
                             .select('role')
                             .eq('id', data.user.id)
@@ -291,7 +286,95 @@
                             return;
                         }
 
-                        if (profile.role === 'reseller') {
+                        // রোলের ভিত্তিতে ড্যাশবোর্ড রিডাইরেকশন
+                        if (profile.role === 'reseller' || profile.role === 'worker') {
+                            window.location.href = "/dashboard/reseller";
+                        } else if (profile.role === 'admin') {
+                            window.location.href = "/dashboard/admin";
+                        } else {
+                            window.location.href = "/";
+                        }
+                    }
+                } catch (err) {
+                    alert("একটি অপ্রত্যাশিত ত্রুটি ঘটেছে: " + err.message);
+                }
+            });
+        });
+    </script><!-- Supabase SDK & Global Layout -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="/layout.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let supabaseClientInstance = null;
+
+            // --- ক. সুপাবেস গ্লোবাল ক্লায়েন্ট ভেরিফিকেশন চেক ---
+            async function checkLayoutAndLoad() {
+                // layout.js এর গ্লোবাল ক্লায়েন্ট রেডি হওয়া পর্যন্ত অপেক্ষা করবে
+                if (!window.supabaseClient) {
+                    setTimeout(checkLayoutAndLoad, 100);
+                    return;
+                }
+                supabaseClientInstance = window.supabaseClient;
+            }
+
+            checkLayoutAndLoad();
+
+            // --- খ. পাসওয়ার্ড শো/হাইড ইন্টারেক্টিভ লজিক ---
+            const passwordInput = document.getElementById('password');
+            const togglePasswordBtn = document.getElementById('toggle-password');
+            const eyeIcon = document.getElementById('eye-icon');
+
+            if (passwordInput && togglePasswordBtn && eyeIcon) {
+                togglePasswordBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const isPassword = passwordInput.getAttribute('type') === 'password';
+                    passwordInput.setAttribute('type', isPassword ? 'text' : 'password');
+                    
+                    if (isPassword) {
+                        eyeIcon.className = "fa-solid fa-eye-slash text-primary text-sm";
+                    } else {
+                        eyeIcon.className = "fa-solid fa-eye text-gray-400 text-sm";
+                    }
+                });
+            }
+
+            // --- গ. লগইন ফর্ম সাবমিট প্রসেসিং ---
+            document.getElementById('login-form').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                if (!supabaseClientInstance) {
+                    alert("সিস্টেম পুরোপুরি প্রস্তুত নয় বা সুপাবেস কানেক্ট করা যায়নি। অনুগ্রহ করে Vercel-এ এনভায়রনমেন্ট ভেরিয়েবল চেক করুন।");
+                    return;
+                }
+
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+
+                try {
+                    const { data, error } = await supabaseClientInstance.auth.signInWithPassword({
+                        email: email,
+                        password: password,
+                    });
+
+                    if (error) {
+                        alert("লগইন ব্যর্থ হয়েছে: " + error.message);
+                        return;
+                    }
+
+                    if (data.user) {
+                        const { data: profile, error: profileError } = await supabaseClientInstance
+                            .from('profiles')
+                            .select('role')
+                            .eq('id', data.user.id)
+                            .single();
+
+                        if (profileError) {
+                            alert("ইউজার ডাটা যাচাই করতে ত্রুটি হয়েছে: " + profileError.message);
+                            return;
+                        }
+
+                        // রোলের ভিত্তিতে ড্যাশবোর্ড রিডাইরেকশন
+                        if (profile.role === 'reseller' || profile.role === 'worker') {
                             window.location.href = "/dashboard/reseller";
                         } else if (profile.role === 'admin') {
                             window.location.href = "/dashboard/admin";
@@ -305,5 +388,3 @@
             });
         });
     </script>
-</body>
-</html>
