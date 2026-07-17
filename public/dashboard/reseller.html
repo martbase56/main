@@ -352,8 +352,7 @@
             <i class="fa-solid fa-circle-user text-lg"></i>
             <span class="text-[0.65rem] font-bold">অ্যাকাউন্ট</span>
         </a>
-    </nav>
- <!-- Supabase SDK & Global Layout -->
+    </nav><!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -401,6 +400,17 @@
                 }
             };
 
+            // (ফিক্সড) কামিং সুন মডাল শো/হাইড করার গ্লোবাল ফাংশনস [1.1, 1.1.2]
+            window.showComingSoon = function() {
+                const modal = document.getElementById('coming-soon-modal');
+                if (modal) modal.classList.remove('hidden');
+            };
+
+            window.closeComingSoonModal = function() {
+                const modal = document.getElementById('coming-soon-modal');
+                if (modal) modal.classList.add('hidden');
+            };
+
             // ডাইনামিক সুপাবেস ইনিশিয়ালাইজেশন চেক
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
@@ -439,6 +449,7 @@
                     document.getElementById('drawer-fullname').innerText = profile.full_name || "Reseller User";
                     document.getElementById('drawer-id').innerText = `রিসেলার আইডি: ${profile.refer_code}`;
                     
+                    // টাইপ কাস্টিং ফিক্স
                     walletBalanceAmount = parseFloat(profile.wallet_balance || 0);
                     document.getElementById('wallet-val').innerText = `৳${walletBalanceAmount}`;
 
@@ -456,7 +467,6 @@
                 }
             }
 
-            // (সংশোধিত) ডাইনামিক লাইভ নোটিশ লোড (গ্লোবাল ক্লায়েন্ট ইন্টিগ্রেটেড)
             async function loadNotice() {
                 const client = window.supabaseClient;
                 if (!client) return;
@@ -479,7 +489,6 @@
                 } catch(e) {}
             }
 
-            // (সংশোধিত) ক্যাটাগরি তালিকা স্ক্রোল লোড (গ্লোবাল ক্লায়েন্ট ইন্টিগ্রেটেড)
             async function loadCategoriesScroll() {
                 const client = window.supabaseClient;
                 if (!client) return;
@@ -499,7 +508,6 @@
                 } catch(e) {}
             }
 
-            // (সংশোধিত) ৩টি ক্যাটাগরি প্যানেল লোড (গ্লোবাল ক্লায়েন্ট ইন্টিগ্রেটেড)
             async function loadHighlightedProducts() {
                 const client = window.supabaseClient;
                 if (!client) return;
@@ -582,6 +590,3 @@
             checkLayoutAndLoad();
         });
     </script>
-
-</body>
-</html>
