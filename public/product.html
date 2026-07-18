@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Product Details</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,41 +34,31 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
     <div id="header-placeholder"></div>
 
     <main class="max-w-[1200px] mx-auto px-5">
 
-        <!-- 🛍️ Product Details Grid Layout -->
         <section class="grid grid-cols-1 md:grid-cols-12 gap-10 bg-white rounded-3xl p-6 md:p-10 border border-black/[0.01] shadow-lg shadow-primary/5">
             
-            <!-- Left Side: Image Gallery -->
             <div class="md:col-span-6 space-y-4">
-                <!-- Main Image Preview Box -->
                 <div class="w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center" id="main-image-wrapper">
                     <i class="fa-solid fa-spinner animate-spin text-primary text-4xl"></i>
                 </div>
-                <!-- Thumbnail Row -->
                 <div class="grid grid-cols-4 gap-3" id="thumbnails-container">
-                    <!-- ৪টি ছোট ছবি থাম্বনেইল এখানে লোড হবে -->
                 </div>
             </div>
 
-            <!-- Right Side: Product Info -->
             <div class="md:col-span-6 space-y-6 flex flex-col justify-between">
                 <div>
-                    <!-- Breadcrumbs Category -->
                     <p class="text-xs text-primary font-bold uppercase tracking-wider mb-2" id="prod-category-tag">ক্যাটাগরি খোঁজা হচ্ছে...</p>
                     <h1 class="text-2xl md:text-3xl font-extrabold text-dark leading-snug mb-3" id="prod-title">প্রোডাক্টের নাম লোড হচ্ছে...</h1>
                     <p class="text-xs font-mono text-muted mb-4">প্রোডাক্ট কোড: <span id="prod-code">--</span></p>
 
-                    <!-- Warranty & Stock Badges -->
                     <div class="flex gap-3 mb-6">
                         <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-200" id="stock-badge">In Stock</span>
                         <span class="px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20" id="warranty-badge">নো ওয়ারেন্টি</span>
                     </div>
 
-                    <!-- Pricing Section -->
                     <div class="border-t border-b border-gray-100 py-4 mb-6 space-y-2">
                         <div class="flex items-baseline gap-3">
                             <span class="text-xs text-muted font-semibold">মূল্য:</span>
@@ -78,7 +66,6 @@
                             <span class="text-sm text-gray-400 line-through font-body hidden" id="prod-old-price">৳0</span>
                         </div>
                         
-                        <!-- 💼 Reseller Price Panel (স্বয়ংক্রিয়ভাবে শুধুমাত্র রিসেলারদের জন্য শো হবে) -->
                         <div id="reseller-price-box" class="hidden bg-primary/5 border border-primary/15 rounded-xl p-3 flex justify-between items-center">
                             <div>
                                 <span class="text-[0.7rem] text-primary font-bold block">রিসেলার বাই প্রাইস (Wholesale)</span>
@@ -91,7 +78,6 @@
                         </div>
                     </div>
 
-                    <!-- Dynamic Size & Color Selectors -->
                     <div class="space-y-4" id="selectors-box">
                         <div class="hidden" id="sizes-row">
                             <span class="block text-sm font-semibold mb-2">সাইজ নির্বাচন করুন:</span>
@@ -104,7 +90,6 @@
                     </div>
                 </div>
 
-                <!-- Quantity & Actions CTA Panel -->
                 <div class="space-y-4 pt-6 border-t border-gray-100">
                     <div class="flex items-center gap-4">
                         <span class="text-sm font-semibold">পরিমাণ:</span>
@@ -124,13 +109,11 @@
             </div>
         </section>
 
-        <!-- Product Description Tab -->
         <section class="bg-white rounded-3xl p-6 md:p-10 border border-black/[0.01] shadow-md my-8">
             <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-lines text-primary"></i> প্রোডাক্টের বিবরণ</h3>
             <p class="text-muted text-sm leading-relaxed whitespace-pre-line" id="prod-description">পণ্যটির কোনো বিবরণ দেওয়া হয়নি।</p>
         </section>
 
-        <!-- 👥 Related Products Section -->
         <section class="my-10" id="related-section">
             <h3 class="section-title text-xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-tags text-primary"></i> একই ক্যাটাগরির অন্যান্য প্রোডাক্ট</h3>
             <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="related-container">
@@ -140,10 +123,8 @@
 
     </main>
 
-    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে ফুটার ইনজেক্ট করবে) -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -153,7 +134,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ১. কার্ট কাউন্টার ইনিশিয়ালাইজেশন ---
             function updateCartBadge() {
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const cartCount = document.getElementById('cart-count');
@@ -161,20 +141,16 @@
             }
             updateCartBadge();
 
-            // (ডাইনামিক আপডেট) আলাদা কোনো Supabase ক্লায়েন্ট ডিক্লেয়ারেশন নেই। layout.js থেকে গ্লোবাল ক্লায়েন্ট রিড করবে।
             async function checkLayoutAndLoad() {
-                // layout.js এর গ্লোবাল ক্লায়েন্ট রেডি হওয়া পর্যন্ত অপেক্ষা করবে
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
                     return;
                 }
                 
-                // নেভিগেশন ও প্রোডাক্ট ডাটা লোড
                 updateNavigation();
                 loadProductDetails();
             }
 
-            // --- ২. ডাইনামিক হেডার আপডেট ---
             async function updateNavigation() {
                 const client = window.supabaseClient;
                 const dynamicNav = document.getElementById('dynamic-nav');
@@ -193,7 +169,6 @@
                 }
             }
 
-            // --- ৩. প্রোডাক্টের বিস্তারিত তথ্য লোড ---
             async function loadProductDetails() {
                 const client = window.supabaseClient;
                 const urlParams = new URLSearchParams(window.location.search);
@@ -214,7 +189,6 @@
                     }
                     productData = product;
 
-                    // ক. ইমেজ গ্যালারি রেন্ডারিং
                     const mainImageWrapper = document.getElementById('main-image-wrapper');
                     const thumbContainer = document.getElementById('thumbnails-container');
                     
@@ -233,12 +207,10 @@
                         mainImageWrapper.innerHTML = `<i class="fa-solid fa-image text-5xl text-gray-300"></i>`;
                     }
 
-                    // খ. টাইটেল ও বিবরণী
                     document.getElementById('prod-title').innerText = product.title;
                     document.getElementById('prod-code').innerText = product.product_code || "N/A";
                     document.getElementById('prod-description').innerText = product.description || "কোনো বিবরণ নেই।";
                     
-                    // অফার প্রাইস থাকলে সেটি শো করা, অন্যথায় রেগুলার দাম
                     if (product.customer_offer_price) {
                         document.getElementById('prod-regular-price').innerText = `৳${product.customer_offer_price}`;
                         const oldPriceSpan = document.getElementById('prod-old-price');
@@ -248,7 +220,6 @@
                         document.getElementById('prod-regular-price').innerText = `৳${product.regular_price}`;
                     }
 
-                    // গ. ক্যাটাগরি ট্যাগ লাইভ লোড
                     if (product.category_id) {
                         const { data: cat } = await client.from('categories').select('name').eq('id', product.category_id).single();
                         if (cat) {
@@ -260,11 +231,9 @@
                         document.getElementById('prod-category-tag').innerText = "অন্যান্য";
                     }
 
-                    // ঘ. রিসেলার প্রাইস ভ্যালু সেট
                     document.getElementById('reseller-price-val').innerText = `৳${product.reseller_price}`;
                     document.getElementById('reseller-bonus-val').innerText = `৳${product.reseller_hold_bonus || 0}`;
 
-                    // ঙ. স্টক ও ওয়ারেন্টি পলিসি
                     if (product.stock && product.stock > 0) {
                         document.getElementById('stock-badge').innerText = `In Stock (${product.stock})`;
                     } else {
@@ -277,7 +246,6 @@
                         document.getElementById('warranty-badge').innerText = `${product.warranty_days} দিনের ওয়ারেন্টি`;
                     }
 
-                    // চ. ডাইনামিক সাইজ ও কালার বাটন রেন্ডার
                     if (product.sizes) {
                         document.getElementById('sizes-row').classList.remove('hidden');
                         const sizesContainer = document.getElementById('sizes-container');
@@ -294,7 +262,6 @@
                         });
                     }
 
-                    // ছ. সাজেস্টেড প্রোডাক্টস (Related Products) লোড করা
                     loadRelatedProducts(product.category_id, product.id);
 
                 } catch (e) {
@@ -302,7 +269,6 @@
                 }
             }
 
-            // --- ৪. একই ক্যাটাগ্রির সাজেস্টেড প্রোডাক্ট লোড ---
             async function loadRelatedProducts(categoryId, currentProductId) {
                 const client = window.supabaseClient;
                 const container = document.getElementById('related-container');
@@ -344,7 +310,6 @@
                 }
             }
 
-            // --- ৫. গ্লোবাল UI ও কার্ট একশন ইন্টারেকশন ---
             window.switchMainImage = function(url) {
                 const mainImg = document.getElementById('main-img');
                 if (mainImg) mainImg.src = url;
@@ -366,7 +331,6 @@
                 button.classList.add('border-primary', 'text-primary', 'bg-primary/5');
             };
 
-            // কার্টে যোগ করা
             window.handleAddToCart = function() {
                 if (!productData) return;
 
@@ -392,7 +356,6 @@
                 alert("সাফল্য! প্রোডাক্টটি আপনার কার্টে যোগ করা হয়েছে।");
             };
 
-            // সরাসরি বাই নাও বাটনের কাজ
             window.handleBuyNow = function() {
                 if (!productData) return;
 
@@ -410,7 +373,6 @@
                 window.location.href = `/checkout?id=${productData.id}&qty=${productQty}`;
             };
 
-            // সুপাবেস চেক ট্রিগার
             checkLayoutAndLoad();
         });
     </script>
