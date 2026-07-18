@@ -1,4 +1,4 @@
-# api/routers/admin.py (এডমিন ড্যাশবোর্ডের পরিপূর্ণ ও চূড়ান্ত কোড)
+
 import os
 from datetime import datetime, timezone
 from fastapi import APIRouter, HTTPException, Depends
@@ -9,13 +9,11 @@ from api.routers.auth import get_current_user
 
 router = APIRouter()
 
-# --- ১. Pydantic সেটিংস স্কিমা ---
 class SettingsUpdateSchema(BaseModel):
     activation_fee: float
     dashboard_notice: str
     imgbb_api_key: str
-
-# --- ২. হেল্পার ডিপেনডেন্সি: এডমিন রোল ভেরিফাই করা ---
+    
 def verify_admin(current_user: dict = Depends(get_current_user)):
     try:
         user_id = current_user.id
@@ -26,24 +24,19 @@ def verify_admin(current_user: dict = Depends(get_current_user)):
     except Exception:
         raise HTTPException(status_code=403, detail="এডমিন ভেরিফিকেশন ব্যর্থ হয়েছে।")
 
-
-# --- ৩. এন্ডপয়েন্ট: ড্যাশবোর্ড রিয়েল-টাইম স্ট্যাটস ---
 @router.get("/stats")
 def get_dashboard_stats(admin: dict = Depends(verify_admin)):
     try:
-        # মোট ইউজার সংখ্যা
+        
         total_users_query = supabase.table("profiles").select("id").execute()
         total_users_count = len(total_users_query.data) if total_users_query.data else 0
-
-        # আজকের তারিখের শুরু (ISO Format in UTC)
+        
         today_start = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         today_start_iso = today_start.isoformat()
 
-        # আজকের নতুন ইউজার সংখ্যা
+        
         today_users_query = supabase.table("profiles").select("id").gte("created_at", today_start_iso).execute()
         today_users_count = len(today_users_query.data) if today_users_query.data else 0
-
-        # আজকের মোট অর্ডার ও টাকার পরিমাণ
         today_orders_query = supabase.table("orders").select("total_cost").gte("created_at", today_start_iso).execute()
         today_orders_count = len(today_orders_query.data) if today_orders_query.data else 0
         
@@ -59,8 +52,6 @@ def get_dashboard_stats(admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৪. এন্ডপয়েন্ট: পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/activation-requests")
 def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
     try:
@@ -74,7 +65,7 @@ def get_pending_activation_requests(admin: dict = Depends(verify_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-# --- ৫. এন্ডপয়েন্ট: সকল অর্ডারের তালিকা (ফরেন-কি জয়েনিং ফিক্সড) ---
+
 @router.get("/orders")
 def get_all_orders(admin: dict = Depends(verify_admin)):
     try:
@@ -86,8 +77,6 @@ def get_all_orders(admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৬. এন্ডপয়েন্ট: সিস্টেম সেটিংস রিড করা ---
 @router.get("/get-settings")
 def get_settings(admin: dict = Depends(verify_admin)):
     try:
@@ -97,8 +86,6 @@ def get_settings(admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৭. এন্ডপয়েন্ট: system_settings সেভ/আপডেট করা ---
 @router.post("/update-settings")
 def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_admin)):
     try:
@@ -109,8 +96,6 @@ def update_settings(data: SettingsUpdateSchema, admin: dict = Depends(verify_adm
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৮. এন্ডপয়েন্ট: ব্যবহারকারীদের তালিকা দেখা ---
 @router.get("/users")
 def get_all_users(admin: dict = Depends(verify_admin)):
     try:
@@ -119,8 +104,6 @@ def get_all_users(admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৯. এন্ডপয়েন্ট: ইউজার ব্যান করা ---
 @router.post("/users/{user_id}/ban")
 def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -129,8 +112,6 @@ def ban_user(user_id: str, admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ১০. এন্ডপয়েন্ট: ইউজার আনব্যান করা ---
 @router.post("/users/{user_id}/unban")
 def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -139,8 +120,6 @@ def unban_user(user_id: str, admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ১১. এন্ডপয়েন্ট: ইউজার অ্যাকাউন্ট এবং প্রোফাইল ডিলিট করা ---
 @router.delete("/users/{user_id}")
 def delete_user_account(user_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -150,8 +129,6 @@ def delete_user_account(user_id: str, admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ১২. এন্ডপয়েন্ট: পেন্ডিং উইথড্রাল তালিকা দেখা (ফরেন-কি জয়েনিং ফিক্সড) ---
 @router.get("/withdrawals")
 def get_pending_withdrawals(admin: dict = Depends(verify_admin)):
     try:
@@ -164,8 +141,6 @@ def get_pending_withdrawals(admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ১৩. এন্ডপয়েন্ট: উইথড্রাল অনুমোদন করা ---
 @router.post("/approve-withdrawal/{withdrawal_id}")
 def approve_withdrawal(withdrawal_id: str, admin: dict = Depends(verify_admin)):
     try:
@@ -174,8 +149,6 @@ def approve_withdrawal(withdrawal_id: str, admin: dict = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ১৪. এন্ডপয়েন্ট: উইথড্রাল রিজেক্ট করা (টাকা ওয়ালেটে ফেরত যাবে) ---
 @router.post("/reject-withdrawal/{withdrawal_id}")
 def reject_withdrawal(withdrawal_id: str, admin: dict = Depends(verify_admin)):
     try:
