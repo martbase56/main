@@ -5,26 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Shop & Earn Platform</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
-                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
-                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
-                        dark: '#111827',          /* চারকোল ব্ল্যাক */
-                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                        primary: '#FF6B00',       
+                        secondary: '#FF8C33',     
+                        canvas: '#FAF6F4',        
+                        dark: '#111827',          
+                        muted: '#4B5563',         
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
@@ -38,10 +35,8 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed">
 
-    <!-- 🌐 ডাইনামিক হেডার প্লেসহোল্ডার -->
     <div id="header-placeholder"></div>
 
-    <!-- 🚀 ১. Centered SaaS Style Modern Hero Section -->
     <section id="hero-section" class="hero py-16 lg:py-24 bg-[radial-gradient(circle_at_50%_30%,_rgba(255,107,0,0.08)_0%,_rgba(255,255,255,0)_60%)] border-b border-primary/5 transition-all duration-300">
         <div class="max-w-[850px] mx-auto px-5 text-center flex flex-col items-center">
             
@@ -58,9 +53,7 @@
             </p>
             
             <div class="hero-ctas flex flex-col sm:flex-row gap-4 justify-center w-full sm:w-auto">
-                <!-- বাটন ১: শপ (Shop) -->
                 <a href="#products-section" class="btn-cta bg-dark text-white py-3.5 px-8 rounded-full font-bold hover:bg-black hover:-translate-y-0.5 transition-all shadow-md flex items-center justify-center gap-2 text-sm"><i class="fa-solid fa-bag-shopping"></i> শপ করুন</a>
-                <!-- বাটন ২: ওয়ার্কার হিসেবে যোগ দিন (Join as a Worker - Targeted by JS to auto-hide) -->
                 <a href="/signup/reseller" id="hero-join-worker-btn" class="btn-cta bg-primary text-white py-3.5 px-8 rounded-full font-bold hover:bg-secondary hover:-translate-y-0.5 transition-all shadow-lg shadow-primary/15 flex items-center justify-center gap-2 text-sm"><i class="fa-solid fa-arrow-up-right-dots"></i> ওয়ার্কার হিসেবে যোগ দিন</a>
             </div>
 
@@ -69,7 +62,6 @@
 
     <main class="max-w-[1200px] mx-auto px-5">
 
-        <!-- 🔍 ২. রিয়েল-টাইম মডার্ন সার্চ বার সেকশন (গ্লোয়িং বর্ডার ও ফিল্টার বাটন) -->
         <section class="my-10" id="search-section">
             <div class="max-w-[700px] mx-auto">
                 <div class="relative flex items-center bg-white rounded-full border border-primary/20 shadow-xl focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden p-1.5">
@@ -82,28 +74,22 @@
             </div>
         </section>
 
-        <!-- 📸 ৩. Banner Slider -->
         <section class="slider-section my-10 relative">
             <div class="slider-container w-full aspect-[3/1] max-sm:aspect-[2/1] rounded-2xl overflow-hidden relative shadow-md border border-primary/5">
-                <!-- Slide 1 -->
                 <a href="#products-section" class="slide active h-full w-full">
                     <img src="https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ঈদ অফার ব্যানার">
                 </a>
-                <!-- Slide 2 -->
                 <a href="/signup/reseller" class="slide h-full w-full">
                     <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ওয়ার্ক সুবিধা">
                 </a>
-                <!-- Slide 3 -->
                 <a href="/digital-services" class="slide h-full w-full">
                     <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="ডিজিটাল সার্ভিস ব্যানার">
                 </a>
-                <!-- Slide 4 -->
                 <a href="#products-section" class="slide h-full w-full">
                     <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=1200&auto=format&fit=crop" class="w-full h-full object-cover cursor-pointer" alt="প্রিমিয়াম গ্যাজেট সম্ভার">
                 </a>
             </div>
 
-            <!-- Indicator Dots -->
             <div class="slider-dots flex justify-center gap-2.5 mt-5" id="slider-dots">
                 <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all active-dot active" onclick="userSetSlide(0)"></div>
                 <div class="dot w-[25px] h-1.5 bg-gray-300 rounded-full cursor-pointer transition-all" onclick="userSetSlide(1)"></div>
@@ -112,7 +98,6 @@
             </div>
         </section>
 
-        <!-- 📦 ৪. Products Showcase Section -->
         <section id="products-section" class="my-10">
             <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-primary"></i> আজকের আকর্ষণীয় প্রোডাক্টস</h3>
             <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="products-container">
@@ -120,7 +105,6 @@
             </div>
         </section>
 
-        <!-- 🏷️ ৫. Category Grid Section -->
         <section class="my-10">
             <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-list-ul text-primary"></i> ক্যাটাগরি সমূহ</h3>
             <div class="categories-grid grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-3" id="categories-container">
@@ -128,7 +112,6 @@
             </div>
         </section>
 
-        <!-- 📈 ৬. Income Earn Item Section (Promotional, Detailed, with Blocker CTA) -->
         <section class="my-14 bg-white rounded-3xl p-6 md:p-8 border border-black/[0.01] shadow-md space-y-6">
             <div class="border-b border-gray-150 pb-3">
                 <span class="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20 uppercase tracking-widest"><i class="fa-solid fa-coins animate-pulse"></i> Simple Tasks</span>
@@ -154,7 +137,6 @@
                 </div>
             </div>
 
-            <!-- Block CTA (Visible only for non-workers/guests - Targeted by JS) -->
             <div id="income-cta-block" class="p-6 bg-gradient-to-r from-dark to-gray-900 rounded-2xl text-white text-center space-y-4">
                 <h4 class="font-bold text-base">এই টাস্কগুলো সম্পন্ন করতে আজই আমাদের সাথে যুক্ত হোন! 💸</h4>
                 <p class="text-xs text-gray-300 max-w-[600px] mx-auto">আমাদের সচল জিমেইল ও সোশ্যাল টাস্কগুলো করে কোনো ইনভেস্টমেন্ট ছাড়া আজীবন পার্ট-টাইম আয় করতে আজই একজন রেজিস্টার্ড ওয়ার্কার (Worker) হিসেবে সাইনআপ করুন।</p>
@@ -162,12 +144,10 @@
             </div>
         </section>
 
-        <!-- 🌐 ৭. Digital Services Section (Detailed - No Rates) -->
         <section class="my-10 space-y-6">
             <h3 class="section-title text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-laptop-code text-primary animate-pulse"></i> প্রিমিয়াম ডিজিটাল প্রমোশন সার্ভিস সমূহ</h3>
             
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
-                <!-- Facebook Boost -->
                 <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/20 hover:shadow-lg transition-all duration-300 space-y-4 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center border border-blue-100 text-lg"><i class="fa-brands fa-facebook-messenger"></i></div>
@@ -177,7 +157,6 @@
                     <a href="/facebook-ad" class="w-full py-2.5 bg-primary text-white rounded-xl font-bold text-center text-xs hover:bg-secondary transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> বিস্তারিত দেখুন</a>
                 </div>
 
-                <!-- TikTok Boost -->
                 <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/20 hover:shadow-lg transition-all duration-300 space-y-4 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100 text-lg"><i class="fa-brands fa-tiktok"></i></div>
@@ -187,7 +166,6 @@
                     <a href="/tiktok-ad" class="w-full py-2.5 bg-primary text-white rounded-xl font-bold text-center text-xs hover:bg-secondary transition-colors"><i class="fa-solid fa-arrow-up-right-from-square"></i> বিস্তারিত দেখুন</a>
                 </div>
 
-                <!-- Telegram Service -->
                 <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/20 hover:shadow-lg transition-all duration-300 space-y-4 flex flex-col justify-between">
                     <div class="space-y-3">
                         <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center border border-sky-100 text-lg"><i class="fa-brands fa-telegram"></i></div>
@@ -201,16 +179,13 @@
 
     </main>
 
-    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ১. ব্যানার স্লাইডার লজিক
             let currentSlide = 0;
             const slides = document.querySelectorAll('.slide');
             const dots = document.querySelectorAll('.dot');
@@ -239,7 +214,6 @@
                 slideInterval = setInterval(autoSlide, 5000);
             };
 
-            // ২. গ্লোবাল কার্ট ও ফেভারিট প্রসেসিং হ্যান্ডলারস (layout.js সেশন ব্যবহার করবে)
             window.updateLocalBadges = function() {
                 if (typeof window.updateLayoutBadges === "function") {
                     window.updateLayoutBadges();
@@ -292,7 +266,6 @@
                 updateLocalBadges();
             };
 
-            // ৩. ডাইনামিক ডেটা লোডার (গ্লোবাল supabaseClient ব্যবহার করে)
             async function loadHomePageData() {
                 if (!window.supabaseClient) {
                     setTimeout(loadHomePageData, 100);
@@ -301,22 +274,18 @@
                 const client = window.supabaseClient;
 
                 try {
-                    // ডাইনামিক হিরো বাটন হাইড করার কন্ডিশনাল লজিক (রিসেলার/ওয়ার্কার লগইন থাকলে CTA হাইড হবে)
                     const { data: { session } } = await client.auth.getSession();
                     if (session) {
                         const { data: profile } = await client.from('profiles').select('role').eq('id', session.user.id).single();
                         if (profile && profile.role === 'reseller') {
-                            // বাটন ১: হিরো সেকশনের জয়েন ওয়ার্কার বাটন হাইড
                             const heroJoinBtn = document.getElementById('hero-join-worker-btn');
                             if (heroJoinBtn) heroJoinBtn.classList.add('hidden');
 
-                            // বাটন ২: টাস্ক সেকশনের জয়েন ওয়ার্কার CTA ব্লক হাইড
                             const incomeCtaBlock = document.getElementById('income-cta-block');
                             if (incomeCtaBlock) incomeCtaBlock.classList.add('hidden');
                         }
                     }
 
-                    // ক্যাটাগরি লোড
                     const { data: categories } = await client.from('categories').select('*').limit(20);
                     const catContainer = document.getElementById('categories-container');
                     if (categories && categories.length > 0) {
@@ -331,7 +300,6 @@
                         });
                     }
 
-                    // প্রোডাক্ট লোড
                     const { data: products } = await client.from('products').select('*').limit(30).order('created_at', { ascending: false });
                     const prodContainer = document.getElementById('products-container');
                     if (products && products.length > 0) {
@@ -399,7 +367,6 @@
                 }
             }
 
-            // ডাইনামিক ফিল্টার সার্চ লজিক
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -430,7 +397,6 @@
                 slides[i].classList.add('hidden');
             }
 
-            // ডেটা লোড ট্রিগার
             loadHomePageData();
         });
     </script>
