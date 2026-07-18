@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MartBaseBD - Checkout & Order</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,14 +34,12 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
     <div id="header-placeholder"></div>
 
     <div class="max-w-[1100px] mx-auto p-5 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
         
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- 👤 Left Side: Shipping Address & Payment Form -->
             <form id="checkout-form" class="lg:col-span-7 space-y-5">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2"><i class="fa-solid fa-truck"></i> ডেলিভারি ঠিকানা</h3>
 
@@ -58,7 +54,6 @@
                     </div>
                 </div>
 
-                <!-- Division, District, Upazila Selector -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block font-semibold text-sm mb-1">বিভাগ (Division)</label>
@@ -90,7 +85,6 @@
                     <input type="text" id="order_note" class="w-full px-4 py-3 border border-gray-200 rounded-xl outline-none focus:border-primary text-dark" placeholder="যেমন: ডেলিভারির আগে ফোন দিবেন।">
                 </div>
 
-                <!-- 💳 Payment Options with Fixed Dynamic Fields -->
                 <div class="bg-gray-50 p-5 rounded-2xl border border-gray-150 space-y-4">
                     <span class="block font-bold text-sm mb-2"><i class="fa-solid fa-credit-card"></i> পেমেন্ট মেথড নির্বাচন করুন</span>
                     
@@ -103,7 +97,6 @@
                         </label>
                     </div>
 
-                    <!-- Hidden Prepaid Instructions Card (Fixed Display) -->
                     <div id="prepaid-instructions" class="hidden p-4 bg-white border border-primary/20 rounded-xl space-y-3">
                         <p class="text-xs text-muted">আমাদের বিকাশ/নগদ পার্সোনাল নম্বরে <strong>সেন্ড মানি</strong> করুন: <strong class="text-primary font-body">017XXXXXXXX</strong></p>
                         <div class="grid grid-cols-2 gap-3">
@@ -114,16 +107,13 @@
                 </div>
             </form>
 
-            <!-- 🛒 Right Side: Cart Summary -->
             <div class="lg:col-span-5 bg-gray-50/50 border border-gray-100 p-6 rounded-2xl flex flex-col h-fit">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-invoice-dollar"></i> কার্ট তালিকা</h3>
 
-                <!-- Dynamic Cart Items Container -->
                 <div class="divide-y divide-gray-100 max-h-[220px] overflow-y-auto mb-4 pr-1" id="cart-items-list">
                     <p class="text-center py-5">লোড হচ্ছে...</p>
                 </div>
 
-                <!-- Coupon System -->
                 <div class="mb-5 border-t border-gray-100 pt-4">
                     <label class="block font-semibold text-xs mb-1 text-muted">কুপন কোড (Promo Code)</label>
                     <div class="flex gap-2">
@@ -133,7 +123,6 @@
                     <p id="coupon-message" class="text-xs font-semibold mt-1 hidden"></p>
                 </div>
 
-                <!-- Financial calculations -->
                 <div class="space-y-3 text-sm border-t border-gray-100 pt-4">
                     <div class="flex justify-between">
                         <span class="text-muted">সাবটোটাল</span>
@@ -161,14 +150,11 @@
         </div>
     </div>
 
-    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে ফুটার ইনজেক্ট করবে) -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
-    <!-- 🇧🇩 BD Locations Map and Dynamic Checkout Logic Script -->
     <script>
         const bdLocations = {
             "Dhaka": {
@@ -226,9 +212,7 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস সেশন ও অটো-ফিল অ্যাড্রেস ---
             async function autofillUserProfile() {
-                // layout.js গ্লোবালি সুপাবেস ক্লায়েন্ট রেডি করলে এটি ট্রিগার হবে
                 if (!window.supabaseClient) {
                     setTimeout(autofillUserProfile, 100);
                     return;
@@ -243,7 +227,6 @@
                         if (profile.full_name) document.getElementById('customer_name').value = profile.full_name;
                         if (profile.phone_number) document.getElementById('customer_phone').value = profile.phone_number;
                         
-                        // স্বয়ংক্রিয়ভাবে আগের সংরক্ষিত ড্রপডাউন সিলেক্ট করা
                         if (profile.division) {
                             divisionSelect.value = profile.division;
                             divisionSelect.dispatchEvent(new Event('change'));
@@ -260,14 +243,13 @@
                         if (profile.address_details) {
                             document.getElementById('delivery_address').value = profile.address_details;
                         }
-                        calculateShipping(); // ডেলিভারি চার্জ হিসাব করা
+                        calculateShipping(); 
                     }
                 } catch (e) {
                     console.error("Autofill profiles error:", e);
                 }
             }
 
-            // --- খ. লোকাল স্টোরেজ থেকে কার্ট লোড ---
             function loadCartFromLocalStorage() {
                 cartItems = JSON.parse(localStorage.getItem('cart')) || [];
                 const listContainer = document.getElementById('cart-items-list');
@@ -296,7 +278,6 @@
                 renderCheckoutSummary();
             }
 
-            // --- গ. ডিস্ট্রিক্ট ও উপজেলা লোডার ---
             const divisionSelect = document.getElementById('division');
             const districtSelect = document.getElementById('district');
             const upazilaSelect = document.getElementById('upazila');
@@ -347,7 +328,6 @@
                 renderCheckoutSummary();
             }
 
-            // --- ঘ. প্রিপেইড পেমেন্ট অপশন ডাইনামিক ফিল্ড টগল (ফিক্সড) ---
             const prepaidInstructions = document.getElementById('prepaid-instructions');
             const paymentRadios = document.querySelectorAll('.payment-method-radio');
 
@@ -361,7 +341,6 @@
                 });
             });
 
-            // --- ঙ. কুপন ডিসকাউন্ট প্রসেস ---
             document.getElementById('btn-apply-coupon').addEventListener('click', async () => {
                 const couponCode = document.getElementById('coupon-input').value.trim();
                 const couponMsg = document.getElementById('coupon-message');
@@ -413,7 +392,6 @@
                 document.getElementById('total-val').innerText = `৳ ${totalPayable}`;
             }
 
-            // --- চ. ফাইনাল অর্ডার প্লেসিং এবং ডাইনামিক অটো-সেভ অ্যাড্রেস লজিক ---
             document.getElementById('btn-place-order').addEventListener('click', async () => {
                 if (cartItems.length === 0) {
                     alert("আপনার কার্টে কোনো প্রোডাক্ট নেই।");
@@ -468,7 +446,6 @@
                 orderBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-lg"></i> প্রসেসিং হচ্ছে...`;
 
                 try {
-                    // ১. কাস্টমারের নতুন ঠিকানাটিprofiles টেবিলে ডাইনামিকালি অটো-সেভ করা (পরবর্তী অর্ডারের অটো-ফিলের জন্য) [1.1.1]
                     await client.from('profiles').update({
                         full_name: customerName,
                         phone_number: customerPhone,
@@ -478,7 +455,6 @@
                         address_details: addressDetails
                     }).eq('id', user.id);
 
-                    // ২. ব্যাকএন্ডের এপিআই-এর মাধ্যমে অর্ডার প্লেস করা
                     const payload = {
                         user_id: user.id,
                         customer_name: customerName,
@@ -507,7 +483,7 @@
                     const result = await response.json();
                     if (response.ok) {
                         alert("সাফল্য! আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
-                        localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
+                        localStorage.removeItem('cart'); 
                         window.location.href = "/profile";
                     } else {
                         alert("অর্ডার প্লেস করতে সমস্যা হয়েছে: " + result.detail);
@@ -520,7 +496,6 @@
                 }
             });
 
-            // ট্রিগার প্রসেস স্টার্ট
             loadCartFromLocalStorage();
             autofillUserProfile();
         });
