@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Category Products</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,10 +34,8 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed min-h-screen">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার -->
     <div id="header-placeholder"></div>
 
-    <!-- 🚀 Category Hero Banner Section -->
     <section class="relative overflow-hidden py-10 lg:py-14 bg-gradient-to-r from-primary to-secondary text-white border-b border-primary/10 shadow shadow-primary/5">
         <div class="max-w-[1200px] mx-auto px-5 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
             <div>
@@ -54,14 +50,12 @@
 
     <main class="max-w-[1200px] mx-auto px-5 py-8 space-y-12">
 
-        <!-- 📦 Category Products Grid -->
         <section class="space-y-6">
             <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="category-products-container">
                 <p class="col-span-full text-center py-10">প্রোডাক্ট তালিকা লোড হচ্ছে...</p>
             </div>
         </section>
 
-        <!-- 🏷️ Related Categories Section (Circular Navs) -->
         <section class="space-y-6 border-t border-gray-200/50 pt-10">
             <h3 class="text-lg font-bold text-dark flex items-center gap-2"><i class="fa-solid fa-tags text-primary animate-pulse"></i> অন্যান্য ক্যাটাগরি সমূহ</h3>
             <div class="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-10 gap-3" id="other-categories-container">
@@ -71,20 +65,17 @@
 
     </main>
 
-    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
         let supabaseClientInstance = null;
-        let selectedCategoryIdentifier = ""; // এটি স্লাগ অথবা আইডি যেকোনোটি হোল্ড করবে
+        let selectedCategoryIdentifier = "";
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন এবং সেশন চেইন ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -92,14 +83,12 @@
                 }
                 supabaseClientInstance = window.supabaseClient;
                 
-                // (মাস্টার ফিক্স) ইউআরএল-এর কুয়েরি স্ট্রিং এবং পাথ ডিরেক্টরি উভয় দিক থেকে আইডি/স্লাগ ডিটেক্ট করা [2.2.4]
                 const urlParams = new URLSearchParams(window.location.search);
                 let queryIdentifier = urlParams.get('slug') || urlParams.get('id');
 
                 if (queryIdentifier) {
                     selectedCategoryIdentifier = queryIdentifier;
                 } else {
-                    // যদি ব্রাউজার বারে কুয়েরি না থাকে (Vercel rewrite এর কারণে), তবে পাথ সেগমেন্ট থেকে স্লাগ নেওয়া হবে [2.2.4]
                     const pathSegments = window.location.pathname.split('/');
                     selectedCategoryIdentifier = pathSegments[pathSegments.length - 1];
                 }
@@ -110,24 +99,19 @@
                     return;
                 }
 
-                // ডাটা লোড প্রসেস
                 loadCategoryDataAndProducts();
             }
 
-            // --- খ. ক্যাটাগরি তথ্য ও প্রোডাক্ট তালিকা লোড ---
             async function loadCategoryDataAndProducts() {
                 try {
-                    // ১. ডাইনামিক কুয়েরি চেকার (আইডিটি কি UUID নাকি সাধারণ টেক্সট স্লাগ তা যাচাই করা)
                     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
                     const isUUID = uuidRegex.test(selectedCategoryIdentifier);
 
                     let query = supabaseClientInstance.from('categories').select('*');
                     
                     if (isUUID) {
-                        // যদি আইডিটি UUID হয় তবে id কলামে কুয়েরি করবে
                         query = query.eq('id', selectedCategoryIdentifier);
                     } else {
-                        // যদি স্লাগ টেক্সট হয় তবে slug কলামে কুয়েরি করবে
                         query = query.eq('slug', selectedCategoryIdentifier);
                     }
 
@@ -139,12 +123,10 @@
                         return;
                     }
 
-                    // হেডার উইজেট আপডেট
                     document.getElementById('header-cat-title').innerText = category.name;
                     const headerIcon = document.getElementById('header-cat-icon');
                     if (headerIcon) headerIcon.className = `fa-solid ${category.icon} text-white`;
 
-                    // ২. ওই ক্যাটাগরির প্রোডাক্ট লোড করা
                     const { data: products } = await supabaseClientInstance
                         .from('products')
                         .select('*')
@@ -158,7 +140,6 @@
                         products.forEach(prod => {
                             const cardImgUrl = (prod.images && prod.images.length > 0) ? prod.images[0] : prod.image_url;
                             
-                            // ডিসকাউন্ট ও সেভিং ব্যাজ হিসাব
                             let discountBadge = "";
                             let finalPrice = prod.regular_price;
                             if (prod.customer_offer_price) {
@@ -212,7 +193,6 @@
                         `;
                     }
 
-                    // ৩. অন্যান্য ক্যাটাগরির তালিকা লোড (Related Categories)
                     loadOtherCategories();
 
                 } catch (e) {
@@ -220,7 +200,6 @@
                 }
             }
 
-            // --- গ. অন্যান্য ক্যাটাগরি রেন্ডার করা ---
             async function loadOtherCategories() {
                 const container = document.getElementById('other-categories-container');
                 try {
@@ -228,7 +207,7 @@
                         .from('categories')
                         .select('*')
                         .neq('slug', selectedCategoryIdentifier)
-                        .neq('id', selectedCategoryIdentifier) // আইডি দিয়ে লোড হয়ে থাকলেও ফিল্টার হবে
+                        .neq('id', selectedCategoryIdentifier)
                         .limit(10);
 
                     if (otherCats && otherCats.length > 0) {
@@ -245,7 +224,6 @@
                 } catch(e) {}
             }
 
-            // --- ঘ. লেআউট শেয়ার্ড কার্ট ও ফেভারিট অ্যাকশনস ---
             window.updateLocalBadges = function() {
                 if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
             };
