@@ -5,26 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - All Products</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
-                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
-                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
-                        dark: '#111827',          /* চারকোল ব্ল্যাক */
-                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
@@ -42,12 +39,10 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed min-h-screen">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
     <div id="header-placeholder"></div>
 
     <main class="max-w-[1200px] mx-auto px-5 py-8 space-y-8">
         
-        <!-- 🔍 ২. রিয়েল-টাইম সার্চ সেকশন (গ্লোয়িং বর্ডার) -->
         <section class="max-w-[700px] mx-auto">
             <div class="relative flex items-center bg-white rounded-full border border-primary/20 shadow-xl focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden p-1.5">
                 <div class="flex items-center pl-4 pr-2 text-primary">
@@ -58,24 +53,19 @@
             </div>
         </section>
 
-        <!-- 🏷️ ৩. ডাইনামিক ক্যাটাগরি স্ক্রোল লিস্ট -->
         <section class="space-y-3">
             <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="categories-scroll">
                 <button onclick="selectCategory('all')" id="cat-btn-all" class="cat-pill bg-primary text-white border border-primary/20 rounded-full px-5 py-2 text-xs font-bold shrink-0 hover:border-primary transition-all">
                     <i class="fa-solid fa-list-ul mr-1.5"></i> সকল ক্যাটাগরি
                 </button>
-                <!-- ক্যাটাগরি বাটনগুলো এখানে ডাইনামিকালি লোড হবে -->
             </div>
         </section>
 
-        <!-- 📦 ৪. Products Grid Layout (১ম বার ৪০টি করে রেন্ডার হবে) -->
         <section class="space-y-6">
             <h3 class="text-2xl font-bold mb-6 flex items-center gap-2"><i class="fa-solid fa-bolt-lightning text-primary animate-pulse"></i> আমাদের ইনভেন্টরি প্রোডাক্টস</h3>
             <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5" id="products-container">
-                <!-- প্রোডাক্ট কার্ডগুলো এখানে স্ক্রল ভিত্তিক ডাইনামিক লোড হবে -->
             </div>
 
-            <!-- 🔄 ৫. লোডিং স্পিনার ও নো-মোর প্রোডাক্টস এলার্ট -->
             <div id="loading-spinner" class="py-10 text-center flex flex-col items-center justify-center gap-2">
                 <i class="fa-solid fa-spinner animate-spin text-primary text-3xl"></i>
                 <span class="text-xs font-bold text-muted">পরবর্তী প্রোডাক্ট লোড হচ্ছে...</span>
@@ -89,15 +79,12 @@
 
     </main>
 
-    <!-- 🌐 ২. ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
-        // (গুরুত্বপূর্ণ ফিক্স) conflicts এড়াতে ভেরিয়েবলের নাম supabaseClientInstance রাখা হয়েছে
         let supabaseClientInstance = null;
         let currentPage = 1;
         const pageSize = 40; 
@@ -108,7 +95,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক (layout.js গ্লোবাল ক্লায়েন্ট সিঙ্ক) ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -116,12 +102,10 @@
                 }
                 supabaseClientInstance = window.supabaseClient;
                 
-                // ক্যাটাগরি পিলস ও প্রথম ৪০টি প্রোডাক্ট লোড করা
                 loadCategoriesPills();
                 loadProducts(true); 
             }
 
-            // --- খ. ডাইনামিক ক্যাটাগরি তালিকা পিলস লোড ---
             async function loadCategoriesPills() {
                 try {
                     const { data: categories } = await supabaseClientInstance.from('categories').select('*').limit(20);
@@ -139,13 +123,11 @@
                 } catch(e) {}
             }
 
-            // ক্যাটাগরি ফিল্টার চেইঞ্জ লজিক
             window.selectCategory = function(catId) {
                 selectedCategoryId = catId;
                 currentPage = 1;
                 hasMore = true;
                 
-                // বাটন অ্যাক্টিভ ক্লাস রেন্ডার
                 document.querySelectorAll('.cat-pill').forEach(btn => {
                     btn.className = "cat-pill bg-white border border-gray-200 rounded-full px-5 py-2 text-xs font-bold text-dark flex items-center gap-2 shrink-0 hover:border-primary transition-all";
                 });
@@ -157,7 +139,6 @@
                 loadProducts(true); 
             };
 
-            // --- গ. ডাইনামিক প্রোডাক্ট পেজিনেশন ও ইনফিনিট স্ক্রল লোডার ---
             async function loadProducts(isFirstPage = false) {
                 if (isLoading) return;
                 isLoading = true;
@@ -174,24 +155,20 @@
                     currentPage = 1;
                 }
 
-                // রেঞ্জ সীমা নির্ধারণ (যেমন: ১ম পেজে ০-৩৯, ২য় পেজে ৪০-৭৯ ইত্যাদি)
                 const startIndex = (currentPage - 1) * pageSize;
                 const endIndex = startIndex + pageSize - 1;
 
                 try {
                     let query = supabaseClientInstance.from('products').select('*');
 
-                    // ক্যাটাগরি ফিল্টার যুক্ত করা
                     if (selectedCategoryId !== 'all') {
                         query = query.eq('category_id', selectedCategoryId);
                     }
 
-                    // সার্চ ফিল্টার যুক্ত করা
                     if (searchQuery !== '') {
                         query = query.or(`title.ilike.%${searchQuery}%,product_code.ilike.%${searchQuery}%`);
                     }
 
-                    // সর্বোচ্চ ৪০টি প্রোডাক্ট সঠিক সর্টিং রেঞ্জ অনুযায়ী ফেচ করা
                     const { data: products, error } = await query
                         .range(startIndex, endIndex)
                         .order('created_at', { ascending: false });
@@ -275,7 +252,6 @@
                 }
             }
 
-            // --- ঘ. মাউস স্ক্রল ডিটেকশন (Infinite Scroll Trigger) ---
             window.addEventListener('scroll', () => {
                 if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 500) {
                     if (!isLoading && hasMore) {
@@ -284,7 +260,6 @@
                 }
             });
 
-            // --- ঙ. সার্চ বক্স ইন্টিগ্রেশন ---
             const searchInput = document.getElementById('search-input');
             if (searchInput) {
                 searchInput.addEventListener('input', (e) => {
@@ -294,7 +269,6 @@
                 });
             }
 
-            // --- চ. লেআউট শেয়ার্ড কার্ট ও ফেভারিট অ্যাকশনস ---
             window.updateLocalBadges = function() {
                 if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
             };
