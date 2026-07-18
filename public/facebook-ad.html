@@ -5,24 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Facebook Ad & Boost Services</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#FF6B00',       /* ভাইব্রেন্ট অরেঞ্জ */
-                        secondary: '#FF8C33',     /* লাইট অরেঞ্জ */
-                        canvas: '#FAF6F4',        /* লাইট ওয়ার্ম অফ-হোয়াইট */
-                        dark: '#111827',          /* চারকোল ব্ল্যাক */
-                        muted: '#4B5563',         /* গ্রে টেক্সট */
+                        primary: '#FF6B00',
+                        secondary: '#FF8C33',
+                        canvas: '#FAF6F4',
+                        dark: '#111827',
+                        muted: '#4B5563',
                     },
                     fontFamily: {
                         bangla: ['"Anek Bangla"', 'sans-serif'],
@@ -36,10 +34,8 @@
 </head>
 <body class="bg-canvas font-bangla text-dark leading-relaxed">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
     <div id="header-placeholder"></div>
 
-    <!-- 🚀 Ad Hero Banner Section -->
     <section class="relative overflow-hidden py-16 lg:py-24 bg-[radial-gradient(circle_at_20%_35%,_rgba(255,107,0,0.06)_0%,_rgba(255,255,255,0)_50%)] border-b border-primary/5">
         <div class="max-w-[1200px] mx-auto px-5 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
@@ -62,7 +58,6 @@
                 </div>
             </div>
 
-            <!-- Right Side Highlight Features Box -->
             <div class="lg:col-span-5 flex justify-center">
                 <div class="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.02] shadow-xl shadow-primary/5 space-y-4 max-w-[380px] w-full relative">
                     <div class="absolute -top-3 -right-3 bg-red-500 text-white text-[0.65rem] font-black px-2.5 py-1 rounded-md z-10 shadow-sm flex items-center gap-1 animate-bounce">
@@ -81,7 +76,6 @@
         </div>
     </section>
 
-    <!-- 🚀 ২. Highlighted Features Section (Fteure hight korbe) -->
     <section id="features-section" class="max-w-[1200px] mx-auto px-5 py-16 space-y-12">
         <div class="text-center max-w-[650px] mx-auto space-y-2">
             <span class="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20 uppercase tracking-widest">Our Technologies</span>
@@ -90,37 +84,31 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Feature 1 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-primary/10 text-primary rounded-2xl flex items-center justify-center text-xl border border-primary/20"><i class="fa-solid fa-bullseye"></i></div>
                 <h4 class="text-base font-bold text-dark">১. সঠিক কাস্টমার ডাইনামিক ফিল্টারিং</h4>
                 <p class="text-xs text-muted leading-relaxed">আপনার পেজের প্রোডাক্টগুলো কিনতে যারা আগ্রহী, শুধুমাত্র সেই বয়স ও এলাকার কাস্টমারদের ডাটাবেজ ধরে বিজ্ঞাপন প্রদর্শন করা হয়।</p>
             </div>
-            <!-- Feature 2 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-blue-50 text-blue-500 rounded-2xl flex items-center justify-center text-xl border border-blue-100"><i class="fa-solid fa-shield-halved"></i></div>
                 <h4 class="text-base font-bold text-dark">২. নিরাপদ পেজ অ্যাড পলিসি (Safe ADS)</h4>
                 <p class="text-xs text-muted leading-relaxed">সম্পূর্ণ ফেসবুকের পলিসি মেনে বিজ্ঞাপনী অ্যাকাউন্ট থেকে অ্যাড রান করার ফলে আপনার পেজে কোনো রকম পিক্সেল বা পলিসি ভায়োলেশনের ঝুঁকি থাকে না।</p>
             </div>
-            <!-- Feature 3 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center text-xl border border-green-100"><i class="fa-solid fa-piggy-bank"></i></div>
                 <h4 class="text-base font-bold text-dark">৩. বাজেট অপ্টিমাইজেশন (Low Cost CPC)</h4>
                 <p class="text-xs text-muted leading-relaxed">আমাদের অ্যাডভান্সড কস্ট-পার-ক্লিক (CPC) ম্যানেজমেন্টের কারণে ফেসবুকের অফিশিয়াল রেটের মধ্যে সবচেয়ে কম খরচে সর্বোচ্চ ভালো কনভার্সন রেট নিশ্চিত হয়।</p>
             </div>
-            <!-- Feature 4 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-indigo-50 text-indigo-500 rounded-2xl flex items-center justify-center text-xl border border-indigo-100"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
                 <h4 class="text-base font-bold text-dark">৪. লাইভ পিক্সেল এবং রিটার্গেটিং অ্যাড</h4>
                 <p class="text-xs text-muted leading-relaxed">পূর্বে যারা আপনার পেজ ভিজিট করেছে বা নক করেছে, তাদের ট্র্যাকিং করে আবার বিজ্ঞাপন প্রদর্শন করা হয়, যা আপনার সেলস বৃদ্ধি করতে জাদুর মতো কাজ করে।</p>
             </div>
-            <!-- Feature 5 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-amber-50 text-amber-500 rounded-2xl flex items-center justify-center text-xl border border-amber-100"><i class="fa-solid fa-file-invoice"></i></div>
                 <h4 class="text-base font-bold text-dark">৫. স্বচ্ছ রিপোর্টিং ও ড্যাশবোর্ড ট্র্যাকিং</h4>
                 <p class="text-xs text-muted leading-relaxed">বিজ্ঞাপন রানিং থাকা অবস্থায় প্রতিদিনের মেটা অ্যাড ম্যানেজারের স্ক্রিনশট এবং লাইভ রিপোর্ট আপনাকে সরবরাহ করা হবে, যাতে আপনি খরচের সঠিক হিসাব দেখতে পারেন।</p>
             </div>
-            <!-- Feature 6 -->
             <div class="bg-white p-6 rounded-2xl border border-gray-150 hover:border-primary/25 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-12 h-12 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center text-xl border border-red-100"><i class="fa-solid fa-headset"></i></div>
                 <h4 class="text-base font-bold text-dark">৬. ২৪/৭ ডেডিকেটেড মার্কেটিং এক্সপার্ট</h4>
@@ -129,7 +117,6 @@
         </div>
     </section>
 
-    <!-- 📊 ৩. Boost Categories Section (bost er cateorgy gulau dkehabe - No Rates/Prices) -->
     <section id="categories-section" class="max-w-[1200px] mx-auto px-5 py-12 space-y-12">
         <div class="text-center max-w-[600px] mx-auto space-y-2">
             <span class="text-xs font-bold text-primary bg-primary/10 px-3.5 py-1.5 rounded-full border border-primary/20 uppercase tracking-widest">Ad Categories</span>
@@ -139,42 +126,36 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             
-            <!-- Category 1 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center border border-blue-100 text-lg"><i class="fa-solid fa-thumbs-up"></i></div>
                 <h4 class="font-extrabold text-base text-dark">পেজ লাইক ও ফলোয়ার বুস্ট</h4>
                 <p class="text-xs text-muted leading-relaxed">আপনার ব্র্যান্ডের লাইভ ট্রাস্ট বৃদ্ধির জন্য আপনার টার্গেটেড ক্যাটাগরির কাস্টমারদের মাধ্যমে রিয়েল পেজ লাইক ও ফলোয়ার অর্গানিক উপায়ে বৃদ্ধি করা হবে।</p>
             </div>
 
-            <!-- Category 2 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center border border-primary/20 text-lg"><i class="fa-solid fa-message"></i></div>
                 <h4 class="font-extrabold text-base text-dark">মেসেজ ও কনভার্সন ক্যাম্পেইন</h4>
                 <p class="text-xs text-muted leading-relaxed">সবচেয়ে জনপ্রিয় বিজ্ঞাপন মেথড। সরাসরি আপনার কাস্টমারদের ইনবক্সে নিয়ে আসার জন্য মেসেজ বাটন ক্লিক করে ইনস্ট্যান্ট সেলস বৃদ্ধির ক্যাম্পেইন সাজানো হবে।</p>
             </div>
 
-            <!-- Category 3 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center border border-red-100 text-lg"><i class="fa-solid fa-play animate-pulse"></i></div>
                 <h4 class="font-extrabold text-base text-dark">ভিডিও ভিউ ও রিচ বুস্ট</h4>
                 <p class="text-xs text-muted leading-relaxed">আপনার ব্যবসার প্রোডাক্ট রিভিউ বা প্রোমোশনাল কন্টেন্ট লাখো মানুষের টাইমলাইনে পৌঁছে ভিউ ও রিচ কয়েকগুণ বাড়িয়ে ব্র্যান্ডিং সচল করা হবে।</p>
             </div>
 
-            <!-- Category 4 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100 text-lg"><i class="fa-solid fa-globe"></i></div>
                 <h4 class="font-extrabold text-base text-dark">ওয়েবসাইট ট্রাফিক ও লিড জেনারেশন</h4>
                 <p class="text-xs text-muted leading-relaxed">আপনার ই-কমার্স স্টোর বা ল্যান্ডিং পেজে সরাসরি ভিজিটর পাঠানোর জন্য পিক্সেল অপ্টিমাইজড লিঙ্ক ক্লিক ও ট্রাফিক অ্যাড ক্যাম্পেইন রান করা হয়।</p>
             </div>
 
-            <!-- Category 5 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-green-50 text-green-600 flex items-center justify-center border border-green-100 text-lg"><i class="fa-solid fa-location-dot"></i></div>
                 <h4 class="font-extrabold text-base text-dark">নির্দিষ্ট লোকাল এরিয়া অ্যাড</h4>
                 <p class="text-xs text-muted leading-relaxed">আপনার অফলাইন শপ, শো-রুম বা রেস্টুরেন্টের নিকটস্থ ৫-১০ কিলোমিটার ব্যাসার্ধের মানুষকে টার্গেট করে কাস্টম লোকাল বিজ্ঞাপন সচল করা হবে।</p>
             </div>
 
-            <!-- Category 6 -->
             <div class="bg-white p-6 rounded-3xl border border-gray-150 hover:border-primary/30 hover:shadow-xl transition-all duration-300 space-y-4">
                 <div class="w-10 h-10 rounded-full bg-amber-50 text-amber-500 flex items-center justify-center border border-amber-100 text-lg"><i class="fa-solid fa-share-nodes"></i></div>
                 <h4 class="font-extrabold text-base text-dark">পোস্ট এঙ্গেজমেন্ট ও শেয়ার বুস্ট</h4>
@@ -184,7 +165,6 @@
         </div>
     </section>
 
-    <!-- 🛠️ ৪. How It Works (সহজ ৩টি ধাপে প্রমোশন শুরু) -->
     <section class="bg-white border-t border-b border-gray-100 py-16">
         <div class="max-w-[1200px] mx-auto px-5 space-y-12">
             <div class="text-center max-w-[600px] mx-auto space-y-2">
@@ -193,19 +173,16 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative text-center">
-                <!-- Step 1 -->
                 <div class="space-y-3 relative z-10">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-base font-extrabold mx-auto shadow-md">১</div>
-                    <h4 class="font-bold text-dark text-base">১. হোয়াটসঅ্যাপে কন্টাক্ট করুন [cite: 1.1]</h4>
-                    <p class="text-xs text-muted leading-relaxed max-w-[280px] mx-auto">আমাদের হোয়াটসঅ্যাপে সরাসরি আপনার ফেসবুক পেজের লিংক এবং আপনি যে পোস্টটি বুস্ট করতে চান তার বিবরণ দিয়ে বার্তা পাঠান [cite: 1.1]।</p>
+                    <h4 class="font-bold text-dark text-base">১. হোয়াটসঅ্যাপে কন্টাক্ট করুন</h4>
+                    <p class="text-xs text-muted leading-relaxed max-w-[280px] mx-auto">আমাদের হোয়াটসঅ্যাপে সরাসরি আপনার ফেসবুক পেজের লিংক এবং আপনি যে পোস্টটি বুস্ট করতে চান তার বিবরণ দিয়ে বার্তা পাঠান।</p>
                 </div>
-                <!-- Step 2 -->
                 <div class="space-y-3 relative z-10">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-base font-extrabold mx-auto shadow-md">২</div>
                     <h4 class="font-bold text-dark text-base">২. বাজেট ও টার্গেটিং নির্ধারণ</h4>
                     <p class="text-xs text-muted leading-relaxed max-w-[280px] mx-auto">আপনার টার্গেটেড কাস্টমার কারা এবং আপনি কত বাজেট বুস্টিংয়ে ব্যবহার করতে চান, তা আমাদের সাপোর্ট টিমের সাথে কাস্টমাইজ করে আলোচনা করুন।</p>
                 </div>
-                <!-- Step 3 -->
                 <div class="space-y-3 relative z-10">
                     <div class="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center text-base font-extrabold mx-auto shadow-md">৩</div>
                     <h4 class="font-bold text-dark text-base">৩. ১ ঘণ্টায় ক্যাম্পেইন লাইভ!</h4>
@@ -215,7 +192,6 @@
         </div>
     </section>
 
-    <!-- 💬 ৫. Customer Reviews/Testimonial Section -->
     <section class="bg-canvas py-16 border-b border-primary/5">
         <div class="max-w-[1200px] mx-auto px-5 space-y-10">
             <div class="text-center max-w-[600px] mx-auto space-y-2">
@@ -224,7 +200,6 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Review 1 -->
                 <div class="bg-white border border-gray-150 p-6 rounded-2xl flex flex-col justify-between space-y-4 hover:shadow-md transition-all duration-300">
                     <div class="space-y-3">
                         <div class="text-amber-500 text-sm flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
@@ -241,7 +216,6 @@
                     </div>
                 </div>
 
-                <!-- Review 2 -->
                 <div class="bg-white border border-gray-150 p-6 rounded-2xl flex flex-col justify-between space-y-4 hover:shadow-md transition-all duration-300">
                     <div class="space-y-3">
                         <div class="text-amber-500 text-sm flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
@@ -258,7 +232,6 @@
                     </div>
                 </div>
 
-                <!-- Review 3 -->
                 <div class="bg-canvas border border-gray-150 p-6 rounded-2xl flex flex-col justify-between space-y-4 hover:shadow-md transition-all duration-300 bg-white">
                     <div class="space-y-3">
                         <div class="text-amber-500 text-sm flex gap-1"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
@@ -278,10 +251,8 @@
         </div>
     </section>
 
-    <!-- 📢 ৬. Bottom Ad CTA Section -->
     <section class="max-w-[1200px] mx-auto px-5 my-16">
         <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-dark via-gray-900 to-primary/20 p-8 md:p-12 border border-primary/20 shadow-xl text-center flex flex-col items-center">
-            <!-- Glow Lights -->
             <div class="absolute -top-24 -left-24 w-48 h-48 bg-primary/20 rounded-full blur-3xl"></div>
             <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-secondary/20 rounded-full blur-3xl"></div>
             
@@ -289,7 +260,7 @@
                 <span class="bg-primary/10 text-primary border border-primary/20 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 w-fit mx-auto"><i class="fa-solid fa-shield-halved"></i> 100% Ad Page Risk Free</span>
                 <h2 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight">বাজেট ও বিজ্ঞাপন নিয়ে সরাসরি কথা বলুন আমাদের সাথে 🚀</h2>
                 <p class="text-gray-300 text-sm sm:text-base leading-relaxed">
-                    আপনার ব্যবসার গ্রোথ অনুযায়ী কাস্টম বাজেটে ফেসবুকের অফিশিয়াল ক্যাম্পেইন রান করুন নিশ্চিন্তে। আমাদের হোয়াটসঅ্যাপে সরাসরি আপনার পেজের লিংক ও বিজ্ঞাপন পাঠালে আমাদের এডমিন টিম আপনার সাথে তাৎক্ষণিকভাবে ক্যাম্পেইন সাজিয়ে দেবে [cite: 1.1]!
+                    আপনার ব্যবসার গ্রোথ অনুযায়ী কাস্টম বাজেটে ফেসবুকের অফিশিয়াল ক্যাম্পেইন রান করুন নিশ্চিন্তে। আমাদের হোয়াটসঅ্যাপে সরাসরি আপনার পেজের লিংক ও বিজ্ঞাপন পাঠালে আমাদের এডমিন টিম আপনার সাথে তাৎক্ষণিকভাবে ক্যাম্পেইন সাজিয়ে দেবে!
                 </p>
                 <div class="pt-4 flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="https://wa.me/8801781146747?text=আসসালামু আলাইকুম MerketBaseBD, আমি আমার পেজের বিজ্ঞাপনের জন্য বুস্ট সার্ভিসটি নিয়ে সরাসরি আলোচনা করতে চাই।" target="_blank" class="btn-cta bg-primary text-white py-4 px-10 rounded-full font-bold text-lg hover:bg-secondary hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/25 transition-all inline-flex items-center gap-2.5 justify-center"><i class="fa-brands fa-whatsapp text-xl"></i> হোয়াটসঅ্যাপে বুস্ট স্টার্ট করুন</a>
@@ -298,11 +269,9 @@
         </div>
     </section>
 
-    <!-- 🌐 ৪. ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
 </body>
-              </html>
+</html>
