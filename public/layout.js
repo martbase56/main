@@ -1,28 +1,19 @@
-// public/layout.js
-// MerketBaseBD - Optimized Global Layout Engine with Hybrid Caching (Zero Latency)
-
 document.addEventListener('DOMContentLoaded', async () => {
-    // ১. পেজে হেডার এবং ফুটার প্লেসহোল্ডার থাকলে স্বয়ংক্রিয়ভাবে ইনজেক্ট করা
     injectHeaderAndFooter();
-    
-    // ২. হাইব্রিড ক্যাশিং ইঞ্জিনের মাধ্যমে জিরো-ল্যাটেন্সি সুপাবেস ইনিশিয়ালাইজেশন
     await initLayoutSupabase();
 });
 
 let supabaseClient = null;
 
 async function initLayoutSupabase() {
-    // ক. প্রথমে ব্রাউজারের লোকাল মেমোরি (Cache) থেকে কনফিগ চেক করা
     const cachedConfig = localStorage.getItem('supabase_config');
     if (cachedConfig) {
         try {
             const config = JSON.parse(cachedConfig);
             if (config.supabase_url && config.supabase_anon_key) {
-                // ক্যাশ ডাটা থাকলে সরাসরি ইনস্ট্যান্ট সুপাবেস ক্লায়েন্ট সচল করা (০ মিলি-সেকেন্ড বিলম্ব!)
                 supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                 window.supabaseClient = supabaseClient;
                 
-                // ব্যাকগ্রাউন্ডে সাইডবার ও ব্যাজ আপডেট শুরু করা
                 updateLayoutNavigation();
                 updateLayoutBadges();
                 console.log("⚡ Supabase Client initialized instantly from local browser cache.");
@@ -32,16 +23,13 @@ async function initLayoutSupabase() {
         }
     }
 
-    // খ. ব্যাকগ্রাউন্ডে (ইউজারের লোডিং স্ক্রিন ব্লক না করে) লেটেস্ট ভেরিয়েবল রিড করা
     try {
         const response = await fetch('/api/auth/config');
         if (response.ok) {
             const config = await response.json();
             if (config.supabase_url && config.supabase_anon_key) {
-                // পরবর্তী ভিজিটের জন্য ক্যাশ মেমোরি আপডেট করে রাখা
                 localStorage.setItem('supabase_config', JSON.stringify(config));
                 
-                // যদি পূর্বে ক্যাশ না থাকার কারণে ক্লায়েন্ট তৈরি না হয়ে থাকে, তবে এখন ইনিশিয়েট হবে
                 if (!supabaseClient) {
                     supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                     window.supabaseClient = supabaseClient;
@@ -56,7 +44,6 @@ async function initLayoutSupabase() {
     }
 }
 
-// হেডার-ফুটার ইনজেকশন ফাংশন
 function injectHeaderAndFooter() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     const footerPlaceholder = document.getElementById('footer-placeholder');
