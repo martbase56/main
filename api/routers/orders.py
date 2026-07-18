@@ -1,4 +1,3 @@
-# api/routers/orders.py (অর্ডার ও কাস্টমার উইথড্রাল সার্ভিস সম্পূর্ণ কোড)
 import os
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
@@ -7,8 +6,6 @@ from api.database import supabase
 from api.routers.auth import get_current_user
 
 router = APIRouter()
-
-# --- ১. Pydantic ডেটা ভ্যালিডেশন স্কিমাস ---
 
 class OrderItemSchema(BaseModel):
     product_id: str
@@ -28,8 +25,8 @@ class OrderCreateSchema(BaseModel):
     shipping_cost: float
     coupon_code: Optional[str] = None
     coupon_discount: float = 0.0
-    customer_selling_price: Optional[float] = None  # কাস্টমার বিক্রয় মূল্য
-    advance_taken: Optional[float] = 0.0            # অগ্রিম নেওয়া টাকা
+    customer_selling_price: Optional[float] = None
+    advance_taken: Optional[float] = 0.0
 
 class CouponValidateSchema(BaseModel):
     code: str
@@ -41,8 +38,6 @@ class WithdrawRequestSchema(BaseModel):
     payment_method: str
     receiver_number: str
 
-
-# --- ২. এন্ডপয়েন্ট: কুপন ভ্যালিডেশন ---
 @router.post("/validate-coupon")
 def validate_coupon(data: CouponValidateSchema):
     try:
@@ -79,8 +74,6 @@ def validate_coupon(data: CouponValidateSchema):
         if isinstance(e, HTTPException): raise e
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৩. এন্ডপয়েন্ট: অর্ডার প্লেসিং ---
 @router.post("/place")
 def place_order(order: OrderCreateSchema):
     try:
@@ -89,14 +82,12 @@ def place_order(order: OrderCreateSchema):
             raise HTTPException(status_code=404, detail="ব্যবহারকারী পাওয়া যায়নি।")
         user_role = user_query.data['role']
 
-        # প্রতিটি প্রোডাক্টের রিসেলার পাইকারি দাম হিসাব
         total_reseller_cost = 0.0
         for item in order.items:
             product_query = supabase.table("products").select("reseller_price").eq("id", item.product_id).single().execute()
             if product_query.data:
                 total_reseller_cost += float(product_query.data['reseller_price']) * item.quantity
 
-        # রিসেলার লাভ নির্ধারণ করা
         reseller_profit = 0.0
         if user_role == 'reseller':
             total_advance = order.advance_taken if order.advance_taken else 0.0
@@ -133,8 +124,6 @@ def place_order(order: OrderCreateSchema):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৪. এন্ডপয়েন্ট: এডমিন কর্তৃক অর্ডার স্ট্যাটাস আপডেট (রিসেলার হোল্ড লাভ ইন্টিগ্রেশন) ---
 @router.post("/admin/update-status/{order_id}")
 def update_order_status(order_id: str, new_status: str, admin_user: dict = Depends(get_current_user)):
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
@@ -152,7 +141,6 @@ def update_order_status(order_id: str, new_status: str, admin_user: dict = Depen
     try:
         supabase.table("orders").update({"status": new_status}).eq("id", order_id).execute()
 
-        # স্ট্যাটাস যদি ডেলিভারি ('delivered') হয় এবং এটি রিসেলারের অর্ডার হয়
         if new_status == 'delivered' and order['user_role'] == 'reseller':
             reseller_id = order['placed_by']
             profit = float(order.get('reseller_profit', 0) or 0)
@@ -161,7 +149,6 @@ def update_order_status(order_id: str, new_status: str, admin_user: dict = Depen
                 res_query = supabase.table("profiles").select("hold_balance").eq("id", reseller_id).single().execute()
                 current_hold = float(res_query.data.get('hold_balance', 0) or 0)
                 
-                # প্রফিট সরাসরি হোল্ড ব্যালেন্সে (Hold Balance) জমা করা
                 new_hold = current_hold + profit
                 supabase.table("profiles").update({"hold_balance": new_hold}).eq("id", reseller_id).execute()
 
@@ -174,8 +161,6 @@ def update_order_status(order_id: str, new_status: str, admin_user: dict = Depen
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"স্ট্যাটাস আপডেট ব্যর্থ: {str(e)}")
 
-
-# --- ৫. এন্ডপয়েন্ট: রিসেলার কর্তৃক হোল্ড ব্যালেন্স মেইন ওয়ালেটে স্থানান্তর ---
 @router.post("/transfer-hold/{user_id}")
 def transfer_hold_balance(user_id: str):
     try:
@@ -223,16 +208,12 @@ def transfer_hold_balance(user_id: str):
         if isinstance(e, HTTPException): raise e
         raise HTTPException(status_code=500, detail=str(e))
 
-
-# --- ৬. এন্ডপয়েন্ট: কাস্টমার উইথড্রাল রিকোয়েস্ট (অটো-ভেরিফিকেশন ফিল্টার সহ) ---
 @router.post("/withdraw-request")
 def request_withdrawal(order: WithdrawRequestSchema):
     try:
-        # ১. ন্যূনতম উইথড্রাল ১০০ টাকা চেক
         if order.amount < 100:
             raise HTTPException(status_code=400, detail="ন্যূনতম উইথড্রাল পরিমাণ ১০০ টাকা হতে হবে।")
 
-        # ২. ব্যালেন্স চেক
         profile_query = supabase.table("profiles").select("wallet_balance").eq("id", order.user_id).single().execute()
         if not profile_query.data:
             raise HTTPException(status_code=404, detail="ব্যবহারকারী প্রোফাইল পাওয়া যায়নি।")
@@ -241,20 +222,17 @@ def request_withdrawal(order: WithdrawRequestSchema):
         if current_balance < order.amount:
             raise HTTPException(status_code=400, detail="আপনার ওয়ালেটে পর্যাপ্ত ব্যালেন্স নেই।")
 
-        # ৩. ভেরিফিকেশন শর্ত ১: নিজের মিনিমাম ৩টি জিমেইল সাবমিশন চেক
         gmail_query = supabase.table("gmail_submissions").select("id", count="exact").eq("reseller_id", order.user_id).eq("status", "approved").execute()
         my_gmails = gmail_query.count if gmail_query.count is not None else 0
         if my_gmails < 3:
             raise HTTPException(status_code=400, detail=f"উইথড্র করতে আপনার নিজের কমপক্ষে ৩টি জিমেইল সফলভাবে অ্যাপ্রুভড হতে হবে। (আপনার আছে: {my_gmails}/৩)")
 
-        # ৪. ভেরিফিকেশন শর্ত ২: কমপক্ষে ৩টি সফল রেফারেল চেক [cite: 1.1.2]
         referral_query = supabase.table("referrals").select("referred_id").eq("referrer_id", order.user_id).eq("status", "success").execute()
         referral_data = referral_query.data
         successful_ref_count = len(referral_data) if referral_data else 0
         if successful_ref_count < 3:
-            raise HTTPException(status_code=400, detail=f"উইথড্র করতে আপনার কমপক্ষে ৩টি সফল রেফারেল সম্পন্ন হতে হবে। (আপনার আছে: {successful_ref_count}/৩) [cite: 1.1.2]")
+            raise HTTPException(status_code=400, detail=f"উইথড্র করতে আপনার কমপক্ষে ৩টি সফল রেফারেল সম্পন্ন হতে হবে। (আপনার আছে: {successful_ref_count}/৩)")
 
-        # ৫. ভেরিফিকেশন শর্ত ৩: রেফারকৃত কাস্টমারদের সচলতা চেক (তাদেরও ৩টি করে জিমেইল থাকতে হবে) [cite: 1.1.2]
         active_referred_count = 0
         for ref in referral_data:
             referred_id = ref['referred_id']
@@ -266,14 +244,12 @@ def request_withdrawal(order: WithdrawRequestSchema):
         if active_referred_count < 3:
             raise HTTPException(
                 status_code=400, 
-                detail=f"উইথড্র করতে আপনার রেফার করা অন্তত ৩ জন মেম্বারকে প্রত্যেকে কমপক্ষে ৩টি করে জিমেইল সফলভাবে সাবমিট করতে হবে। (বর্তমানে আছে: {active_referred_count}/৩ জন) [cite: 1.1.2]"
+                detail=f"উইথড্র করতে আপনার রেফার করা অন্তত ৩ জন মেম্বারকে প্রত্যেকে কমপক্ষে ৩টি করে জিমেইল সফলভাবে সাবমিট করতে হবে। (বর্তমানে আছে: {active_referred_count}/৩ জন)"
             )
 
-        # ৬. শর্তসমূহ পূর্ণ হলে ওয়ালেট থেকে টাকা ডেবিট/কেটে নেওয়া
         new_balance = current_balance - order.amount
         supabase.table("profiles").update({"wallet_balance": new_balance}).eq("id", order.user_id).execute()
 
-        # ৭. উইথড্রাল রিকোয়েস্ট ডাটাবেজে সাবমিট করা
         payload = {
             "user_id": order.user_id,
             "amount": order.amount,
