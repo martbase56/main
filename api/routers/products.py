@@ -1,29 +1,27 @@
-# api/routers/products.py (পরিপূর্ণ ও চূড়ান্ত কোড)
 import os
 import httpx
 from fastapi import APIRouter, HTTPException, UploadFile, File, Depends
 from pydantic import BaseModel
 from typing import List, Optional
 from api.database import supabase
-from api.routers.auth import get_current_user # এডমিন চেক করার জন্য
+from api.routers.auth import get_current_user
 
 router = APIRouter()
 
-# --- ১. Pydantic ডেটা ভ্যালিডেশন স্কিমাস ---
 class ProductCreateSchema(BaseModel):
     name: str
     description: str = None
     sizes: str = None
     colors: str = None
-    price: float                        # regular_price
+    price: float                        
     customer_offer_price: float = None
     reseller_price: float
     reseller_hold_bonus: float = 0.0
-    images: list[str] = []              # সর্বোচ্চ ৪টি ছবির লিংক
+    images: list[str] = []              
     stock: int = 0
     category_id: str = None
     subcategory: str = None
-    warranty_type: str = "no"           # 'yes' অথবা 'no'
+    warranty_type: str = "no"           
     warranty_days: int = 0
     product_code: str
     is_offer: bool = False
@@ -48,8 +46,6 @@ class ProductUpdateSchema(BaseModel):
     is_offer: bool = False
     reseller_offer_price: float = None
 
-
-# --- ২. সিকিউর ইমেজ আপলোড এন্ডপয়েন্ট (ImgBB Gateway) ---
 @router.post("/upload-image")
 async def upload_image(file: UploadFile = File(...)):
     settings_query = supabase.table("system_settings").select("value").eq("key", "imgbb_api_key").single().execute()
@@ -76,8 +72,6 @@ async def upload_image(file: UploadFile = File(...)):
         except Exception as e:
             raise HTTPException(status_code=500, detail=f"সার্ভার ত্রুটি: {str(e)}")
 
-
-# --- ৩. সিকিউর এন্ডপয়েন্ট: নতুন প্রোডাক্ট যোগ করা (শুধুমাত্র এডমিনদের জন্য) ---
 @router.post("/add")
 def add_product(data: ProductCreateSchema, admin_user: dict = Depends(get_current_user)):
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
@@ -110,11 +104,8 @@ def add_product(data: ProductCreateSchema, admin_user: dict = Depends(get_curren
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"পণ্য যোগ করতে ব্যর্থ: {str(e)}")
 
-
-# --- ৪. এন্ডপয়েন্ট: পণ্য এডিট/আপডেট করা (নতুন 'Mark as Offer' ফিচার সহ) ---
 @router.put("/update/{product_id}")
 def update_product(product_id: str, data: ProductUpdateSchema, admin_user: dict = Depends(get_current_user)):
-    # এডমিন চেক
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
     if not admin_check.data or admin_check.data['role'] != 'admin':
         raise HTTPException(status_code=403, detail="অনুমতি নেই।")
@@ -145,8 +136,6 @@ def update_product(product_id: str, data: ProductUpdateSchema, admin_user: dict 
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"আপডেট ব্যর্থ: {str(e)}")
 
-
-# --- ৫. এন্ডপয়েন্ট: পণ্য ডিলিট করা ---
 @router.delete("/delete/{product_id}")
 def delete_product(product_id: str, admin_user: dict = Depends(get_current_user)):
     admin_check = supabase.table("profiles").select("role").eq("id", admin_user.id).single().execute()
