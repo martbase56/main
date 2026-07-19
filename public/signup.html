@@ -5,15 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MartBaseBD - সাধারণ ক্রেতা সাইনআপ</title>
     
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
 
     <script>
@@ -81,7 +78,6 @@
         </div>
     </div>
 
-   <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -89,7 +85,6 @@
         document.addEventListener('DOMContentLoaded', () => {
             let supabaseClientInstance = null;
 
-            // --- ক. সুপাবেস গ্লোবাল ক্লায়েন্ট ভেরিফিকেশন চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -100,7 +95,6 @@
 
             checkLayoutAndLoad();
 
-            // --- খ. কাস্টমার রেজিস্ট্রেশন হ্যান্ডলার ---
             document.getElementById('customer-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClientInstance) {
@@ -141,3 +135,5 @@
             });
         });
     </script>
+</body>
+</html>
