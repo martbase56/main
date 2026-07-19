@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Withdrawal Hub</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,12 +34,10 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
 
-    <!-- 🌐 হেডার প্লেসহোল্ডার -->
     <div id="header-placeholder"></div>
 
     <main class="max-w-[700px] mx-auto px-4 py-8 space-y-6">
 
-        <!-- 💰 ১. ওয়ালেট ব্যালেন্স উইজেট -->
         <div class="bg-gradient-to-br from-dark to-gray-900 text-white rounded-3xl p-6 flex justify-between items-center shadow-lg relative overflow-hidden">
             <div class="absolute -top-10 -left-10 w-24 h-24 bg-primary/10 rounded-full blur-2xl"></div>
             <div>
@@ -53,7 +49,6 @@
             </div>
         </div>
 
-        <!-- 🎯 ২. উইথড্রাল শর্ত চেকলিস্ট (Auto-validation Checklist) -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-3">
             <h4 class="text-xs font-bold text-primary uppercase tracking-wider mb-2"><i class="fa-solid fa-circle-check"></i> উইথড্রাল রিকোয়ারমেন্টস চেকলিস্ট</h4>
             
@@ -64,16 +59,15 @@
                 </div>
                 <div class="flex items-center gap-2" id="chk-refer">
                     <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
-                    <span>আপনার কমপক্ষে ৩টি সফল রেফারেল থাকতে হবে। (<span id="chk-my-ref-count" class="font-body">0</span>/৩) [cite: 1.1.2]</span>
+                    <span>আপনার কমপক্ষে ৩টি সফল রেফারেল থাকতে হবে। (<span id="chk-my-ref-count" class="font-body">0</span>/৩)</span>
                 </div>
                 <div class="flex items-center gap-2" id="chk-referred-active">
                     <i class="fa-solid fa-circle-xmark text-red-500 text-sm"></i>
-                    <span>আপনার রেফার করা অন্তত ৩ জন মেম্বারকে প্রত্যেকে ৩টি করে জিমেইল সফলভাবে সাবমিট করতে হবে। (<span id="chk-referred-active-count" class="font-body">0</span>/৩) [cite: 1.1.2]</span>
+                    <span>আপনার রেফার করা অন্তত ৩ জন মেম্বারকে প্রত্যেকে ৩টি করে জিমেইল সফলভাবে সাবমিট করতে হবে। (<span id="chk-referred-active-count" class="font-body">0</span>/৩)</span>
                 </div>
             </div>
         </section>
 
-        <!-- 💸 ৩. উইথড্রাল ফর্ম -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
             <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-paper-plane text-primary"></i> নতুন উইথড্রাল রিকোয়েস্ট পাঠান</h4>
             
@@ -102,7 +96,6 @@
             </form>
         </section>
 
-        <!-- 📋 ৪. উইথড্রাল হিস্ট্রি তালিকা (পেমেন্ট ট্র্যাকিং) -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
             <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-history text-primary"></i> আমার উইথড্রাল হিস্ট্রি</h4>
             
@@ -129,7 +122,6 @@
 
     </main>
 
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav - Sync to /withdrawal) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
@@ -153,10 +145,8 @@
         </a>
     </nav>
 
-    <!-- 🌐 ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -165,7 +155,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ও গেটকিপার চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -196,7 +185,6 @@
                         return;
                     }
 
-                    // সেশন সাকসেসফুল হলে সব উইথড্রাল ডাটা লোড হবে
                     loadResellerWithdrawalDashboard();
 
                 } catch (e) {
@@ -204,30 +192,25 @@
                 }
             }
 
-            // --- খ. রিসেলার লাইভ উইথড্রাল ডাটা ও চেকলিস্ট ভ্যালিডেশন ---
             async function loadResellerWithdrawalDashboard() {
                 const client = window.supabaseClient;
                 try {
-                    // ১. ওয়ালেট ব্যালেন্স লোড
                     const { data: profile } = await client.from('profiles').select('*').eq('id', currentResellerId).single();
                     if (profile) {
                         document.getElementById('main-balance-val').innerText = `৳ ${(profile.wallet_balance || 0).toFixed(2)}`;
                     }
 
-                    // ২. নিজের জিমেইল ভেরিফিকেশন চেক (কমপক্ষে ৩টি)
                     const { count: myGmailCount } = await client.from('gmail_submissions').select('id', { count: 'exact', head: true }).eq('reseller_id', currentResellerId).eq('status', 'approved');
                     const hasMyGmails = myGmailCount >= 3;
                     document.getElementById('chk-my-gmails-count').innerText = myGmailCount || 0;
                     updateCheckStyle('chk-gmail', hasMyGmails);
 
-                    // ৩. সফল রেফারেল চেক (কমপক্ষে ৩টি সফল রেফার) [cite: 1.1.2]
                     const { data: referralData } = await client.from('referrals').select('referred_id').eq('referrer_id', currentResellerId).eq('status', 'success');
                     const myRefSuccessCount = referralData ? referralData.length : 0;
                     const hasMyRefs = myRefSuccessCount >= 3;
                     document.getElementById('chk-my-ref-count').innerText = myRefSuccessCount;
                     updateCheckStyle('chk-refer', hasMyRefs);
 
-                    // ৪. রেফারকৃত কাস্টমারদের জিমেইল ভেরিফিকেশন চেক (তাদেরও ৩টি করে জিমেইল থাকতে হবে) [cite: 1.1.2]
                     let activeReferredCount = 0;
                     if (referralData && referralData.length > 0) {
                         for (let ref of referralData) {
@@ -241,7 +224,6 @@
                     document.getElementById('chk-referred-active-count').innerText = activeReferredCount;
                     updateCheckStyle('chk-referred-active', hasReferredActive);
 
-                    // ৫. শর্তসমূহ পূর্ণ হলে উইথড্র বাটন সক্রিয় করা
                     const myWalletBalance = parseFloat(profile.wallet_balance || 0);
                     const withdrawBtn = document.getElementById('btn-submit-withdrawal');
                     
@@ -253,7 +235,6 @@
                         withdrawBtn.className = "w-full py-3 bg-gray-200 text-gray-400 rounded-xl font-bold text-sm cursor-not-allowed flex items-center justify-center gap-2";
                     }
 
-                    // ৬. উইথড্রাল হিস্ট্রি তালিকা লোড
                     loadWithdrawalHistory();
 
                 } catch(e) {
@@ -276,7 +257,6 @@
                 }
             }
 
-            // --- গ. উইথড্রাল সাবমিশন রিকোয়েস্ট (FastAPI /api/orders/withdraw-request) ---
             document.getElementById('withdraw-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!supabaseClient || !currentResellerId) return;
@@ -306,7 +286,7 @@
                         alert(result.message);
                         document.getElementById('withdraw-amount').value = '';
                         document.getElementById('withdraw-phone').value = '';
-                        loadResellerWithdrawalDashboard(); // ড্যাশবোর্ড ডাটা রিফ্রেশ
+                        loadResellerWithdrawalDashboard();
                     } else {
                         alert("উইথড্র ব্যর্থ হয়েছে: " + result.detail);
                     }
@@ -317,7 +297,6 @@
                 }
             });
 
-            // --- ঘ. ব্যক্তিগত উইথড্রাল হিস্ট্রি তালিকা রেন্ডার ---
             async function loadWithdrawalHistory() {
                 const listContainer = document.getElementById('withdraw-history-list');
                 const client = window.supabaseClient;
