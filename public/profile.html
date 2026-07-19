@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - My Profile & Order Tracking</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,12 +34,10 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
 
-    <!-- 🌐 ডাইনামিক হেডার প্লেসহোল্ডার -->
     <div id="header-placeholder"></div>
 
     <main class="max-w-[1200px] mx-auto px-5 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- 👤 Left Column: User Profile Info (Referral ID Completely Removed) -->
         <div class="lg:col-span-4 bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md h-fit">
             <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-user-gear"></i> প্রোফাইল তথ্য</h3>
             <div class="space-y-4">
@@ -52,7 +48,6 @@
                         <p class="text-xs text-primary font-bold bg-primary/10 px-3 py-1 rounded-full mt-1.5">👤 সাধারণ ক্রেতা</p>
                     </div>
                 </div>
-                <!-- Profile Data List -->
                 <div class="space-y-3 text-sm pt-4 border-t border-gray-50">
                     <p class="text-dark font-semibold"><i class="fa-solid fa-envelope text-primary w-5"></i> ইমেইল: <span id="user-email" class="font-body font-normal text-muted">...</span></p>
                     <p class="text-dark font-semibold"><i class="fa-solid fa-phone text-primary w-5"></i> মোবাইল: <span id="user-phone" class="font-body font-normal text-muted">...</span></p>
@@ -60,10 +55,8 @@
             </div>
         </div>
 
-        <!-- 📦 Right Column: Orders History & Live Tracking -->
         <div class="lg:col-span-8 space-y-6">
             
-            <!-- 🗺️ Live Tracking Panel (Beautiful Stepper + Details Card) -->
             <div id="tracking-panel" class="bg-white rounded-3xl border border-primary/15 p-6 md:p-8 shadow-xl hidden bg-gradient-to-br from-white to-primary/[0.01] space-y-6">
                 <div class="flex justify-between items-start border-b border-gray-100 pb-4">
                     <div>
@@ -73,43 +66,34 @@
                     <button onclick="document.getElementById('tracking-panel').classList.add('hidden')" class="text-gray-400 hover:text-red-500"><i class="fa-solid fa-circle-xmark text-xl"></i></button>
                 </div>
                 
-                <!-- Stepper Timeline (Visualizer) -->
                 <div class="grid grid-cols-4 gap-2 relative py-4 text-center">
-                    <!-- Progress Line -->
                     <div class="absolute top-[26px] left-[12%] right-[12%] h-[3px] bg-gray-200 -z-10"></div>
                     
-                    <!-- Step 1: Pending -->
                     <div class="flex flex-col items-center gap-2" id="step-pending">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-receipt"></i></div>
                         <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">পেন্ডিং</span>
                     </div>
-                    <!-- Step 2: Accepted -->
                     <div class="flex flex-col items-center gap-2" id="step-accepted">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-check"></i></div>
                         <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">গৃহীত</span>
                     </div>
-                    <!-- Step 3: Shipped -->
                     <div class="flex flex-col items-center gap-2" id="step-shipped">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-truck-fast"></i></div>
                         <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">শিপড</span>
                     </div>
-                    <!-- Step 4: Delivered -->
                     <div class="flex flex-col items-center gap-2" id="step-delivered">
                         <div class="w-12 h-12 bg-gray-100 text-gray-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-gray-200 transition-all"><i class="fa-solid fa-circle-check"></i></div>
                         <span class="text-[0.65rem] sm:text-xs font-bold text-gray-500">ডেলিভারড</span>
                     </div>
                 </div>
 
-                <!-- Live Status Description message -->
                 <p id="track-status-desc" class="text-xs sm:text-sm font-semibold text-center text-muted bg-gray-50 py-3 px-4 rounded-xl border border-gray-100"></p>
 
-                <!-- Cancelled Order Info Alert -->
                 <div id="cancelled-alert" class="hidden p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-600 text-xs font-semibold flex items-center gap-2">
                     <i class="fa-solid fa-circle-exclamation text-base"></i> 
-                    <span>দুঃখিত, এই অর্ডারটি বাতিল (Cancelled) করা হয়েছে। যেকোনো প্রয়োজনে সাপোর্টে যোগাযোগ করুন।</span>
+                    <span>дуঃখিত, এই অর্ডারটি বাতিল (Cancelled) করা হয়েছে। যেকোনো প্রয়োজনে সাপোর্টে যোগাযোগ করুন।</span>
                 </div>
 
-                <!-- 📝 Delivery Details Card (Dynamic Address details display) -->
                 <div class="bg-gray-50 border border-gray-150 p-5 rounded-2xl space-y-3">
                     <h5 class="text-sm font-bold text-dark border-b border-gray-200 pb-2"><i class="fa-solid fa-map-location text-primary"></i> ডেলিভারি তথ্য (Delivery Details)</h5>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs leading-relaxed">
@@ -122,7 +106,6 @@
                 </div>
             </div>
 
-            <!-- Orders List (History) -->
             <div class="bg-white rounded-2xl border border-black/[0.02] p-6 shadow-md">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-box-archive"></i> আমার অর্ডার হিস্ট্রি</h3>
                 
@@ -150,10 +133,8 @@
 
     </main>
 
-    <!-- 🌐 ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine (Imported sequentially) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -187,7 +168,6 @@
 
                     const userId = session.user.id;
 
-                    // ১. প্রোফাইল লোড (Email এবং ৪-সংখ্যার রেফার আইডি রেন্ডার)
                     const { data: profile } = await supabaseClient.from('profiles').select('*').eq('id', userId).single();
                     if (profile) {
                         document.getElementById('user-fullname').innerText = profile.full_name || "MartBase User";
@@ -195,7 +175,6 @@
                         document.getElementById('user-phone').innerText = profile.phone_number || "N/A";
                     }
 
-                    // ২. অর্ডার হিস্ট্রি লোড
                     const { data: orders } = await supabaseClient
                         .from('orders')
                         .select('*')
@@ -208,7 +187,6 @@
                         orders.forEach(order => {
                             const statusColor = order.status === 'delivered' ? 'text-green-600 bg-green-50' : (order.status === 'cancelled' ? 'text-red-500 bg-red-50' : 'text-primary bg-primary/5');
                             
-                            // ৪ ডিজিট কোড এবং ডাইনামিক সেশন বাইন্ডিং ফিক্স [2]
                             const displayOrderId = order.order_id_code || ("#0" + order.order_id_num) || order.id.substring(0,8);
                             const orderNote = order.order_note || "নেই";
 
@@ -219,7 +197,6 @@
                                     <td class="py-4 px-4 font-body font-bold text-primary">৳${order.collectable_amount}</td>
                                     <td class="py-4 px-4"><span class="px-2.5 py-1 rounded-md text-xs font-bold ${statusColor}">${order.status}</span></td>
                                     <td class="py-4 px-4 text-center">
-                                        <!-- (ডাইনামিক ফিক্স) ট্র্যাকিং এ ক্লিক করলে কাস্টমার এড্রেস ও নোট ডেটা পাঠানো হচ্ছে -->
                                         <button onclick="trackOrder('${order.id}', '${order.status}', '${displayOrderId}', '${order.customer_name}', '${order.customer_phone}', '${order.delivery_address}', '${orderNote}', '${order.payment_method}')" class="bg-primary hover:bg-secondary text-white text-xs font-bold py-1.5 px-3 rounded-lg shadow-md transition-colors"><i class="fa-solid fa-location-crosshairs"></i> Track</button>
                                     </td>
                                 </tr>
@@ -234,7 +211,6 @@
                 }
             }
 
-            // --- ৩. ৫টি স্ট্যাটাস ভিত্তিক ডাইনামিক লাইভ ট্র্যাকিং লজিক (অ্যাড্রেস কার্ড ইন্টিগ্রেশন সহ) ---
             window.trackOrder = function(orderId, status, displayOrderId, custName, custPhone, custAddress, orderNote, payMethod) {
                 const trackingPanel = document.getElementById('tracking-panel');
                 const trackOrderIdSpan = document.getElementById('track-order-id');
@@ -244,7 +220,6 @@
                 trackOrderIdSpan.innerText = displayOrderId;
                 trackingPanel.classList.remove('hidden');
 
-                // ডেলিভারি এড্রেস কার্ডের ইনফো আপডেট
                 document.getElementById('track-cust-name').innerText = custName;
                 document.getElementById('track-cust-phone').innerText = custPhone;
                 document.getElementById('track-cust-address').innerText = custAddress;
