@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Reseller Category Products</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -40,7 +38,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
 
-    <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <span class="font-headings font-extrabold text-xl text-primary flex items-center gap-1.5"><i id="header-cat-icon" class="fa-solid fa-tags text-primary"></i> <span id="header-cat-title">ক্যাটাগরি লোড হচ্ছে...</span></span>
         <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
@@ -48,14 +45,12 @@
 
     <main class="max-w-[1200px] mx-auto px-4 pt-5 space-y-6">
 
-        <!-- 📦 Reseller Products Grid (Loaded with reseller wholesales prices) -->
         <section class="space-y-4">
             <div class="products-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4" id="category-products-container">
                 <p class="col-span-full text-center py-10">প্রোডাক্ট তালিকা লোড হচ্ছে...</p>
             </div>
         </section>
 
-        <!-- 🏷️ Related Categories Section (Circular Navs) -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-sm space-y-4">
             <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2 flex items-center gap-2"><i class="fa-solid fa-tags text-primary animate-pulse"></i> অন্যান্য ক্যাটাগরি সমূহ</h4>
             <div class="flex gap-3 overflow-x-auto no-scrollbar py-1" id="other-categories-container">
@@ -65,7 +60,6 @@
 
     </main>
 
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
@@ -89,7 +83,6 @@
         </a>
     </nav>
 
-    <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -100,7 +93,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ও গেটকিপার চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -131,7 +123,6 @@
                         return;
                     }
 
-                    // ইউআরএল স্লাগ পড়া ও লোড শুরু
                     const urlParams = new URLSearchParams(window.location.search);
                     selectedCategorySlug = urlParams.get('slug');
 
@@ -148,10 +139,8 @@
                 }
             }
 
-            // --- খ. ক্যাটাগরি তথ্য ও রিসেলার প্রোডাক্টস রেন্ডার ---
             async function loadCategoryDataAndProducts() {
                 try {
-                    // ১. স্লাগ দিয়ে ক্যাটাগরি অবজেক্ট ফেচ
                     const { data: category } = await supabaseClientInstance
                         .from('categories')
                         .select('*')
@@ -168,7 +157,6 @@
                     const headerIcon = document.getElementById('header-cat-icon');
                     if (headerIcon) headerIcon.className = `fa-solid ${category.icon} text-primary`;
 
-                    // ২. প্রোডাক্ট লোড করা
                     const { data: products } = await supabaseClientInstance
                         .from('products')
                         .select('*')
@@ -231,7 +219,6 @@
                         `;
                     }
 
-                    // ৩. অন্যান্য ক্যাটাগরি তালিকা লোড
                     loadOtherCategories();
 
                 } catch (e) {
@@ -261,7 +248,6 @@
                 } catch(e) {}
             }
 
-            // --- গ. লেআউট শেয়ার্ড কার্ট ও ফেভারিট অ্যাকশনস ---
             window.updateLocalBadges = function() {
                 if (typeof window.updateLayoutBadges === "function") window.updateLayoutBadges();
             };
@@ -303,4 +289,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
