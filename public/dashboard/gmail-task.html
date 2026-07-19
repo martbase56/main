@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Gmail Tasks</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
 
-    <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Gmail</span>
         <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
@@ -44,7 +41,6 @@
 
     <main class="max-w-[700px] mx-auto px-4 pt-5 space-y-6">
 
-        <!-- 🚀 ১. সচল ও ডাইনামিক ওপেন জিমেইল ব্যাচ প্যানেল -->
         <section id="active-batch-panel" class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg relative overflow-hidden flex flex-col items-center text-center">
             <div class="w-16 h-16 bg-primary/10 text-primary rounded-full flex items-center justify-center text-2xl mb-4 border border-primary/20 animate-pulse">
                 <i class="fa-solid fa-envelope-open-text"></i>
@@ -63,7 +59,6 @@
                 </div>
             </div>
 
-            <!-- Submission Form (Visible only when batch is open) -->
             <form id="gmail-submit-form" class="w-full space-y-4 text-left hidden">
                 <div>
                     <label class="block font-semibold text-xs mb-1.5 text-dark">জিমেইল এড্রেস (Gmail Address)</label>
@@ -73,7 +68,6 @@
             </form>
         </section>
 
-        <!-- 📋 ২. আমার জিমেইল সাবমিশন হিস্ট্রি তালিকা -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
             <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-history text-primary"></i> আমার জিমেইল সাবমিশন হিস্ট্রি</h4>
             
@@ -99,7 +93,6 @@
 
     </main>
 
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
@@ -123,7 +116,6 @@
         </a>
     </nav>
 
-    <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -133,7 +125,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -142,7 +133,6 @@
                 verifyResellerAndLoad();
             }
 
-            // --- খ. রিসেলার সেশন ও ডাটা লোড ---
             async function verifyResellerAndLoad() {
                 const client = window.supabaseClient;
                 if (!client) return;
@@ -167,7 +157,6 @@
                         return;
                     }
 
-                    // লাইভ ডাটা লোড
                     loadActiveGmailBatch();
                     loadGmailHistory();
 
@@ -176,7 +165,6 @@
                 }
             }
 
-            // --- গ. লাইভ একটিভ ব্যাচ লোড ও কাউন্টডাউন ---
             async function loadActiveGmailBatch() {
                 try {
                     const response = await fetch('/api/gmail/active-batch');
@@ -226,7 +214,6 @@
                 }, 1000);
             }
 
-            // --- ঘ. জিমেইল সাবমিশন হ্যান্ডলিং ---
             document.getElementById('gmail-submit-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const gmailInput = document.getElementById('gmail-address').value.trim();
@@ -261,7 +248,6 @@
                 }
             });
 
-            // --- ঙ. জিমেইল সাবমিশন হিস্ট্রি লোড (রিলেশন এরে-সলভার সহ ফিক্সড) ---
             async function loadGmailHistory() {
                 const historyList = document.getElementById('gmail-history-list');
                 try {
@@ -273,7 +259,6 @@
                             history.forEach(item => {
                                 const createdDate = new Date(item.created_at).toLocaleString('bn-BD');
                                 
-                                // (ফিক্সড) রিলেশনাল এরে কনফ্লিক্ট সলভার
                                 const batchInfo = Array.isArray(item.gmail_batches) ? item.gmail_batches[0] : item.gmail_batches;
                                 const batchNum = batchInfo ? batchInfo.batch_num : 'N/A';
                                 const rate = batchInfo ? batchInfo.price_per_mail : '0';
