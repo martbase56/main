@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Admin Control Panel</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (Admin SPA Menu) -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -46,52 +43,42 @@
         </div>
 
         <nav class="hidden lg:flex flex-col flex-grow p-4 space-y-1.5 overflow-y-auto" id="sidebar-menu">
-            <!-- 1. Dashboard -->
             <button onclick="switchAdminSection('dashboard-sec')" id="nav-dashboard-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl bg-primary text-white font-semibold transition-all text-xs">
                 <i class="fa-solid fa-chart-line text-lg"></i>
                 <span>ড্যাশবোর্ড ওভারভিউ</span>
             </button>
-            <!-- 2. Users Management -->
             <a href="/admin/users" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-users text-base"></i>
                 <span>ইউজার লিস্ট</span>
             </a>
-            <!-- 3. Orders Management -->
             <a href="/admin/orders" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-cart-shopping text-base"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
             </a>
-            <!-- 4. Products Management -->
             <a href="/admin/products" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-box-open text-base"></i>
                 <span>পণ্য তালিকা (Edit)</span>
             </a>
-            <!-- 5. Add Product -->
             <a href="/dashboard/add-product" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-square-plus text-base"></i>
                 <span>নতুন পণ্য যোগ</span>
             </a>
-            <!-- 6. Gmail Task -->
             <a href="/admin/gmail" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-envelope-open-text text-base"></i>
                 <span>জিমেইল কন্ট্রোল</span>
             </a>
-            <!-- 7. Instagram Task -->
             <a href="/admin/instagram" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-brands fa-instagram text-base"></i>
                 <span>ইনস্টাগ্রাম কন্ট্রোল</span>
             </a>
-            <!-- 8. Facebook Task -->
             <a href="/admin/facebook" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-brands fa-facebook-f text-base"></i>
                 <span>ফেসবুক কন্ট্রোল</span>
             </a>
-            <!-- 9. Telegram Service -->
             <a href="/admin/telegram" class="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-brands fa-telegram text-base"></i>
                 <span>টেলিগ্রাম কন্ট্রোল</span>
             </a>
-            <!-- 10. System Settings -->
             <button onclick="switchAdminSection('settings-sec')" id="nav-settings-sec" class="admin-nav-btn w-full flex items-center gap-3 px-4 py-2.5 rounded-xl hover:bg-white/5 text-gray-400 font-semibold transition-all text-xs">
                 <i class="fa-solid fa-gears text-base"></i>
                 <span>সিস্টেম সেটিংস</span>
@@ -106,9 +93,7 @@
         </nav>
     </aside>
 
-    <!-- 📊 Main Content SPA Panel -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
-        <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
             <div>
                 <h2 class="text-2xl font-extrabold text-dark font-headings">Admin Overview</h2>
@@ -120,11 +105,8 @@
             </div>
         </header>
 
-        <!-- ==================== ১. SECTION: DASHBOARD OVERVIEW ==================== -->
         <div id="dashboard-sec" class="admin-tab-content space-y-8">
-            <!-- 🚀 4 Statistics Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Total Users -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
                     <div class="w-12 h-12 bg-blue-100/80 text-blue-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-users"></i></div>
                     <div>
@@ -132,7 +114,6 @@
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="total-users">--</h3>
                     </div>
                 </div>
-                <!-- Today's New Users -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
                     <div class="w-12 h-12 bg-green-100/80 text-green-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-user-plus"></i></div>
                     <div>
@@ -140,7 +121,6 @@
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="today-users">--</h3>
                     </div>
                 </div>
-                <!-- Today's Orders -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
                     <div class="w-12 h-12 bg-amber-100/80 text-amber-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-cart-arrow-down"></i></div>
                     <div>
@@ -148,7 +128,6 @@
                         <h3 class="text-2xl font-extrabold text-dark font-body" id="today-orders">--</h3>
                     </div>
                 </div>
-                <!-- Today's Amount -->
                 <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md hover:shadow-lg hover:translate-y-[-2px] transition-all flex items-center gap-5">
                     <div class="w-12 h-12 bg-emerald-100/80 text-emerald-600 rounded-2xl flex items-center justify-center text-xl shadow-inner"><i class="fa-solid fa-money-bill-wave"></i></div>
                     <div>
@@ -158,7 +137,6 @@
                 </div>
             </div>
 
-            <!-- Pending Activation Requests Table -->
             <section class="bg-white rounded-2xl border border-black/[0.01] p-6 shadow-md">
                 <h3 class="text-base font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
                     <i class="fa-solid fa-user-check text-primary animate-pulse"></i> পেন্ডিং অ্যাকাউন্ট অ্যাক্টিভেশন রিকোয়েস্ট
@@ -184,53 +162,43 @@
                 </div>
             </section>
 
-            <!-- 🎯 ৪. (নতুন রিকোয়ারমেন্ট) কুইক অ্যাকশন কন্ট্রোল উইজেটস (Quick Admin Shortcuts Grid) -->
             <section class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md space-y-4">
                 <h3 class="text-sm font-bold text-dark border-b border-gray-100 pb-3 flex items-center gap-2"><i class="fa-solid fa-shapes text-primary animate-pulse"></i> কুইক অ্যাকশন কন্ট্রোল উইজেটস (Shortcuts)</h3>
                 <p class="text-[0.7rem] text-muted">এক ক্লিকে অ্যাডমিন প্যানেলের নির্দিষ্ট ডিরেক্টরি পেজে জাম্প করুন:</p>
                 
                 <div class="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-4 text-center">
-                    <!-- 1. Users List -->
                     <a href="/admin/users" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-500 flex items-center justify-center text-sm border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-users"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">ইউজার লিস্ট</span>
                     </a>
-                    <!-- 2. Orders -->
                     <a href="/admin/orders" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-orange-50 text-primary flex items-center justify-center text-sm border border-orange-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-cart-shopping"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">অর্ডার লিস্ট</span>
                     </a>
-                    <!-- 3. Product list -->
                     <a href="/admin/products" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-500 flex items-center justify-center text-sm border border-indigo-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-box-open"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">পণ্য তালিকা</span>
                     </a>
-                    <!-- 4. Add Product -->
                     <a href="/dashboard/add-product" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-sm border border-emerald-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-square-plus"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">নতুন পণ্য</span>
                     </a>
-                    <!-- 5. Gmail Task -->
                     <a href="/admin/gmail" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-red-50 text-red-500 flex items-center justify-center text-sm border border-red-100 group-hover:scale-105 transition-transform"><i class="fa-solid fa-envelope-open-text"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">জিমেইল জব</span>
                     </a>
-                    <!-- 6. Instagram Task -->
                     <a href="/admin/instagram" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-pink-50 text-pink-500 flex items-center justify-center text-sm border border-pink-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-instagram"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">ইনস্টাগ্রাম</span>
                     </a>
-                    <!-- 7. Facebook Task -->
                     <a href="/admin/facebook" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-sm border border-blue-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-facebook-f"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">ফেসবুক জব</span>
                     </a>
-                    <!-- 8. Telegram Service -->
                     <a href="/admin/telegram" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-150 hover:border-primary transition-all group">
                         <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-500 flex items-center justify-center text-sm border border-sky-100 group-hover:scale-105 transition-transform"><i class="fa-brands fa-telegram text-base"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">টেলিগ্রাম প্যাক</span>
                     </a>
-                    <!-- 9. Settings -->
                     <button onclick="switchAdminSection('settings-sec')" class="flex flex-col items-center gap-1.5 p-3 rounded-2xl bg-canvas border border-gray-100 hover:border-primary transition-all group w-full">
                         <div class="w-10 h-10 rounded-full bg-gray-100 text-gray-500 flex items-center justify-center text-sm mx-auto group-hover:scale-105 transition-transform"><i class="fa-solid fa-gears"></i></div>
                         <span class="text-[0.65rem] font-bold text-dark">গ্লোবাল সেটিংস</span>
@@ -239,7 +207,6 @@
             </section>
         </div>
 
-        <!-- ==================== ২. SECTION: SYSTEM SETTINGS ==================== -->
         <div id="settings-sec" class="admin-tab-content bg-white rounded-3xl border border-black/[0.01] p-6 md:p-8 shadow-md hidden">
             <h3 class="text-lg font-bold border-b border-gray-100 pb-3 mb-6 flex items-center gap-2"><i class="fa-solid fa-gears text-primary"></i> সিস্টেম গ্লোবাল কনফিগারেশন সেটিংস</h3>
             
@@ -269,20 +236,17 @@
             </form>
         </div>
 
-        <!-- Footer -->
         <footer class="mt-16 text-center text-xs text-gray-500 border-t border-gray-200 pt-6">
             <p>&copy; 2026 MerketBaseBD Admin Control Center. All rights reserved. | Developed by Ali Hosen</p>
         </footer>
     </main>
 
-    <!-- Supabase SDK & Shared Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // মোবাইল সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -294,7 +258,6 @@
 
             let currentToken = null;
 
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন চেক (layout.js গ্লোবাল ক্লায়েন্ট সিঙ্ক) ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -303,7 +266,6 @@
                 verifyAdminAndLoad();
             }
 
-            // --- খ. এডমিন সিকিউর সেশন ভেরিফিকেশন ---
             async function verifyAdminAndLoad() {
                 const client = window.supabaseClient;
                 try {
@@ -328,7 +290,6 @@
 
                     currentToken = session.access_token;
                     
-                    // ইনিশিয়াল ডাটা লোড
                     loadAdminStats(currentToken);
                     loadActivationRequests(currentToken);
                     loadSystemSettings(currentToken);
@@ -338,7 +299,6 @@
                 }
             }
 
-            // --- গ. ডাইনামিক ট্যাব সুইচিং লজিক (SPA System) ---
             window.switchAdminSection = function(sectionId) {
                 document.querySelectorAll('.admin-tab-content').forEach(el => el.classList.add('hidden'));
                 document.getElementById(sectionId).classList.remove('hidden');
@@ -353,7 +313,6 @@
                 }
             };
 
-            // --- ঘ. এপিআই এর মাধ্যমে রিয়েল-টাইম স্ট্যাটস লোড (সংশোধিত এরে-লেন্থ ক্যালকুলেশন) ---
             async function loadAdminStats(token) {
                 try {
                     const response = await fetch('/api/admin/stats', {
@@ -372,7 +331,6 @@
                 }
             }
 
-            // --- ঙ. এপিআই এর মাধ্যমে পেন্ডিং অ্যাক্টিভেশন রিকোয়েস্ট লোড (সংশোধিত ফরেন-কি রিলেশন) [1.1.1, 1.2.5] ---
             async function loadActivationRequests(token) {
                 const listContainer = document.getElementById('activation-requests-list');
                 try {
@@ -409,7 +367,6 @@
                 }
             }
 
-            // --- চ. ডাইনামিক সেটিংস লোড ---
             async function loadSystemSettings(token) {
                 try {
                     const response = await fetch('/api/admin/get-settings', {
@@ -464,7 +421,6 @@
                 }
             });
 
-            // --- ছ. অ্যাডমিন অ্যাক্টিভেশন একশনস লজিকস ---
             window.approveRequest = async function(requestId) {
                 if(!confirm("আপনি কি পেমেন্ট যাচাইপূর্বক অ্যাকাউন্টটি সক্রিয় করতে চান?")) return;
                 try {
@@ -511,7 +467,6 @@
                 }
             };
 
-            // প্রসেস রান
             checkLayoutAndLoad();
         });
     </script>
