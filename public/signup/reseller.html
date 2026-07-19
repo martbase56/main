@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - ওয়ার্কার রেজিস্ট্রেশন</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -52,14 +50,11 @@
 </head>
 <body class="bg-[#FAF9F6] bg-grid-pattern font-bangla text-dark min-h-screen flex items-center justify-center p-4 md:p-8 relative overflow-x-hidden">
 
-    <!-- Decorative Animated Glowing Blobs -->
     <div class="absolute -top-20 -left-20 w-80 h-80 bg-orange-200/40 rounded-full blur-3xl filter animate-blob"></div>
     <div class="absolute bottom-10 right-10 w-90 h-90 bg-yellow-100/50 rounded-full blur-3xl filter animate-blob" style="animation-delay: 4s;"></div>
 
-    <!-- Main Container -->
     <div class="w-full max-w-2xl bg-white/80 backdrop-blur-xl rounded-[32px] border border-gray-100 p-6 md:p-10 shadow-[0_20px_50px_rgba(255,107,0,0.06)] relative overflow-hidden transition-all duration-300">
         
-        <!-- Header Section -->
         <div class="text-center mb-8">
             <a href="/" class="font-headings font-extrabold text-3xl text-primary tracking-tight block hover:scale-102 transition-all">MerketBaseBD</a>
             <p class="text-[11px] text-muted mt-1.5 uppercase tracking-wider font-bold bg-primary/5 py-1 px-3 rounded-full inline-block">Premium Work & Earn Platform</p>
@@ -68,7 +63,6 @@
             </h3>
         </div>
 
-        <!-- Multi-Step Progress Tracker -->
         <div class="flex items-center justify-center gap-3 mb-8 max-w-sm mx-auto">
             <div id="step-1-indicator" class="flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20">
                 <span class="w-5 h-5 rounded-full bg-white text-primary flex items-center justify-center text-[10px]">১</span> অ্যাকাউন্ট সেটআপ
@@ -81,10 +75,8 @@
 
         <form id="worker-signup-form" class="space-y-6">
             
-            <!-- ================= STEP 1: ACCOUNT DETAILS ================= -->
             <div id="form-step-1" class="space-y-5 transition-all duration-300">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <!-- Name Input -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-user text-sm"></i>
@@ -93,7 +85,6 @@
                         <label for="fullname" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">সম্পূর্ণ নাম</label>
                     </div>
 
-                    <!-- Email Input -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-envelope text-sm"></i>
@@ -104,7 +95,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <!-- Phone Input -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-phone text-sm"></i>
@@ -113,7 +103,6 @@
                         <label for="phone" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">মোবাইল নম্বর</label>
                     </div>
 
-                    <!-- Password Input -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-lock text-sm"></i>
@@ -123,7 +112,6 @@
                     </div>
                 </div>
 
-                <!-- Refer Code Input -->
                 <div class="relative group">
                     <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                         <i class="fa-solid fa-gift text-sm"></i>
@@ -132,15 +120,13 @@
                     <label for="referred_by" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">রেফার কোড (ঐচ্ছিক)</label>
                 </div>
 
-                <!-- Next Button -->
                 <button type="button" id="btn-next" class="w-full py-4 bg-gradient-to-r from-primary to-orange-500 text-white rounded-2xl font-bold hover:opacity-95 active:scale-[0.99] transition-all shadow-lg shadow-orange-500/10 flex items-center justify-center gap-2 text-sm">
                     পরবর্তী ধাপ <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </div>
 
-            <!-- ================= STEP 2: USER ADDITIONAL DATA ================= -->
             <div id="form-step-2" class="space-y-5 hidden transition-all duration-300">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">                    <!-- Age Input -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-calendar text-sm"></i>
@@ -151,7 +137,6 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                    <!-- City/District Input (Sorua/Sohor) -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-solid fa-city text-sm"></i>
@@ -160,7 +145,6 @@
                         <label for="city" class="absolute left-11 top-1/2 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:-top-2 peer-focus:translate-y-0 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:-top-2 peer-[:not(:placeholder-shown)]:translate-y-0 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">শহর / জেলা</label>
                     </div>
 
-                    <!-- Facebook Profile Link -->
                     <div class="relative group">
                         <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                             <i class="fa-brands fa-facebook text-sm"></i>
@@ -170,7 +154,6 @@
                     </div>
                 </div>
 
-                <!-- Address Textarea -->
                 <div class="relative group">
                     <span class="absolute top-4 left-4 text-gray-400 group-focus-within:text-primary transition-colors pointer-events-none">
                         <i class="fa-solid fa-map-location-dot text-sm"></i>
@@ -179,7 +162,6 @@
                     <label for="address" class="absolute left-11 top-6 -translate-y-1/2 text-gray-400 text-sm transition-all duration-200 pointer-events-none peer-focus:top-3 peer-focus:text-xs peer-focus:text-primary peer-focus:bg-white peer-focus:px-2 peer-[:not(:placeholder-shown)]:top-3 peer-[:not(:placeholder-shown)]:text-xs peer-[:not(:placeholder-shown)]:text-primary peer-[:not(:placeholder-shown)]:bg-white peer-[:not(:placeholder-shown)]:px-2">বর্তমান সম্পূর্ণ ঠিকানা</label>
                 </div>
 
-                <!-- Navigation Buttons for Step 2 -->
                 <div class="flex gap-4">
                     <button type="button" id="btn-back" class="w-1/3 py-4 bg-gray-100 text-muted rounded-2xl font-bold hover:bg-gray-200 active:scale-[0.99] transition-all flex items-center justify-center gap-2 text-sm">
                         <i class="fa-solid fa-arrow-left"></i> পূর্ববর্তী
@@ -192,19 +174,17 @@
 
         </form>
 
-        <!-- Footer Links -->
         <div class="text-center mt-8 pt-6 border-t border-gray-100 text-sm text-muted space-y-2">
             <p>ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="/login" class="text-primary font-bold hover:underline">লগইন করুন</a></p>
             <p>সাধারণ কাস্টমার অ্যাকাউন্ট খুলতে চান? <a href="/signup" class="text-primary font-bold hover:underline">এখানে ক্লিক করুন</a></p>
         </div>
-    </div><!-- Supabase SDK -->
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             let supabaseClient = null;
 
-            // --- ক. ডাইনামিক সুপাবেস কনফিগ লোড করার ফাংশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -212,7 +192,6 @@
                     const config = await response.json();
                     
                     if (config.supabase_url && config.supabase_anon_key) {
-                        // window.supabase ব্যবহার করা হয়েছে গ্লোবাল কনফ্লিক্ট এড়াতে
                         supabaseClient = window.supabase.createClient(config.supabase_url, config.supabase_anon_key);
                         console.log("Supabase Client initialized dynamically.");
                     }
@@ -223,7 +202,6 @@
 
             initializeSupabase();
 
-            // --- খ. টু-স্টেপ ফর্ম নেভিগেশন লজিক ---
             const step1 = document.getElementById('form-step-1');
             const step2 = document.getElementById('form-step-2');
             const btnNext = document.getElementById('btn-next');
@@ -233,7 +211,6 @@
             const step2Indicator = document.getElementById('step-2-indicator');
             const stepDivider = document.getElementById('step-divider');
 
-            // প্রথম ধাপের রিকোয়ার্ড ফিল্ড ভ্যালিডেশন
             function validateStep1() {
                 const fullname = document.getElementById('fullname').value.trim();
                 const email = document.getElementById('email').value.trim();
@@ -249,11 +226,9 @@
 
             btnNext.addEventListener('click', () => {
                 if (validateStep1()) {
-                    // এনিমেশন ট্রানজিশন সহ স্লাইড পরিবর্তন
                     step1.classList.add('hidden');
                     step2.classList.remove('hidden');
 
-                    // ইন্ডিকেটর স্টাইল আপডেট
                     step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 text-primary text-xs font-bold transition-all duration-300";
                     stepDivider.className = "h-0.5 w-10 bg-primary";
                     step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
@@ -264,13 +239,11 @@
                 step2.classList.add('hidden');
                 step1.classList.remove('hidden');
 
-                // ইন্ডিকেটর রিস্টোর
                 step1Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-primary text-white text-xs font-bold transition-all duration-300 shadow-lg shadow-primary/20";
                 stepDivider.className = "h-0.5 w-10 bg-gray-200";
                 step2Indicator.className = "flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-muted text-xs font-bold transition-all duration-300";
             });
 
-            // --- ক. ইউআরএল থেকে রেফারেল কোড অটো-ডিটেক্ট করা ---
             const urlParams = new URLSearchParams(window.location.search);
             const refCode = urlParams.get('ref');
             
@@ -278,12 +251,11 @@
                 const refInput = document.getElementById('referred_by');
                 if (refInput) {
                     refInput.value = refCode;
-                    refInput.readOnly = true; // লক করা হলো যাতে ভুলবশত পরিবর্তন না হয়
+                    refInput.readOnly = true;
                     refInput.className += " bg-gray-150 text-gray-400 border-gray-300 font-bold";
                 }
             }
 
-            // --- গ. ওয়ার্কার রেজিস্ট্রেশন সাবমিট হ্যান্ডলার (সংশোধিত) ---
             document.getElementById('worker-signup-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -298,7 +270,6 @@
                 const password = document.getElementById('password').value.trim();
                 const referredByCode = document.getElementById('referred_by').value.trim();
                 
-                // স্টেপ ২ এর ডেটা সংগ্রহ (উইদাউট এডুকেশন ফিল্ড)
                 const age = document.getElementById('age').value.trim();
                 const city = document.getElementById('city').value.trim();
                 const fb_link = document.getElementById('fb_link').value.trim();
@@ -309,7 +280,6 @@
                 submitBtn.innerHTML = `<i class="fa-solid fa-spinner animate-spin"></i> প্রসেসিং হচ্ছে...`;
 
                 try {
-                    // role: 'reseller' পাস করা হচ্ছে ব্যাকএন্ড ও ডাটাবেজ সামঞ্জস্যতার জন্য
                     const { data, error } = await supabaseClient.auth.signUp({
                         email: email,
                         password: password,
@@ -345,3 +315,5 @@
             });
         });
     </script>
+</body>
+</html>
