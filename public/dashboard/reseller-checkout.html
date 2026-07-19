@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Reseller Checkout</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -40,12 +38,10 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-12">
 
-    <!-- 🌐 ১. ডাইনামিক হেডার প্লেসহোল্ডার (layout.js স্বয়ংক্রিয়ভাবে এখানে হেডার ইনজেক্ট করবে) -->
     <div id="header-placeholder"></div>
 
     <div class="max-w-[1100px] mx-auto p-5 md:p-10 my-10 bg-white rounded-3xl border border-black/[0.02] shadow-xl shadow-primary/5">
         
-        <!-- Header -->
         <div class="flex justify-between items-center mb-8 border-b border-gray-100 pb-5">
             <h2 class="text-2xl font-extrabold text-dark flex items-center gap-2">
                 <i class="fa-solid fa-cart-shopping text-primary"></i> রিসেলার কাস্টম চেকআউট
@@ -55,7 +51,6 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <!-- 👤 Left Side: Shipping Address Form -->
             <form id="checkout-form" class="lg:col-span-7 space-y-5">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2"><i class="fa-solid fa-truck"></i> কাস্টমারের ডেলিভারি ঠিকানা</h3>
 
@@ -70,7 +65,6 @@
                     </div>
                 </div>
 
-                <!-- Division, District, Upazila Selector -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div>
                         <label class="block font-semibold text-sm mb-1">বিভাগ (Division)</label>
@@ -110,16 +104,12 @@
                 </div>
             </form>
 
-            <!-- 🛒 Right Side: Reseller Summary -->
             <div class="lg:col-span-5 bg-gray-50/50 border border-gray-100 p-6 rounded-2xl flex flex-col h-fit">
                 <h3 class="text-lg font-bold border-b border-gray-100 pb-2 mb-4"><i class="fa-solid fa-file-invoice-dollar"></i> কার্ট তালিকা (রিসেলার)</h3>
 
-                <!-- Dynamic Cart Items Container -->
                 <div class="divide-y divide-gray-100 max-h-[150px] overflow-y-auto mb-4 pr-1" id="cart-items-list">
-                    <!-- কার্টের প্রোডাক্টগুলো এখানে জাভাস্ক্রিপ্ট দিয়ে জেনারেট হবে -->
                 </div>
 
-                <!-- 🛒 Reseller Custom Input Panel -->
                 <div class="space-y-4 border-t border-gray-100 pt-4 mb-4">
                     <div>
                         <label class="block font-bold text-xs text-primary mb-1">১. কাস্টমারের কাছে বিক্রয় মূল্য (৳)</label>
@@ -131,7 +121,6 @@
                     </div>
                 </div>
 
-                <!-- 💼 Live Net Profit Card Widget [2] -->
                 <div class="bg-emerald-500 text-white p-4 rounded-xl shadow-md flex justify-between items-center mb-4 transition-transform hover:scale-[1.01]">
                     <div>
                         <span class="text-[0.65rem] font-bold block uppercase opacity-90">আপনার আনুমানিক নিট লাভ</span>
@@ -140,7 +129,6 @@
                     <div class="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-lg"><i class="fa-solid fa-wallet text-white"></i></div>
                 </div>
 
-                <!-- Financial calculations -->
                 <div class="space-y-3 text-sm border-t border-gray-100 pt-4">
                     <div class="flex justify-between">
                         <span class="text-muted">রিসেলার প্যাক কস্ট (Wholesale)</span>
@@ -151,7 +139,6 @@
                         <span class="font-bold text-primary font-body" id="delivery-val">৳ 0</span>
                     </div>
                     <div class="flex justify-between text-base font-extrabold border-t border-dashed border-gray-200 pt-3 text-dark">
-                        <!-- কুরিয়ার কাস্টমার থেকে এই টাকা তুলবে -->
                         <span>কুরিয়ার কালেকশন (COD)</span>
                         <span class="font-body text-primary text-lg" id="total-val">৳ 0</span>
                     </div>
@@ -165,10 +152,8 @@
         </div>
     </div>
 
-    <!-- 🌐 ডাইনামিক ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -251,7 +236,6 @@
                             return;
                         }
                         
-                        // ডাইনামিক প্রোফাইল ডাটা দিয়ে কাস্টমার নাম ও মোবাইল অটো-ফিল করা
                         document.getElementById('customer_name').value = profile.full_name || '';
                         document.getElementById('customer_phone').value = profile.phone_number || '';
                     }
@@ -291,7 +275,6 @@
                 calculateResellerProfit();
             }
 
-            // ডিস্ট্রিক্ট ও উপজেলা লোডার
             const divisionSelect = document.getElementById('division');
             const districtSelect = document.getElementById('district');
             const upazilaSelect = document.getElementById('upazila');
@@ -342,31 +325,20 @@
                 calculateResellerProfit();
             }
 
-            // --- ঘ. ডাইনামিক প্রফিট ও কুরিয়ার কালেকশন ক্যালকুলেটর (Fixed mathematical formulas) ---
             window.calculateResellerProfit = function() {
-                // ১. কার্টের রিসেলার পাইকারি মূল্যের মোট যোগফল
                 const totalResellerCost = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                
-                // ২. কাস্টমারের কাছে বিক্রয় মূল্য ইনপুট পড়া
                 const customerSellingPrice = parseFloat(document.getElementById('customer_selling_price').value) || 0.0;
-                
-                // ৩. অগ্রিম নেওয়া টাকা পড়া (না নিলে ডিফল্ট ০) [2]
                 const advanceTaken = parseFloat(document.getElementById('advance_taken').value) || 0.0;
 
-                // ৪. রিসেলারের নিট প্রফিট হিসাব (কাস্টমার বিক্রয় মূল্য - রিসেলার পাইকারি মূল্য)
                 const netProfit = Math.max(customerSellingPrice - totalResellerCost, 0);
-
-                // ৫. কুরিয়ার কালেকশন হিসাব (কাস্টমার বিক্রয় মূল্য + ডেলিভারি চার্জ - অগ্রিম নেওয়া টাকা)
                 const collectableAmount = Math.max((customerSellingPrice + shippingCost) - advanceTaken, 0);
 
-                // ইউআই আপডেট
                 document.getElementById('reseller-profit-val').innerText = `৳ ${netProfit.toFixed(2)}`;
                 document.getElementById('subtotal-val').innerText = `৳ ${totalResellerCost}`;
                 document.getElementById('delivery-val').innerText = `৳ ${shippingCost}`;
                 document.getElementById('total-val').innerText = `৳ ${collectableAmount}`;
             }
 
-            // --- ঙ. ফাইনাল রিসেলার কাস্টম অর্ডার সাবমিশন ---
             document.getElementById('btn-place-order').addEventListener('click', async () => {
                 if (cartItems.length === 0) {
                     alert("আপনার কার্টে কোনো প্রোডাক্ট নেই।");
@@ -406,8 +378,6 @@
 
                 const fullDeliveryAddress = `${addressDetails}, ${upazila}, ${district}, ${division}`;
                 const totalResellerCost = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-                // কুরিয়ার কালেকশন ক্যালকুলেশন
                 const collectableAmount = Math.max((customerSellingPrice + shippingCost) - advanceTaken, 0);
 
                 const payload = {
@@ -415,19 +385,18 @@
                     customer_name: customerName,
                     customer_phone: customerPhone,
                     delivery_address: fullDeliveryAddress,
-                    payment_method: "COD", // রিসেলার অর্ডার সবসময় সিওডি
+                    payment_method: "COD",
                     payment_details: null,
                     order_note: orderNote || null,
                     items: cartItems.map(item => ({
                         product_id: item.product_id,
                         quantity: parseInt(item.quantity),
-                        price: parseFloat(item.price) // রিসেলার পাইকারি রেট
+                        price: parseFloat(item.price)
                     })),
                     collectable_amount: parseFloat(collectableAmount),
                     shipping_cost: parseFloat(shippingCost),
                     coupon_code: null,
                     coupon_discount: 0.0,
-                    // (নতুন কলাম ডাটা) কাস্টমার বিক্রয় মূল্য ও অগ্রিম পেমেন্ট [2]
                     customer_selling_price: parseFloat(customerSellingPrice),
                     advance_taken: parseFloat(advanceTaken)
                 };
@@ -446,7 +415,7 @@
                     const result = await response.json();
                     if (response.ok) {
                         alert("সাফল্য! আপনার কাস্টম ড্রপশিপিং অর্ডারটি সফলভাবে সম্পন্ন হয়েছে।");
-                        localStorage.removeItem('cart'); // কার্ট ক্লিয়ার করা
+                        localStorage.removeItem('cart');
                         window.location.href = "/profile";
                     } else {
                         alert("অর্ডার প্লেস করতে সমস্যা হয়েছে: " + result.detail);
@@ -463,4 +432,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
