@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Refer & Earn</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
 
-    <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Refer</span>
         <a href="/dashboard/reseller" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ড্যাশবোর্ড</a>
@@ -44,7 +41,6 @@
 
     <main class="max-w-[750px] mx-auto px-4 pt-5 space-y-6">
 
-        <!-- 🚀 ১. ডাইনামিক রেফারেল লিংক জেনারেটর (বক্স ও কপি বাটন) -->
         <div class="bg-white rounded-2xl p-6 border border-black/[0.01] shadow-md space-y-4 relative overflow-hidden">
             <h3 class="text-sm font-bold text-dark flex items-center gap-2"><i class="fa-solid fa-share-nodes text-primary animate-pulse"></i> আপনার ব্যক্তিগত আমন্ত্রণ লিংক</h3>
             <p class="text-[0.7rem] text-muted leading-relaxed">নিচের লিংকটি কপি করে নতুন রিসেলারদের সাথে শেয়ার করুন। তারা জয়েন করে সচল হলেই আপনার মেইন ওয়ালেটে ৳১০ ক্রেডিট হবে।</p>
@@ -57,7 +53,6 @@
             </div>
         </div>
 
-        <!-- 💰 ২. রেফারেল স্ট্যাটস কার্ডস (Total Refer বনাম Commission) -->
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow text-center group hover:scale-[1.01] transition-transform">
                 <span class="text-xs text-muted font-bold block mb-1">মোট সফল রেফারেল</span>
@@ -69,7 +64,6 @@
             </div>
         </div>
 
-        <!-- 📋 ৩. লাইভ রেফারেল তালিকা ও ৩৬ ঘণ্টার ট্র্যাকার -->
         <section class="bg-white p-5 rounded-2xl border border-black/[0.01] shadow-md space-y-4">
             <h4 class="text-sm font-bold text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-rectangle-list text-primary"></i> রেফারেল হিস্ট্রি ও ভ্যালিডেশন</h4>
             
@@ -95,7 +89,6 @@
 
     </main>
 
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
@@ -119,7 +112,6 @@
         </a>
     </nav>
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -128,7 +120,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
             const supabaseUrl = 'YOUR_SUPABASE_URL';
             const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
 
@@ -147,7 +138,6 @@
                 }
             }
 
-            // --- খ. রেফারেল ডাটা এবং লিংক জেনারেশন ---
             async function loadReferralDashboard() {
                 try {
                     const { data: { session } } = await supabaseClient.auth.getSession();
@@ -157,7 +147,6 @@
                     }
                     currentUserId = session.user.id;
 
-                    // ১. ইউজারের প্রোফাইল থেকে রেফার কোড নিয়ে লিংক তৈরি করা
                     const { data: profile } = await supabaseClient.from('profiles').select('refer_code, role').eq('id', currentUserId).single();
                     if (profile) {
                         if (profile.role !== 'reseller') {
@@ -166,11 +155,9 @@
                             return;
                         }
 
-                        // ডাইনামিক লিংক তৈরি (যেমন: https://main-rouge-phi.vercel.app/signup/reseller?ref=6765)
                         const refLink = `${window.location.origin}/signup/reseller?ref=${profile.refer_code}`;
                         document.getElementById('ref-link-input').value = refLink;
 
-                        // ২. লাইভ রেফারেল তালিকা লোড করা
                         loadReferralsHistory();
                     }
                 } catch(e) {
@@ -178,11 +165,9 @@
                 }
             }
 
-            // --- গ. লাইভ তালিকা ও কমিশন হিসাব ---
             async function loadReferralsHistory() {
                 const refContainer = document.getElementById('referrals-list-container');
                 try {
-                    // ব্যাকএন্ডের এপিআই থেকে ডাটা নিয়ে আসা
                     const response = await fetch(`/api/auth/referrals/${currentUserId}`);
                     if (response.ok) {
                         const referrals = await response.json();
@@ -199,7 +184,7 @@
                                 let statusStyle = "text-gray-500 bg-gray-50 border-gray-200";
                                 if (ref.status === 'success') {
                                     statusStyle = "text-green-600 bg-green-50 border-green-200";
-                                    successCount++; // সফল রেফার সংখ্যা বাড়ানো
+                                    successCount++;
                                 } else if (ref.status === 'failed') {
                                     statusStyle = "text-red-500 bg-red-50 border-red-200";
                                 } else {
@@ -222,9 +207,8 @@
                             refContainer.innerHTML = '<tr><td colspan="5" class="py-8 text-center text-gray-500">আপনার কোনো রেফারেল রেকর্ড নেই।</td></tr>';
                         }
 
-                        // ৪. স্ট্যাটস কার্ডস আপডেট
                         document.getElementById('total-refer-count').innerText = successCount;
-                        document.getElementById('total-commission-val').innerText = `৳${successCount * 10}`; // প্রতি রেফারে ১০ টাকা [1]
+                        document.getElementById('total-commission-val').innerText = `৳${successCount * 10}`;
 
                     }
                 } catch (e) {
@@ -232,11 +216,10 @@
                 }
             }
 
-            // --- ঘ. ক্লিক টু কপি ফাংশন ---
             window.copyReferralLink = function() {
                 const linkInput = document.getElementById('ref-link-input');
                 linkInput.select();
-                linkInput.setSelectionRange(0, 99999); // মোবাইল ডিভাইসের জন্য সেফটি
+                linkInput.setSelectionRange(0, 99999);
                 
                 try {
                     document.execCommand('copy');
