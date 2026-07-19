@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Premium Telegram Services</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -40,12 +38,10 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-20">
 
-    <!-- 🌐 হেডার প্লেসহোল্ডার -->
     <div id="header-placeholder"></div>
 
     <main class="max-w-[700px] mx-auto px-4 py-8 space-y-6">
 
-        <!-- 🚀 ১. টেলিগ্রাম সার্ভিস বাইয়িং কার্ড -->
         <section class="bg-white rounded-3xl p-6 md:p-8 border border-black/[0.01] shadow-lg flex flex-col items-center">
             <div class="w-16 h-16 bg-sky-100 text-sky-600 rounded-full flex items-center justify-center text-3xl mb-4 border border-sky-200">
                 <i class="fa-brands fa-telegram animate-pulse"></i>
@@ -54,7 +50,6 @@
             <p class="text-xs text-muted mt-1 text-center">নিচের ফর্মে আপনার ইউজারনেম দিয়ে পছন্দসই প্রিমিয়াম বা স্টারস প্যাক সিলেক্ট করে ইনস্ট্যান্ট পেমেন্ট সাবমিট করুন।</p>
 
             <form id="tg-checkout-form" class="w-full space-y-5 text-left mt-6">
-                <!-- Username -->
                 <div>
                     <label class="block font-bold text-xs mb-1.5 text-dark">Telegram @Username (শুধুমাত্র ইউজারনেম)</label>
                     <div class="relative">
@@ -63,7 +58,6 @@
                     </div>
                 </div>
 
-                <!-- Service Selector Tabs -->
                 <div>
                     <label class="block font-bold text-xs mb-2 text-dark">সার্ভিসের ধরন নির্বাচন করুন</label>
                     <div class="grid grid-cols-2 gap-3">
@@ -72,7 +66,6 @@
                     </div>
                 </div>
 
-                <!-- Package Grid Selector Container -->
                 <div>
                     <label class="block font-bold text-xs mb-2 text-dark">প্যাকেজ নির্বাচন করুন</label>
                     <div class="grid grid-cols-2 gap-3" id="packages-container">
@@ -80,7 +73,6 @@
                     </div>
                 </div>
 
-                <!-- 💳 bKash/Nagad পেমেন্ট ফর্ম -->
                 <div class="bg-gray-50 border border-gray-150 p-5 rounded-2xl space-y-4">
                     <span class="block font-bold text-xs"><i class="fa-solid fa-credit-card text-primary"></i> বিকাশ / নগদ পেমেন্ট সম্পন্ন করুন</span>
                     
@@ -105,12 +97,10 @@
 
     </main>
 
-    <!-- 📱 Floating Icon Drawer for Order History (Hidden by Default) -->
     <button onclick="toggleHistoryDrawer()" class="fixed bottom-24 right-5 w-12 h-12 bg-dark border border-white/10 text-primary rounded-full flex items-center justify-center text-xl shadow-2xl active:scale-95 transition-transform z-40">
         <i class="fa-solid fa-receipt"></i>
     </button>
 
-    <!-- Off-Canvas History Drawer -->
     <div id="history-drawer" class="fixed inset-y-0 right-0 w-full sm:w-[400px] bg-dark text-gray-300 z-50 transform translate-x-full transition-transform duration-300 flex flex-col shadow-2xl">
         <div class="p-5 bg-gradient-to-r from-primary to-secondary text-white flex justify-between items-center">
             <h4 class="font-bold text-base flex items-center gap-2"><i class="fa-solid fa-clock-rotate-left"></i> টেলিগ্রাম অর্ডার হিস্ট্রি</h4>
@@ -122,22 +112,19 @@
     </div>
     <div id="drawer-overlay" class="fixed inset-0 bg-black/40 z-30 hidden" onclick="toggleHistoryDrawer()"></div>
 
-    <!-- 🌐 ফুটার প্লেসহোল্ডার -->
     <div id="footer-placeholder"></div>
 
-    <!-- Supabase SDK & Shared Layout Engine -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
         let currentUserId = null;
         let allPackages = [];
-        let selectedServiceType = 'premium'; // 'premium' or 'stars'
+        let selectedServiceType = 'premium'; 
         let selectedPackage = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন এবং অথ চেক ---
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -150,7 +137,6 @@
                 const client = window.supabaseClient;
                 try {
                     const { data: { session } } = await client.auth.getSession();
-                    // (রিকোয়ারমেন্ট ফিক্স) লগইন না থাকলে সরাসরি লগইন পেজে রিডাইরেক্ট করবে
                     if (!session) {
                         alert("সার্ভিসটি বুক করতে দয়া করে আগে লগইন সম্পন্ন করুন।");
                         window.location.href = "/login";
@@ -158,14 +144,12 @@
                     }
                     currentUserId = session.user.id;
 
-                    // ডাটা লোডার এপিআই কল করা
                     loadPackages();
                     loadTelegramOrdersHistory();
 
                 } catch(e) {}
             }
 
-            // --- খ. ডাইনামিক প্যাকেজ গেট মেকানিজম ---
             async function loadPackages() {
                 try {
                     const response = await fetch('/api/telegram/packages');
@@ -176,7 +160,6 @@
                 } catch(e) {}
             }
 
-            // ট্যাব সিলেকশন লজিক
             window.selectServiceType = function(type) {
                 selectedServiceType = type;
                 selectedPackage = null;
@@ -218,18 +201,15 @@
             window.selectSpecificPackage = function(packageId, price, title) {
                 selectedPackage = { id: packageId, price: price, title: title };
                 
-                // সিলেকশন হাইলাইট সিএসএস
                 document.querySelectorAll('.pkg-card').forEach(btn => {
                     btn.className = "pkg-card bg-white border border-gray-200 rounded-2xl p-4 text-center hover:border-primary active:scale-95 transition-all flex flex-col items-center";
                 });
                 const activeBtn = document.getElementById('pkg-btn-' + packageId);
                 if (activeBtn) activeBtn.className = "pkg-card bg-primary/5 border-primary rounded-2xl p-4 text-center flex flex-col items-center shadow shadow-primary/5";
 
-                // পেমেন্ট মূল্য লেবেল আপডেট
                 document.getElementById('pay-price-label').innerText = `৳ ${price.toFixed(2)}`;
             };
 
-            // --- গ. অফ-ক্যানভাস ইতিহাস ড্রয়ার কন্ট্রোল ---
             window.toggleHistoryDrawer = function() {
                 const drawer = document.getElementById('history-drawer');
                 const overlay = document.getElementById('drawer-overlay');
@@ -237,7 +217,6 @@
                 overlay.classList.toggle('hidden');
             };
 
-            // --- ঘ. টেলিগ্রাম অর্ডার হিস্ট্রি তালিকা লোড ---
             async function loadTelegramOrdersHistory() {
                 const container = document.getElementById('tg-history-container');
                 try {
@@ -274,7 +253,6 @@
                 } catch(e) {}
             }
 
-            // --- ঙ. ফাইনাল অর্ডার সাবমিশন (bKash/Nagad checkout) ---
             document.getElementById('tg-checkout-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
@@ -316,8 +294,8 @@
                         document.getElementById('tg-username').value = '';
                         document.getElementById('pay-sender').value = '';
                         document.getElementById('pay-trxid').value = '';
-                        loadTelegramOrdersHistory(); // ট্র্যাকার হিস্ট্রি আপডেট
-                        toggleHistoryDrawer(); // হিস্ট্রি ড্রয়ার ওপেন
+                        loadTelegramOrdersHistory(); 
+                        toggleHistoryDrawer(); 
                     } else {
                         alert("ব্যর্থ হয়েছে: " + result.detail);
                     }
@@ -333,4 +311,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
