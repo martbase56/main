@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Admin Withdrawals Control</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar (Admin Navigation Menu) -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -58,7 +55,6 @@
                 <i class="fa-solid fa-cart-shopping text-lg"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
             </a>
-            <!-- উইথড্রাল ম্যানেজমেন্ট একটিভ পেজ -->
             <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
                 <i class="fa-solid fa-money-bill-transfer text-lg"></i>
                 <span>উইথড্রাল ম্যানেজমেন্ট</span>
@@ -81,9 +77,7 @@
         </nav>
     </aside>
 
-    <!-- 📊 Main Content Area -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full">
-        <!-- Header -->
         <header class="flex justify-between items-center mb-8 border-b border-gray-200 pb-5">
             <div>
                 <h2 class="text-2xl font-extrabold text-dark">উইথড্রাল রিকোয়েস্ট হাব</h2>
@@ -95,7 +89,6 @@
             </div>
         </header>
 
-        <!-- 💸 Section: Pending Withdrawals Requests -->
         <section id="pending-withdrawals" class="bg-white rounded-3xl p-6 border border-black/[0.01] shadow-lg">
             <h3 class="text-base font-bold mb-5 flex items-center gap-2 text-dark border-b border-gray-100 pb-3">
                 <i class="fa-solid fa-money-bill-transfer text-primary animate-pulse"></i> পেন্ডিং পেমেন্ট উইথড্রাল রিকোয়েস্ট
@@ -122,14 +115,12 @@
 
     </main>
 
-    <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -168,7 +159,6 @@
                         return;
                     }
 
-                    // এডমিন ভ্যালিডেশন
                     const { data: profile } = await supabaseClient
                         .from('profiles')
                         .select('role')
@@ -183,7 +173,6 @@
 
                     currentToken = session.access_token;
                     
-                    // সাকসেসফুল চেক হলে ডাটা ফেচিং শুরু হবে
                     loadPendingWithdrawals(currentToken);
 
                 } catch (e) {
@@ -191,7 +180,6 @@
                 }
             }
 
-            // --- ক. এপিআই এর মাধ্যমে পেন্ডিং উইথড্রাল রিকোয়েস্ট লোড (ফরেন-কি ফিক্সড) [1.1.1, 1.2.5] ---
             async function loadPendingWithdrawals(token) {
                 const listContainer = document.getElementById('admin-withdrawals-list');
                 try {
@@ -227,7 +215,6 @@
                 }
             }
 
-            // --- খ. অনুমোদন এবং বাতিলের এপিআই একশন লজিকস ---
             window.approveWithdrawal = async function(withdrawalId) {
                 if(!confirm("আপনি কি পেমেন্ট সেন্ড করেছেন? ওয়ান-ক্লিকে এটি অ্যাপ্রuভ করুন।")) return;
                 try {
@@ -269,4 +256,4 @@
         });
     </script>
 </body>
-  </html>
+</html>
