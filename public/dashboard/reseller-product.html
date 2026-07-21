@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Reseller Product Details</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen pb-24">
 
-    <!-- 📱 App Style Sticky Header -->
     <header class="bg-white/95 backdrop-blur-md border-b border-primary/10 sticky top-0 z-40 px-4 py-3.5 flex justify-between items-center shadow-sm">
         <span class="font-headings font-extrabold text-xl text-primary">MerketBaseBD Details</span>
         <a href="/dashboard/reseller-products" class="text-xs font-bold text-primary flex items-center gap-1"><i class="fa-solid fa-arrow-left"></i> ইনভেন্টরি</a>
@@ -44,37 +41,29 @@
 
     <main class="max-w-[700px] mx-auto px-4 pt-5 space-y-6">
 
-        <!-- 🛍️ Product Details Card -->
         <section class="bg-white rounded-3xl p-5 border border-black/[0.01] shadow-md space-y-5">
             
-            <!-- Image Gallery -->
             <div class="space-y-3">
-                <!-- Main Image Preview -->
                 <div class="w-full aspect-square bg-gray-50 rounded-2xl overflow-hidden border border-gray-100 flex items-center justify-center relative" id="main-image-wrapper">
                     <i class="fa-solid fa-spinner animate-spin text-primary text-3xl"></i>
                 </div>
-                <!-- Thumbnail Row -->
                 <div class="grid grid-cols-4 gap-3" id="thumbnails-container"></div>
                 
-                <!-- 📥 Image Download Button -->
                 <button onclick="downloadActiveImage()" class="w-full py-2.5 border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-1.5 active:scale-[0.98]">
                     <i class="fa-solid fa-circle-down"></i> এই ছবিটি গ্যালারিতে ডাউনলোড করুন
                 </button>
             </div>
 
-            <!-- Product Basic Info -->
             <div class="space-y-4">
                 <span class="text-[0.65rem] font-bold text-primary uppercase tracking-wider bg-primary/10 px-2.5 py-1 rounded-md" id="prod-category-tag">লোডিং...</span>
                 <h2 class="text-xl font-extrabold text-dark leading-snug" id="prod-title">প্রোডাক্টের নাম লোড হচ্ছে...</h2>
                 <p class="text-xs font-mono text-muted">প্রোডাক্ট কোড: <span id="prod-code">--</span></p>
 
-                <!-- Badges -->
                 <div class="flex gap-3">
                     <span class="px-3 py-1 rounded-full text-xs font-bold bg-green-50 text-green-600 border border-green-200" id="stock-badge">In Stock</span>
                     <span class="px-3 py-1 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/20" id="warranty-badge">নো ওয়ারেন্টি</span>
                 </div>
 
-                <!-- 💰 Reseller Price Panel -->
                 <div class="bg-primary/5 border border-primary/15 rounded-2xl p-4 space-y-3">
                     <div class="flex justify-between items-center border-b border-primary/10 pb-2.5">
                         <div>
@@ -92,7 +81,6 @@
                     </div>
                 </div>
 
-                <!-- Dynamic Size & Color Selectors -->
                 <div class="space-y-4" id="selectors-box">
                     <div class="hidden" id="sizes-row">
                         <span class="block text-xs font-bold mb-2">সাইজসমূহ:</span>
@@ -105,7 +93,6 @@
                 </div>
             </div>
 
-            <!-- Quantity & Actions CTA Panel -->
             <div class="space-y-4 pt-4 border-t border-gray-150">
                 <div class="flex items-center gap-4">
                     <span class="text-xs font-bold">অর্ডার পরিমাণ:</span>
@@ -124,7 +111,6 @@
 
         </section>
 
-        <!-- Product Description Card -->
         <section class="bg-white rounded-3xl p-5 border border-black/[0.01] shadow-md space-y-4 relative">
             <div class="flex justify-between items-center border-b border-gray-100 pb-2">
                 <h3 class="text-sm font-bold text-dark flex items-center gap-1.5"><i class="fa-solid fa-file-lines text-primary"></i> প্রোডাক্টের বিবরণ</h3>
@@ -137,7 +123,6 @@
 
     </main>
 
-    <!-- 📱 Sticky Bottom Navigation Bar (Bottom Nav) -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 py-2.5 px-4 flex justify-between items-center shadow-lg z-40 rounded-t-2xl">
         <a href="/dashboard/reseller" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary transition-colors shrink-0">
             <i class="fa-solid fa-house text-lg"></i>
@@ -161,7 +146,6 @@
         </a>
     </nav>
 
-    <!-- Supabase SDK & Global Layout -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="/layout.js"></script>
     
@@ -172,7 +156,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // কার্ট আপডেট
             function updateCartBadge() {
                 const cart = JSON.parse(localStorage.getItem('cart')) || [];
                 const cartCount = document.getElementById('cart-count');
@@ -180,7 +163,6 @@
             }
             updateCartBadge();
 
-            // সুপাবেস সেশন ও লেআউট ইনিশিয়ালাইজেশন
             async function checkLayoutAndLoad() {
                 if (!window.supabaseClient) {
                     setTimeout(checkLayoutAndLoad, 100);
@@ -210,7 +192,6 @@
                         return;
                     }
 
-                    // প্রোডাক্ট ডাটা লোড
                     loadProductDetails();
 
                 } catch (e) {
@@ -218,7 +199,6 @@
                 }
             }
 
-            // ডাইনামিক প্রোডাক্ট ও ইমেজ গ্যালারি লোড
             async function loadProductDetails() {
                 const client = window.supabaseClient;
                 const urlParams = new URLSearchParams(window.location.search);
@@ -239,7 +219,6 @@
                     }
                     productData = product;
 
-                    // ক. ইমেজ গ্যালারি সেটআপ
                     const mainImageWrapper = document.getElementById('main-image-wrapper');
                     const thumbContainer = document.getElementById('thumbnails-container');
                     
@@ -259,7 +238,6 @@
                         mainImageWrapper.innerHTML = `<i class="fa-solid fa-image text-5xl text-gray-300"></i>`;
                     }
 
-                    // খ. মৌলিক টেক্সট ও মূল্য রেন্ডারিং
                     document.getElementById('prod-title').innerText = product.title;
                     document.getElementById('prod-code').innerText = product.product_code || "N/A";
                     document.getElementById('prod-description').innerText = product.description || "কোনো বিবরণ নেই।";
@@ -273,7 +251,6 @@
                     document.getElementById('customer-price-val').innerText = `৳${retailPrice}`;
                     document.getElementById('profit-val').innerText = `৳${minProfit}`;
 
-                    // গ. স্টক ও ওয়ারেন্টি
                     if (product.stock && product.stock > 0) {
                         document.getElementById('stock-badge').innerText = `In Stock (${product.stock})`;
                     } else {
@@ -286,7 +263,6 @@
                         document.getElementById('warranty-badge').innerText = `${product.warranty_days} দিনের ওয়ারেন্টি`;
                     }
 
-                    // ঘ. ক্যাটাগরি ট্যাগ লাইভ লোড
                     if (product.category_id) {
                         const { data: cat } = await client.from('categories').select('name').eq('id', product.category_id).single();
                         if (cat) {
@@ -296,7 +272,6 @@
                         }
                     }
 
-                    // ঙ. ডাইনামিক সাইজ ও কালার বাটন রেন্ডার
                     if (product.sizes) {
                         document.getElementById('sizes-row').classList.remove('hidden');
                         const sizesContainer = document.getElementById('sizes-container');
@@ -318,7 +293,6 @@
                 }
             }
 
-            // --- ৫. গলোবাল ফাইল ডাউনলোড এবং কন্টাক্ট অ্যাকশন ---
             window.switchMainImage = function(url) {
                 const mainImg = document.getElementById('main-img');
                 if (mainImg) {
@@ -327,7 +301,6 @@
                 }
             };
 
-            // ইমেজ ডাউনলোড ফেইল-সেফ মেথড (CORS বাইপাস পলিসি সহ)
             window.downloadActiveImage = async function() {
                 if (!activeImageUrl) {
                     alert("ডাউনলোড করার মতো কোনো ইমেজ পাওয়া যায়নি।");
@@ -351,7 +324,6 @@
                 }
             };
 
-            // ১-ক্লিক ডেসক্রিপশন কপি মেথড
             window.copyDescription = function() {
                 const descText = document.getElementById('prod-description').innerText;
                 navigator.clipboard.writeText(descText).then(() => {
@@ -377,7 +349,6 @@
                 button.classList.add('border-primary', 'text-primary', 'bg-primary/5');
             };
 
-            // কার্টে যোগ করা (রিসেলার হোল্ড দাম অনুযায়ী)
             window.handleAddToCart = function() {
                 if (!productData) return;
 
@@ -401,7 +372,6 @@
                 alert("সাফল্য! প্রোডাক্টটি রিসেলার মূল্যে আপনার কার্টে যোগ করা হয়েছে।");
             };
 
-            // (ডাইনামিক ফিক্স) সরাসরি রিসেলার চেকআউটে (/dashboard/reseller-checkout) রিডাইরেক্ট করবে
             window.handleBuyNow = function() {
                 if (!productData) return;
 
