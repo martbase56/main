@@ -5,13 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MerketBaseBD - Admin Telegram Controls</title>
     
-    <!-- Google Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anek+Bangla:wght@300;400;500;600;700;800&family=Bricolage+Grotesque:opsz,wght@12..96,400;600;800&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- Tailwind CSS Play CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -36,7 +34,6 @@
 </head>
 <body class="bg-canvas font-bangla text-dark min-h-screen flex flex-col lg:flex-row">
 
-    <!-- 🗂️ Left Sticky Sidebar -->
     <aside class="w-full lg:w-[260px] bg-dark text-gray-300 flex flex-col border-r border-white/5 lg:sticky lg:top-0 lg:h-screen z-40 shrink-0">
         <div class="p-6 border-b border-white/5 flex items-center justify-between">
             <a href="/" class="font-headings font-extrabold text-2xl text-primary tracking-tight">MerketBase Admin</a>
@@ -58,7 +55,6 @@
                 <i class="fa-solid fa-cart-shopping text-lg"></i>
                 <span>অর্ডার ম্যানেজমেন্ট</span>
             </a>
-            <!-- টেলিগ্রাম কন্ট্রোল মেনু একটিভ লিঙ্ক -->
             <a href="#" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-primary text-white font-semibold transition-all shadow-md shadow-primary/10">
                 <i class="fa-brands fa-telegram text-lg"></i>
                 <span>টেলিগ্রাম কন্ট্রোল</span>
@@ -81,7 +77,6 @@
         </nav>
     </aside>
 
-    <!-- 📊 Main Content Area -->
     <main class="flex-grow p-6 lg:p-10 max-w-[1200px] mx-auto w-full space-y-8">
         
         <header class="flex justify-between items-center border-b border-gray-200 pb-5">
@@ -96,7 +91,6 @@
         </header>
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <!-- Left Grid: Create Package Price Editor -->
             <section class="lg:col-span-4 bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md space-y-5 h-fit">
                 <h3 class="font-bold text-base text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-pen-to-square text-primary"></i> প্রমোশনাল প্যাকেজ এডিটর</h3>
                 
@@ -126,7 +120,6 @@
                 </form>
             </section>
 
-            <!-- Right Grid: Active Live Orders Manager -->
             <section class="lg:col-span-8 bg-white rounded-3xl p-6 border border-black/[0.01] shadow-md space-y-5">
                 <h3 class="font-bold text-base text-dark border-b border-gray-100 pb-2"><i class="fa-solid fa-rectangle-list text-primary"></i> পেন্ডিং টেলিগ্রাম অর্ডারসমূহ</h3>
                 
@@ -154,7 +147,6 @@
 
     </main>
 
-    <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <script>
@@ -163,7 +155,6 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             
-            // মোবাইল সাইডবার টগল
             const sidebarToggle = document.getElementById('sidebar-toggle');
             const sidebarMenu = document.getElementById('sidebar-menu');
             if (sidebarToggle && sidebarMenu) {
@@ -173,7 +164,6 @@
                 });
             }
 
-            // --- ক. সুপাবেস ইনিশিয়ালাইজেশন ---
             async function initializeSupabase() {
                 try {
                     const response = await fetch('/api/auth/config');
@@ -215,7 +205,6 @@
                 }
             }
 
-            // --- খ. এডমিন নতুন প্যাকেজ সেভ করা ---
             document.getElementById('create-tg-package-form').addEventListener('submit', async (e) => {
                 e.preventDefault();
                 if (!currentToken) return;
@@ -258,7 +247,6 @@
                 }
             });
 
-            // --- গ. সকল পেন্ডিং টেলিগ্রাম অর্ডার নিয়ে আসা ---
             async function loadPendingTGOrders() {
                 const listContainer = document.getElementById('admin-tg-orders-list');
                 try {
@@ -268,7 +256,6 @@
 
                     if (response.ok) {
                         const orders = await response.json();
-                        // পেন্ডিং অর্ডার ফিল্টার করা
                         const pendingOrders = orders.filter(o => o.status === 'pending');
 
                         if (pendingOrders && pendingOrders.length > 0) {
@@ -300,7 +287,6 @@
                 }
             }
 
-            // --- ঘ. ওয়ান-ক্লিক এপিআই পেমেন্ট অ্যাকশন হ্যান্ডলার ---
             window.approveTGOrder = async function(orderId) {
                 if (!confirm("আপনি কি পেমেন্ট যাচাই করেছেন? অর্ডারটি ওয়ান-ক্লিকে সফল করুন।")) return;
                 try {
@@ -340,4 +326,4 @@
         });
     </script>
 </body>
-                                  </html>
+</html>
